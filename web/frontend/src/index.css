@@ -1,0 +1,26 @@
+@tailwind base;
+
+@layer base {
+  h1 {
+    @apply text-2xl;
+  }
+  h2 {
+    @apply text-xl;
+  }
+  h3 {
+    @apply text-lg;
+  }
+  a {
+    @apply text-blue-600 underline;
+  }
+  .card {
+    @apply p-4 rounded-xl shadow-md border max-w-fit;
+  }
+  .btn-primary {
+  }
+  .btn-seconary {
+  }
+}
+
+@tailwind components;
+@tailwind utilities;

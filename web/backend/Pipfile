@@ -1,0 +1,29 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+django = "*"
+gunicorn = "*"
+django-hashid-field = "*"
+psycopg2-binary = "*"
+sentry-sdk = "*"
+whitenoise = "*"
+django-rest-framework = "*"
+markdown = "*"
+django-filter = "*"
+dj-rest-auth = "*"
+django-cors-headers = "*"
+django-guardian = "*"
+django-allauth = {extras = ["with_social"], version = "*"}
+
+[dev-packages]
+pytest = "*"
+django-pytest = "*"
+
+[requires]
+python_version = "3.10"
+
+[scripts]
+test = "pytest"
