@@ -1,16 +1,5 @@
-# django rest react tailwind css template
+# Lifter API
 
-[![Build](https://github.com/ShivanS93/django-template/actions/workflows/main.yml/badge.svg)](https://github.com/ShivanS93/django-template/actions/workflows/main.yml)
+This is a database of all lifts and competitions in the past, present and future!
 
 ## About
-
-This is a django template.
-
-It comes set up with:
-
-- PostgreSQL
-- Differentiation between production and development environemnts
-
-## Blog post
-
-TBA
