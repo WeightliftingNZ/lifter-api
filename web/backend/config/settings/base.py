@@ -16,6 +16,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 SECRET_KEY = os.getenv("SECRET_KEY")
 HASHID_FIELD_SALT = os.getenv("HASHID_FIELD_SALT")
 
+SITE_ID = 1
+
 # Default primary key field type
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
@@ -131,4 +133,6 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATICFILES_DIRS = (str(BASE_DIR.joinpath("static")),)
 STATIC_ROOT = str(BASE_DIR.joinpath("staticfiles"))
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"  # can I get rid of this?
+STATICFILES_STORAGE = (
+    "whitenoise.storage.CompressedManifestStaticFilesStorage"  # can I get rid of this?
+)
