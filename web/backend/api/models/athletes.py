@@ -6,10 +6,10 @@ from config.settings.base import HASHID_FIELD_SALT
 
 
 class Athlete(models.Model):
-    # pre-populated
     reference_id = HashidAutoField(
         primary_key=True, salt=f"athlete_reference_id_{HASHID_FIELD_SALT}"
     )
+
     first_name = models.CharField(max_length=128)
     last_name = models.CharField(max_length=128)
     yearborn = models.IntegerField(default=1900)

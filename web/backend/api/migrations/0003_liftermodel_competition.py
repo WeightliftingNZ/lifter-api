@@ -7,14 +7,18 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0002_rename_event_name_competitionmodel_competition_name'),
+        ("api", "0002_rename_event_name_competitionmodel_competition_name"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='liftermodel',
-            name='competition',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='api.competitionmodel'),
+            model_name="liftermodel",
+            name="competition",
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="api.competitionmodel",
+            ),
             preserve_default=False,
         ),
     ]

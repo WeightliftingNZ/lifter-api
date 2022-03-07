@@ -43,6 +43,9 @@ INSTALLED_APPS = [
     #   django-rest-framework
     "rest_framework.authtoken",
     "rest_framework",
+    #   documentation
+    "drf_spectacular",
+    "drf_spectacular_sidecar",
     #   misc
     "whitenoise.runserver_nostatic",  # can I get rid of this?
     # custom
@@ -82,6 +85,19 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "config.wsgi.application"
+
+REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Lifter API",
+    "DESCRIPTION": "An API made for lifters",
+    "VERSION": "1.0.0",
+    "SWAGGER_UI_DIST": "SIDECAR",
+    "SWAGGER_UI_FAVICON_HREF": "SIDECAR",
+    "REDOC_DIST": "SIDECAR",
+}
 
 
 # Database

@@ -9,71 +9,204 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='AthleteModel',
+            name="AthleteModel",
             fields=[
-                ('reference_id', hashid_field.field.HashidAutoField(alphabet='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890', min_length=7, prefix='', primary_key=True, serialize=False)),
-                ('first_name', models.CharField(max_length=128)),
-                ('last_name', models.CharField(max_length=128)),
-                ('yearborn', models.IntegerField(default=1900)),
+                (
+                    "reference_id",
+                    hashid_field.field.HashidAutoField(
+                        alphabet="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
+                        min_length=7,
+                        prefix="",
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                ("first_name", models.CharField(max_length=128)),
+                ("last_name", models.CharField(max_length=128)),
+                ("yearborn", models.IntegerField(default=1900)),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
         migrations.CreateModel(
-            name='CompetitionModel',
+            name="CompetitionModel",
             fields=[
-                ('reference_id', hashid_field.field.HashidAutoField(alphabet='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890', min_length=7, prefix='', primary_key=True, serialize=False)),
-                ('date_start', models.DateTimeField(blank=True)),
-                ('date_end', models.DateTimeField(blank=True)),
-                ('location', models.CharField(blank=True, max_length=128)),
-                ('event_name', models.CharField(blank=True, max_length=128)),
+                (
+                    "reference_id",
+                    hashid_field.field.HashidAutoField(
+                        alphabet="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
+                        min_length=7,
+                        prefix="",
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                ("date_start", models.DateTimeField(blank=True)),
+                ("date_end", models.DateTimeField(blank=True)),
+                ("location", models.CharField(blank=True, max_length=128)),
+                ("event_name", models.CharField(blank=True, max_length=128)),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
         migrations.CreateModel(
-            name='SessionModel',
+            name="SessionModel",
             fields=[
-                ('session_id', models.BigIntegerField(primary_key=True, serialize=False)),
-                ('date', models.DateTimeField(blank=True)),
-                ('competition', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.competitionmodel')),
+                (
+                    "session_id",
+                    models.BigIntegerField(primary_key=True, serialize=False),
+                ),
+                ("date", models.DateTimeField(blank=True)),
+                (
+                    "competition",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="api.competitionmodel",
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
         migrations.CreateModel(
-            name='LifterModel',
+            name="LifterModel",
             fields=[
-                ('lifter_id', models.BigIntegerField(primary_key=True, serialize=False)),
-                ('snatch_first', models.CharField(blank=True, choices=[('LIFT', 'Good Lift'), ('NOLIFT', 'No Lift'), ('DNA', 'Did not attempt')], max_length=6)),
-                ('snatch_first_weight', models.IntegerField(blank=True)),
-                ('snatch_second', models.CharField(blank=True, choices=[('LIFT', 'Good Lift'), ('NOLIFT', 'No Lift'), ('DNA', 'Did not attempt')], max_length=6)),
-                ('snatch_second_weight', models.IntegerField(blank=True)),
-                ('snatch_third', models.CharField(blank=True, choices=[('LIFT', 'Good Lift'), ('NOLIFT', 'No Lift'), ('DNA', 'Did not attempt')], max_length=6)),
-                ('snatch_third_weight', models.IntegerField(blank=True)),
-                ('cnj_first', models.CharField(blank=True, choices=[('LIFT', 'Good Lift'), ('NOLIFT', 'No Lift'), ('DNA', 'Did not attempt')], max_length=6)),
-                ('cnj_first_weight', models.IntegerField(blank=True)),
-                ('cnj_second', models.CharField(blank=True, choices=[('LIFT', 'Good Lift'), ('NOLIFT', 'No Lift'), ('DNA', 'Did not attempt')], max_length=6)),
-                ('cnj_second_weight', models.IntegerField(blank=True)),
-                ('cnj_third', models.CharField(blank=True, choices=[('LIFT', 'Good Lift'), ('NOLIFT', 'No Lift'), ('DNA', 'Did not attempt')], max_length=6)),
-                ('cnj_third_weight', models.IntegerField(blank=True)),
-                ('bodyweight', models.IntegerField()),
-                ('weight_category', models.CharField(blank=True, choices=[('M55', 'M55'), ('M61', 'M61'), ('M67', 'M67'), ('M73', 'M73'), ('M81', 'M81'), ('M89', 'M89'), ('M96', 'M96'), ('M102', 'M102'), ('M102+', 'M102+'), ('W45', 'W45'), ('W49', 'W49'), ('W55', 'W55'), ('W59', 'W59'), ('W64', 'W64'), ('W71', 'W71'), ('W76', 'W76'), ('W81', 'W81'), ('W81+', 'W81+')], max_length=5)),
-                ('team', models.CharField(blank=True, max_length=4)),
-                ('lottery_number', models.IntegerField(blank=True)),
-                ('athlete', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.athletemodel')),
-                ('session', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.sessionmodel')),
+                (
+                    "lifter_id",
+                    models.BigIntegerField(primary_key=True, serialize=False),
+                ),
+                (
+                    "snatch_first",
+                    models.CharField(
+                        blank=True,
+                        choices=[
+                            ("LIFT", "Good Lift"),
+                            ("NOLIFT", "No Lift"),
+                            ("DNA", "Did not attempt"),
+                        ],
+                        max_length=6,
+                    ),
+                ),
+                ("snatch_first_weight", models.IntegerField(blank=True)),
+                (
+                    "snatch_second",
+                    models.CharField(
+                        blank=True,
+                        choices=[
+                            ("LIFT", "Good Lift"),
+                            ("NOLIFT", "No Lift"),
+                            ("DNA", "Did not attempt"),
+                        ],
+                        max_length=6,
+                    ),
+                ),
+                ("snatch_second_weight", models.IntegerField(blank=True)),
+                (
+                    "snatch_third",
+                    models.CharField(
+                        blank=True,
+                        choices=[
+                            ("LIFT", "Good Lift"),
+                            ("NOLIFT", "No Lift"),
+                            ("DNA", "Did not attempt"),
+                        ],
+                        max_length=6,
+                    ),
+                ),
+                ("snatch_third_weight", models.IntegerField(blank=True)),
+                (
+                    "cnj_first",
+                    models.CharField(
+                        blank=True,
+                        choices=[
+                            ("LIFT", "Good Lift"),
+                            ("NOLIFT", "No Lift"),
+                            ("DNA", "Did not attempt"),
+                        ],
+                        max_length=6,
+                    ),
+                ),
+                ("cnj_first_weight", models.IntegerField(blank=True)),
+                (
+                    "cnj_second",
+                    models.CharField(
+                        blank=True,
+                        choices=[
+                            ("LIFT", "Good Lift"),
+                            ("NOLIFT", "No Lift"),
+                            ("DNA", "Did not attempt"),
+                        ],
+                        max_length=6,
+                    ),
+                ),
+                ("cnj_second_weight", models.IntegerField(blank=True)),
+                (
+                    "cnj_third",
+                    models.CharField(
+                        blank=True,
+                        choices=[
+                            ("LIFT", "Good Lift"),
+                            ("NOLIFT", "No Lift"),
+                            ("DNA", "Did not attempt"),
+                        ],
+                        max_length=6,
+                    ),
+                ),
+                ("cnj_third_weight", models.IntegerField(blank=True)),
+                ("bodyweight", models.IntegerField()),
+                (
+                    "weight_category",
+                    models.CharField(
+                        blank=True,
+                        choices=[
+                            ("M55", "M55"),
+                            ("M61", "M61"),
+                            ("M67", "M67"),
+                            ("M73", "M73"),
+                            ("M81", "M81"),
+                            ("M89", "M89"),
+                            ("M96", "M96"),
+                            ("M102", "M102"),
+                            ("M102+", "M102+"),
+                            ("W45", "W45"),
+                            ("W49", "W49"),
+                            ("W55", "W55"),
+                            ("W59", "W59"),
+                            ("W64", "W64"),
+                            ("W71", "W71"),
+                            ("W76", "W76"),
+                            ("W81", "W81"),
+                            ("W81+", "W81+"),
+                        ],
+                        max_length=5,
+                    ),
+                ),
+                ("team", models.CharField(blank=True, max_length=4)),
+                ("lottery_number", models.IntegerField(blank=True)),
+                (
+                    "athlete",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="api.athletemodel",
+                    ),
+                ),
+                (
+                    "session",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="api.sessionmodel",
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
     ]

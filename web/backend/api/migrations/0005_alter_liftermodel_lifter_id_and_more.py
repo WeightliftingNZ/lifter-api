@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0004_alter_liftermodel_lifter_id_and_more'),
+        ("api", "0004_alter_liftermodel_lifter_id_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='liftermodel',
-            name='lifter_id',
+            model_name="liftermodel",
+            name="lifter_id",
             field=models.AutoField(primary_key=True, serialize=False),
         ),
         migrations.AlterField(
-            model_name='sessionmodel',
-            name='session_id',
+            model_name="sessionmodel",
+            name="session_id",
             field=models.AutoField(primary_key=True, serialize=False),
         ),
     ]

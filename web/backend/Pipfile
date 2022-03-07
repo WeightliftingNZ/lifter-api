@@ -17,9 +17,9 @@ dj-rest-auth = "*"
 django-cors-headers = "*"
 django-guardian = "*"
 django-allauth = {extras = ["with_social"], version = "*"}
-drf-nested-routers = "*"
 pyyaml = "*"
 uritemplate = "*"
+drf-spectacular = {extras = ["sidecar"], version = "*"}
 
 [dev-packages]
 pytest = "*"

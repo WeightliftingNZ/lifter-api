@@ -1,7 +1,12 @@
-from xml.dom.minidom import ReadOnlySequentialNamedNodeMap
 from django.contrib import admin
 
-from api.models import AthleteModel, CompetitionModel, SessionModel, LifterModel
+# from django.utils.translation import gettext_lazy as _
+
+from .models import (
+    Athlete,
+    Competition,
+    Lift,
+)
 
 
 class AthleteAdmin(admin.ModelAdmin):
@@ -14,11 +19,53 @@ class CompetitionAdmin(admin.ModelAdmin):
     list_display = ("date_start", "date_end", "location", "competition_name")
 
 
-class SessionAdmin(admin.ModelAdmin):
-    readonly_fields = ("session_id",)
-    list_display = ("date", "competition")
+class LiftAdmin(admin.ModelAdmin):
+    readonly_fields = ("lift_id",)
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": (
+                    "athlete",
+                    "competition",
+                )
+            },
+        ),
+        (
+            "Lifts",
+            {
+                "fields": (
+                    "snatch_first",
+                    "snatch_first_weight",
+                    "snatch_second",
+                    "snatch_second_weight",
+                    "snatch_third",
+                    "snatch_third_weight",
+                    "cnj_first",
+                    "cnj_first_weight",
+                    "cnj_second",
+                    "cnj_second_weight",
+                    "cnj_third",
+                    "cnj_third_weight",
+                )
+            },
+        ),
+        (
+            "Other",
+            {
+                "fields": (
+                    "bodyweight",
+                    "weight_category",
+                    "team",
+                    "lottery_number",
+                    "session_number",
+                    "session_datetime",
+                )
+            },
+        ),
+    )
 
 
-admin.site.register(AthleteModel, AthleteAdmin)
-admin.site.register(CompetitionModel, CompetitionAdmin)
-admin.site.register(SessionModel, SessionAdmin)
+admin.site.register(Athlete, AthleteAdmin)
+admin.site.register(Competition, CompetitionAdmin)
+admin.site.register(Lift, LiftAdmin)
