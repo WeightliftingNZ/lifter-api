@@ -20,6 +20,7 @@ django-allauth = {extras = ["with_social"], version = "*"}
 pyyaml = "*"
 uritemplate = "*"
 drf-spectacular = {extras = ["sidecar"], version = "*"}
+djangorestframework-simplejwt = "*"
 
 [dev-packages]
 pytest = "*"

@@ -7,37 +7,39 @@ import django.utils.timezone
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0006_rename_athletemodel_athlete_and_more'),
+        ("api", "0006_rename_athletemodel_athlete_and_more"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='lift',
-            name='session',
+            model_name="lift",
+            name="session",
         ),
         migrations.AddField(
-            model_name='lift',
-            name='session_datetime',
-            field=models.DateTimeField(blank=True, default=django.utils.timezone.now),
+            model_name="lift",
+            name="session_datetime",
+            field=models.DateTimeField(
+                blank=True, default=django.utils.timezone.now
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='lift',
-            name='session_number',
+            model_name="lift",
+            name="session_number",
             field=models.IntegerField(blank=True, default=0),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='competition',
-            name='date_end',
+            model_name="competition",
+            name="date_end",
             field=models.DateField(blank=True),
         ),
         migrations.AlterField(
-            model_name='competition',
-            name='date_start',
+            model_name="competition",
+            name="date_start",
             field=models.DateField(blank=True),
         ),
         migrations.DeleteModel(
-            name='Session',
+            name="Session",
         ),
     ]

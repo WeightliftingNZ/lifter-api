@@ -10,6 +10,7 @@ from api.models import Athlete
 from .lifts import LiftSerializer
 
 
+# TODO: schema
 @extend_schema_serializer(exclude_fields=("id",))
 class AthleteSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(

@@ -21,7 +21,6 @@ class CustomUserAdmin(UserAdmin):
             None,
             {
                 "fields": (
-                    "id",
                     "username",
                     "password",
                 )
@@ -36,7 +35,7 @@ class CustomUserAdmin(UserAdmin):
                     "is_staff",
                     "is_superuser",
                     "groups",
-                    "user_persmissions",
+                    "user_permissions",
                 ),
             },
         ),
