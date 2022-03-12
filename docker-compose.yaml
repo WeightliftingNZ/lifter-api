@@ -15,7 +15,6 @@ services:
     stdin_open: true
     depends_on:
       - db
-      - web-backend
 
   web-backend:
     container_name: web-backend

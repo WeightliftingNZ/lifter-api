@@ -21,6 +21,7 @@ pyyaml = "*"
 uritemplate = "*"
 drf-spectacular = {extras = ["sidecar"], version = "*"}
 djangorestframework-simplejwt = "*"
+drf-nested-routers = "*"
 
 [dev-packages]
 pytest = "*"

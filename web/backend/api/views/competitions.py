@@ -14,6 +14,5 @@ class CompetitionViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         if self.action == "retrieve":
-            print("detail serializer")
             return CompetitionDetailSerializer
         return CompetitionSerializer

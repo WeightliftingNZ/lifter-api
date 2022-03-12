@@ -20,7 +20,7 @@ class CompetitionAdmin(admin.ModelAdmin):
 
 
 class LiftAdmin(admin.ModelAdmin):
-    readonly_fields = ("lift_id",)
+    readonly_fields = ("reference_id",)
     fieldsets = (
         (
             None,

@@ -11,10 +11,10 @@
     @apply text-lg;
   }
   a {
-    @apply text-blue-600 underline;
+    @apply text-blue-600;
   }
   .card {
-    @apply p-4 rounded-xl shadow-md border max-w-fit;
+    @apply px-4 py-2 rounded-xl shadow-md border max-w-fit hover:border-blue-400 hover:bg-slate-200;
   }
   .btn-primary {
   }

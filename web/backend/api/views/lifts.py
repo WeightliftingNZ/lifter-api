@@ -10,7 +10,7 @@ class LiftViewSet(viewsets.ModelViewSet):
     """
 
     def get_queryset(self):
-        return Lift.objects.filter(athlete=self.kwargs["athlete_pk"])
+        return Lift.objects.filter(competition=self.kwargs["competitions_pk"])
 
     def get_serializer_class(self):
         return LiftSerializer

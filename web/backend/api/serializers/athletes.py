@@ -4,6 +4,7 @@ from drf_spectacular.utils import (
     OpenApiExample,
 )
 from drf_spectacular.types import OpenApiTypes
+from hashid_field.rest import HashidSerializerCharField
 from rest_framework import serializers
 
 from api.models import Athlete
@@ -17,9 +18,16 @@ class AthleteSerializer(serializers.ModelSerializer):
         view_name="athletes-detail", read_only=True
     )
 
+    reference_id = serializers.PrimaryKeyRelatedField(
+        pk_field=HashidSerializerCharField(
+            source_field="api.Athlete.reference_id",
+        ),
+        read_only=True,
+    )
+
     class Meta:
         model = Athlete
-        fields = ("url", "first_name", "last_name", "yearborn")
+        fields = ("reference_id", "url", "first_name", "last_name", "yearborn")
 
 
 class AthleteDetailSerializer(AthleteSerializer):
