@@ -6,13 +6,13 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0007_remove_lift_session_lift_session_datetime_and_more'),
+        ("api", "0007_remove_lift_session_lift_session_datetime_and_more"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='lift',
-            old_name='lift_id',
-            new_name='reference_id',
+            model_name="lift",
+            old_name="lift_id",
+            new_name="reference_id",
         ),
     ]

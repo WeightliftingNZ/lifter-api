@@ -1,7 +1,10 @@
+from collections import Counter
+
 from hashid_field.rest import HashidSerializerCharField
 from rest_framework import serializers
 
-from api.models import Competition
+from api.models import Competition, Lift
+
 from .lifts import LiftSerializer
 
 
@@ -15,6 +18,10 @@ class CompetitionSerializer(serializers.ModelSerializer):
         ),
         read_only=True,
     )
+    lift_count = serializers.SerializerMethodField(read_only=True)
+
+    def get_lift_count(self, competition):
+        return Lift.objects.filter(competition=competition).count()
 
     class Meta:
         model = Competition
@@ -25,6 +32,7 @@ class CompetitionSerializer(serializers.ModelSerializer):
             "date_end",
             "location",
             "competition_name",
+            "lift_count",
         )
 
 

@@ -8,5 +8,3 @@ const apiClient = axios.create({
 });
 
 export default apiClient;
-
-// TODO: set up react-query!!

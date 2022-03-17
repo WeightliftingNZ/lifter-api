@@ -1,9 +1,10 @@
 import React from "react";
+import CompetitionsListPage from "../CompetitionsListPage";
 
 const HomePage = () => {
   return (
     <>
-      <div className="card"> This is the Home Page :)</div>
+      <CompetitionsListPage />
     </>
   );
 };

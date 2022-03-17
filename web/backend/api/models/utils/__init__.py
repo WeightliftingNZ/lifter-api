@@ -1,1 +1,2 @@
-from .choices import WEIGHT_CATEGORIES, LIFT_STATUS
+from .choices import LIFT_STATUS, WEIGHT_CATEGORIES
+from .ranking import ranking_suffix
