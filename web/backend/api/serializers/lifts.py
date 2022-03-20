@@ -41,6 +41,7 @@ class LiftSerializer(serializers.ModelSerializer):
         model = Lift
         fields = (
             "reference_id",
+            "lottery_number",
             "athlete",
             "athlete_name",
             "competition",
@@ -55,7 +56,4 @@ class LiftSerializer(serializers.ModelSerializer):
             "weight_category",
             "team",
             "placing",
-            "lottery_number",
-            "session_number",
-            "session_datetime",
         )

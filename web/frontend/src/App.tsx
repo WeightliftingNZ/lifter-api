@@ -4,6 +4,8 @@ import Navbar from "./components/Navbar";
 import HomePage from "./views/HomePage";
 import CompetitionsListPage from "./views/CompetitionsListPage";
 import CompetitionDetailPage from "./views/CompetitionDetailPage/CompetitionDetailPage"; // TODO: fix this barrel
+import AthletesListPage from "./views/AthletesListPage";
+import AthleteDetailPage from "./views/AthleteDetailPage";
 
 function App() {
   return (
@@ -20,6 +22,11 @@ function App() {
             path="/competitions/:competitionReferenceId"
             element={<CompetitionDetailPage />}
           />
+          <Route path="/athletes" element={<AthletesListPage />}></Route>
+          <Route
+            path="/athletes/:athleteReferenceId"
+            element={<AthleteDetailPage />}
+          ></Route>
           <Route
             path="*"
             element={

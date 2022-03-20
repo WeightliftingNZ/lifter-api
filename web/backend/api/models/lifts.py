@@ -5,14 +5,16 @@ from django.db import models
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 
-from . import Athlete, Competition
 from .utils import LIFT_STATUS, WEIGHT_CATEGORIES, ranking_suffix
 
 
 class Lift(models.Model):
     reference_id = models.AutoField(primary_key=True)
-    athlete = models.ForeignKey(Athlete, on_delete=models.CASCADE)
-    competition = models.ForeignKey(Competition, on_delete=models.CASCADE)
+    athlete = models.ForeignKey("api.Athlete", on_delete=models.CASCADE)
+    competition = models.ForeignKey(
+        "api.Competition", on_delete=models.CASCADE
+    )
+    session = models.ForeignKey("api.Session", on_delete=models.CASCADE)
 
     snatch_first = models.CharField(
         max_length=6, choices=LIFT_STATUS, blank=True
@@ -41,9 +43,7 @@ class Lift(models.Model):
     )
     # create list of clubs?
     team = models.CharField(max_length=4, blank=True)
-    lottery_number = models.IntegerField(blank=True, unique=True)
-    session_number = models.IntegerField(blank=True)
-    session_datetime = models.DateTimeField(blank=True)
+    lottery_number = models.IntegerField(blank=True)
 
     def clean(self, *args, **kwargs):
         # ensure athlete is not entered twice in a competition
@@ -52,20 +52,38 @@ class Lift(models.Model):
         ).exists():
             raise ValidationError(_(f"{self.athlete} already in competition"))
 
-        # need to ensure lifts are always going up
-        snatches = [self.snatch_first, self.snatch_second, self.snatch_third]
-        sorted_snatches = snatches.copy().sort()
-        if snatches != sorted_snatches:
+        if Lift.objects.filter(
+            competition=self.competition,
+            session=self.session,
+            lottery_number=self.lottery_number,
+        ).exists():
             raise ValidationError(
-                _("Snatches must be increasing with every attempt")
+                _(f"{self.lottery_number} already exists in this session")
             )
 
-        cnjs = [self.cnj_first, self.cnj_second, self.cnj_third]
-        sorted_cnjes = cnjs.copy().sort()
-        if cnjs != sorted_cnjes:
-            raise ValidationError(
-                _("Clean and Jerks must be increasing with every attempt")
-            )
+        # TODO: write the logic
+        # this assumes lifts must increase but this is not the case
+        # if there is a nolift then the weight does not necessarily have to go up
+        # need to ensure lifts are always going up
+        # snatches = [snatch for snatch in self.snatches.values()]
+        # if current snatch is a make, next lift must be more
+        # if not next snatch weight must be same of more
+        # for current, snatch in enumerate(snatches, 1):
+        #     if current < 3:
+        #         if snatch["lift_status"] == "LIFT":
+        #             if snatches[current]
+        #             snatch[attempt + 1]
+
+        # sorted_snatches = snatches.copy().sort()
+        # if snatches != sorted_snatches:
+        #     raise ValidationError(_("Snatches must be increasing with every attempt"))
+
+        # cnjs = [self.cnj_first, self.cnj_second, self.cnj_third]
+        # sorted_cnjes = cnjs.copy().sort()
+        # if cnjs != sorted_cnjes:
+        #     raise ValidationError(
+        #         _("Clean and Jerks must be increasing with every attempt")
+        #     )
         super().clean(*args, **kwargs)
 
     def save(self, *args, **kwargs):
@@ -127,6 +145,7 @@ class Lift(models.Model):
             ("3rd", self.snatch_third, self.snatch_third_weight),
         ]
         best_snatch = 0
+        best_snatch_attempt = ""
         for snatch_attempt, snatch_made, snatch_weight in snatches:
             if snatch_made == "LIFT" and snatch_weight > best_snatch:
                 best_snatch = snatch_weight
@@ -147,6 +166,7 @@ class Lift(models.Model):
         ]
 
         best_cnj = 0
+        best_cnj_attempt = ""
         for cnj_attempt, cnj_made, cnj_weight in cnjs:
             if cnj_made == "LIFT" and cnj_weight > best_cnj:
                 best_cnj = cnj_weight
@@ -170,7 +190,7 @@ class Lift(models.Model):
         # you must have at least a snatch lift and cnj to total
         snatch_made = any([lift == "LIFT" for lift in snatch_lifts])
         cnj_made = any([lift == "LIFT" for lift in cnj_lifts])
-        if any([snatch_made, cnj_made]):
+        if all([snatch_made, cnj_made]):
             total_lifted = self.best_snatch_weight[1] + self.best_cnj_weight[1]
         return total_lifted
 
@@ -190,6 +210,8 @@ class Lift(models.Model):
             }
             for q in query
         ]
+        if self.total_lifted == 0:
+            return "-"
 
         def sort_lift_key(lift):
             keys = []

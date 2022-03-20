@@ -11,7 +11,7 @@ const Navbar = () => {
       </div>
       <div className="basis-4/6 flex gap-4">
         <Link to="/competitions/" className="hover:underline">
-          Competitons
+          Competitions
         </Link>
         <Link to="/athletes/" className="hover:underline">
           Athletes

@@ -19,29 +19,35 @@
   .card {
     @apply px-4 py-2 rounded-xl shadow-md border max-w-fit hover:border-blue-400 hover:bg-sky-100;
   }
-  .btn-primary {
+  .btn {
+    @apply border-2 border-slate-700 bg-slate-700 hover:bg-slate-500 px-4 py-2 text-sm leading-5 rounded-full font-semibold text-white;
   }
-  .btn-seconary {
+  .btn-secondary {
+    @apply border-2 border-sky-500 bg-gray-100 px-4 py-2 text-sm leading-5 rounded-full font-semibold text-slate-700;
   }
-}
-table {
-  @apply shadow-md border-2;
-}
+  table {
+    @apply shadow-md border-collapse;
+  }
 
-thead {
-  @apply px-2 py-4 border-2 border-slate-50 border-b-slate-900;
-}
+  thead {
+    @apply px-2 py-4 border-2 border-slate-50 border-b-slate-900;
+  }
 
-tr {
-  @apply bg-slate-50;
-}
+  tr {
+    @apply bg-slate-50;
+  }
 
-th {
-  @apply px-2 text-blue-300;
-}
+  th {
+    @apply px-2 text-blue-300;
+  }
 
-td {
-  @apply px-2 py-4 text-center;
+  td {
+    @apply px-2 py-4 text-center;
+  }
+
+  input {
+    @apply block w-full px-3 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-slate-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none;
+  }
 }
 
 @tailwind components;

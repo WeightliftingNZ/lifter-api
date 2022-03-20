@@ -6,6 +6,7 @@ export interface CompetitionObject {
   lift_count?: number;
   date_end?: string;
   date_start?: string;
+  session_count?: number;
 }
 
 export interface LiftObject {

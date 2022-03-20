@@ -13,7 +13,7 @@ class AthleteViewSet(viewsets.ModelViewSet):
     """
 
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ["competition_name", "location"]
+    search_fields = ["first_name", "last_name"]
     ordering_fields = ["first_name", "last_name"]
     ordering = ["last_name"]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]

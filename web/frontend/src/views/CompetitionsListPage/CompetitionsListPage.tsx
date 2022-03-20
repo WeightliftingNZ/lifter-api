@@ -56,9 +56,10 @@ const CompetitionsListPage = () => {
           to={`/competitions/${competition.reference_id}`}
         >
           <h1>{competition.competition_name}</h1>
-          <span>
-            {competition.location} - {competition.lift_count}
-          </span>
+          <p>{competition.location}</p>
+          <p>{competition.date_start}</p>
+          <p>Sessions: {competition.session_count}</p>
+          <p>Athletes: {competition.lift_count}</p>
         </Link>
       ))}
     </>

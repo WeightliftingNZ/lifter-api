@@ -3,9 +3,9 @@ from collections import Counter
 from hashid_field.rest import HashidSerializerCharField
 from rest_framework import serializers
 
-from api.models import Competition, Lift
+from api.models import Competition, Session
 
-from .lifts import LiftSerializer
+from .sessions import SessionSerializer
 
 
 class CompetitionSerializer(serializers.ModelSerializer):
@@ -18,10 +18,10 @@ class CompetitionSerializer(serializers.ModelSerializer):
         ),
         read_only=True,
     )
-    lift_count = serializers.SerializerMethodField(read_only=True)
+    session_count = serializers.SerializerMethodField(read_only=True)
 
-    def get_lift_count(self, competition):
-        return Lift.objects.filter(competition=competition).count()
+    def get_session_count(self, competition):
+        return Session.objects.filter(competition=competition).count()
 
     class Meta:
         model = Competition
@@ -32,12 +32,12 @@ class CompetitionSerializer(serializers.ModelSerializer):
             "date_end",
             "location",
             "competition_name",
-            "lift_count",
+            "session_count",
         )
 
 
 class CompetitionDetailSerializer(CompetitionSerializer):
-    lift_set = LiftSerializer(many=True, read_only=True)
+    session_set = SessionSerializer(many=True, read_only=True)
 
     class Meta(CompetitionSerializer.Meta):
-        fields = CompetitionSerializer.Meta.fields + ("lift_set",)
+        fields = CompetitionSerializer.Meta.fields + ("session_set",)

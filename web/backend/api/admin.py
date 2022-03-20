@@ -1,12 +1,8 @@
 from django.contrib import admin
 
-# from django.utils.translation import gettext_lazy as _
+from .models import Athlete, Competition, Lift, Session
 
-from .models import (
-    Athlete,
-    Competition,
-    Lift,
-)
+# from django.utils.translation import gettext_lazy as _
 
 
 class AthleteAdmin(admin.ModelAdmin):
@@ -28,6 +24,7 @@ class LiftAdmin(admin.ModelAdmin):
                 "fields": (
                     "athlete",
                     "competition",
+                    "session",
                 )
             },
         ),
@@ -58,8 +55,35 @@ class LiftAdmin(admin.ModelAdmin):
                     "weight_category",
                     "team",
                     "lottery_number",
-                    "session_number",
-                    "session_datetime",
+                )
+            },
+        ),
+    )
+
+
+class SessionAdmin(admin.ModelAdmin):
+    readonly_fields = ("reference_id",)
+    fieldsets = (
+        (
+            None,
+            {"fields": ("competition",)},
+        ),
+        (
+            "Session Details",
+            {"fields": ("session_datetime",)},
+        ),
+        (
+            "Officials",
+            {
+                "fields": (
+                    "referee_first",
+                    "referee_second",
+                    "referee_third",
+                    "technical_controller",
+                    "marshall",
+                    "timekeeper",
+                    "announcer",
+                    "jury",
                 )
             },
         ),
@@ -69,3 +93,4 @@ class LiftAdmin(admin.ModelAdmin):
 admin.site.register(Athlete, AthleteAdmin)
 admin.site.register(Competition, CompetitionAdmin)
 admin.site.register(Lift, LiftAdmin)
+admin.site.register(Session, SessionAdmin)

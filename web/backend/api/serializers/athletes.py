@@ -1,13 +1,14 @@
-from drf_spectacular.utils import (
-    extend_schema_serializer,
-    OpenApiParameter,
-    OpenApiExample,
-)
 from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import (
+    OpenApiExample,
+    OpenApiParameter,
+    extend_schema_serializer,
+)
 from hashid_field.rest import HashidSerializerCharField
 from rest_framework import serializers
 
 from api.models import Athlete
+
 from .lifts import LiftSerializer
 
 
@@ -27,7 +28,14 @@ class AthleteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Athlete
-        fields = ("reference_id", "url", "first_name", "last_name", "yearborn")
+        fields = (
+            "reference_id",
+            "url",
+            "full_name",
+            "first_name",
+            "last_name",
+            "yearborn",
+        )
 
 
 class AthleteDetailSerializer(AthleteSerializer):
