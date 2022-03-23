@@ -37,8 +37,8 @@ repos:
         exclude: "[a-zA-Z]*/(migrations)/(.)*"
         args:
           [
-            "--load-plygin=pylint_django",
-            "--django-settings-module=config.settings.dev",
+            "--load-plugins=pylint_django",
+            "--django-settings-module=settings.dev",
           ]
         additional_dependencies: [pylint_django]
 
@@ -71,6 +71,7 @@ repos:
       - id: pyupgrade
         args:
           [
+            "--py3-plus",
             "--py36-plus",
             "--py37-plus",
             "--py38-plus",
