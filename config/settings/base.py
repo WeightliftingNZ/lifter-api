@@ -1,6 +1,9 @@
-import os
 from datetime import timedelta
+import os
 from pathlib import Path
+from urllib.parse import urlparse
+
+from django.core.management.utils import get_random_secret_key
 
 # import sentry_sdk
 # from sentry_sdk.integrations.django import DjangoIntegration
@@ -14,8 +17,8 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-SECRET_KEY = os.getenv("SECRET_KEY")
-HASHID_FIELD_SALT = os.getenv("HASHID_FIELD_SALT")
+SECRET_KEY = os.getenv("SECRET_KEY", get_random_secret_key())
+HASHID_FIELD_SALT = os.getenv("HASHID_FIELD_SALT", get_random_secret_key())
 
 SITE_ID = 1
 
@@ -146,16 +149,32 @@ SPECTACULAR_SETTINGS = {
 
 # Database
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "postgres",
-        "USER": "postgres",
-        "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
-        "HOST": "db",
-        "PORT": 5432,
+if os.getenv("DATABASE_URL", "") != "":
+    r = urlparse(os.environ.get("DATABASE_URL"))
+    # online
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql_psycopg2",
+            "NAME": os.path.relpath(r.path("/")),
+            "USER": r.username,
+            "PASSWORD": r.password,
+            "HOST": r.hostname,
+            "PORT": r.post,
+            "OPTIONS": {"sslmode": "require"},
+        }
     }
-}
+else:
+    # local
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql_psycopg2",
+            "NAME": "postgres",
+            "USER": "postgres",
+            "PASSWORD": "postgres",
+            "HOST": "0.0.0.0",
+            "PORT": 5432,
+        }
+    }
 
 # Password validation
 

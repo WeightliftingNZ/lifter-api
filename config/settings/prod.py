@@ -2,11 +2,7 @@ from .base import *  # noqa F403
 
 # setting
 DEBUG = False
-# ALLOWED_HOSTS = [
-#     "localhost",
-#     "0.0.0.0",
-#     # TODO: where is this going to be hosted?
-# ]
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS").split(",")
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 SECURE_SSL_REDIRECT = True
