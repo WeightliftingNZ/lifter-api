@@ -30,10 +30,14 @@ repos:
             "flake8-simplify",
           ]
 
-  - repo: https://github.com/pycqa/pylint
-    rev: "v2.12.2"
+  - repo: local
     hooks:
       - id: pylint
+        name: pylint
+        entry: pipenv run pylint
+        language: python
+        types: [python]
+        require_serial: true
         exclude: "[a-zA-Z]*/(migrations)/(.)*"
         args:
           [
