@@ -198,7 +198,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "NZ"
 
 USE_I18N = True
 
@@ -210,3 +210,4 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 
 STATIC_URL = "/static/"
+STATIC_ROOT = [BASE_DIR / "staticfiles"]
