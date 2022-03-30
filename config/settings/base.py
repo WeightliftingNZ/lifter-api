@@ -151,11 +151,11 @@ SPECTACULAR_SETTINGS = {
 
 if os.getenv("DATABASE_URL", "") != "":
     r = urlparse(os.environ.get("DATABASE_URL"))
-    # online
+    # online - for deployment on Digital Ocean
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql_psycopg2",
-            "NAME": os.path.relpath(r.path("/")),
+            "NAME": os.path.relpath(r.path, "/"),
             "USER": r.username,
             "PASSWORD": r.password,
             "HOST": r.hostname,
