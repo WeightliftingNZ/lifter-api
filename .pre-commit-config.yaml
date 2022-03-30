@@ -79,18 +79,7 @@ repos:
             "--py310-plus",
           ]
 
-  # docker linter
   - repo: https://github.com/AleksaC/hadolint-py
     rev: v2.9.1
     hooks:
       - id: hadolint
-
-  # JS/TS/React Linter
-  - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v8.11.0
-    hooks:
-      - id: eslint
-        files: \.[jt]sx?$
-        types: [file]
-        additional_dependencies:
-          ["eslint@latest", "eslint-config-standard@latest"]
