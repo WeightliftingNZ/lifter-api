@@ -1,12 +1,19 @@
 from hashid_field.rest import HashidSerializerCharField
 from rest_framework import permissions, serializers
 
-from api.models import Athlete, Competition, Lift
+from api.models import Athlete, Lift, Session
 
 
 class LiftSerializer(serializers.ModelSerializer):
 
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    reference_id = serializers.PrimaryKeyRelatedField(
+        pk_field=HashidSerializerCharField(
+            source_field="api.Lift.reference_id",
+        ),
+        read_only=True,
+    )
 
     athlete = serializers.PrimaryKeyRelatedField(
         pk_field=HashidSerializerCharField(
@@ -15,26 +22,32 @@ class LiftSerializer(serializers.ModelSerializer):
         read_only=False,
         queryset=Athlete.objects.all(),
     )
-    competition = serializers.PrimaryKeyRelatedField(
+
+    competition = HashidSerializerCharField(
+        source="session.competition.reference_id", read_only=True
+    )
+
+    session = serializers.PrimaryKeyRelatedField(
         pk_field=HashidSerializerCharField(
-            source_field="api.Competition.reference_id",
+            source_field="api.Session.reference_id",
         ),
         read_only=False,
-        queryset=Competition.objects.all(),
+        queryset=Session.objects.all(),
     )
 
     athlete_name = serializers.CharField(
         source="athlete.full_name",
-        read_only=False,
+        read_only=True,
     )
+
     competition_name = serializers.CharField(
-        source="competition.competition_name",
-        read_only=False,
+        source="session.competition.competition_name",
+        read_only=True,
     )
 
     competition_date_start = serializers.CharField(
-        source="competition.date_start",
-        read_only=False,
+        source="session.competition.date_start",
+        read_only=True,
     )
 
     class Meta:
@@ -45,6 +58,7 @@ class LiftSerializer(serializers.ModelSerializer):
             "athlete",
             "athlete_name",
             "competition",
+            "session",
             "competition_name",
             "competition_date_start",
             "snatches",

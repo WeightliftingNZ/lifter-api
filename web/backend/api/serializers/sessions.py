@@ -1,6 +1,5 @@
 from hashid_field.rest import HashidSerializerCharField
 from rest_framework import permissions, serializers
-from rest_framework_nested.relations import NestedHyperlinkedRelatedField
 
 from api.models import Competition, Lift, Session
 
@@ -16,11 +15,17 @@ class SessionSerializer(serializers.ModelSerializer):
     def get_lift_count(self, session):
         return Lift.objects.filter(session=session).count()
 
-    competition = serializers.PrimaryKeyRelatedField(
+    reference_id = serializers.PrimaryKeyRelatedField(
         pk_field=HashidSerializerCharField(
-            source_field="api.Competition.reference_id"
+            source_field="api.Session.reference_id",
         ),
         read_only=True,
+    )
+
+    competition = serializers.PrimaryKeyRelatedField(
+        pk_field=HashidSerializerCharField(source_field="api.Competition.reference_id"),
+        read_only=False,
+        queryset=Competition.objects.all(),
     )
 
     competition_name = serializers.CharField(
@@ -34,8 +39,10 @@ class SessionSerializer(serializers.ModelSerializer):
         fields = (
             "reference_id",
             "session_number",
+            "session_datetime",
             "competition",
             "competition_name",
+            "announcer",
             "referee_first",
             "referee_second",
             "referee_third",

@@ -22,8 +22,8 @@ class LiftAdmin(admin.ModelAdmin):
             None,
             {
                 "fields": (
+                    "reference_id",
                     "athlete",
-                    "competition",
                     "session",
                 )
             },
@@ -66,7 +66,12 @@ class SessionAdmin(admin.ModelAdmin):
     fieldsets = (
         (
             None,
-            {"fields": ("competition",)},
+            {
+                "fields": (
+                    "reference_id",
+                    "competition",
+                )
+            },
         ),
         (
             "Session Details",

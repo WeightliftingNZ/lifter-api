@@ -24,9 +24,7 @@ sessions_router = NestedDefaultRouter(
 sessions_router.register(r"lifts", LiftViewSet, basename="session-lifts")
 # /competitions/<competition pk>/sessions/<session number>/lifts/<lift pk>
 
-competitions_router.register(
-    r"lift", LiftViewSet, basename="competitions-session"
-)
+
 urlpatterns = [
     path("auth/", include("dj_rest_auth.urls")),
     path("auth/registration/", include("dj_rest_auth.registration.urls")),

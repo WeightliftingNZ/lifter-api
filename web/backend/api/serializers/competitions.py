@@ -18,6 +18,7 @@ class CompetitionSerializer(serializers.ModelSerializer):
         ),
         read_only=True,
     )
+
     session_count = serializers.SerializerMethodField(read_only=True)
 
     def get_session_count(self, competition):
