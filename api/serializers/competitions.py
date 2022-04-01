@@ -2,6 +2,7 @@ from collections import Counter
 
 from hashid_field.rest import HashidSerializerCharField
 from rest_framework import serializers
+from rest_framework_nested.serializers import NestedHyperlinkedModelSerializer
 
 from api.models import Competition, Session
 

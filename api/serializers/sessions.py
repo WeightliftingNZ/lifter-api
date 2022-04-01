@@ -1,5 +1,7 @@
+from cgitb import lookup
 from hashid_field.rest import HashidSerializerCharField
 from rest_framework import permissions, serializers
+from rest_framework_nested.relations import NestedHyperlinkedIdentityField
 
 from api.models import Competition, Lift, Session
 
@@ -34,9 +36,17 @@ class SessionSerializer(serializers.ModelSerializer):
 
     lift_set = LiftSerializer(many=True, read_only=True)
 
+    # TODO: not giving url for sessions
+
+    url = NestedHyperlinkedIdentityField(
+        parent_lookup_kwargs={"competitions_pk": "competition__pk"},
+        view_name="competition-sessions-detail",
+    )
+
     class Meta:
         model = Session
         fields = (
+            "url",
             "reference_id",
             "session_number",
             "session_datetime",

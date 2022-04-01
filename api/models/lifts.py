@@ -189,7 +189,7 @@ class Lift(models.Model):
             return "-"
 
         query = Lift.objects.filter(
-            competition=self.competition, weight_category=self.weight_category
+            session=self.session, weight_category=self.weight_category
         )
         lifts = [
             {
