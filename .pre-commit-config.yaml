@@ -87,3 +87,12 @@ repos:
     rev: v2.9.1
     hooks:
       - id: hadolint
+
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: v8.11.0
+    hooks:
+      - id: eslint
+        files: \.[jt]sx?$
+        types: [file]
+        additional_dependencies:
+          ["eslint@latest", "eslint-config-standard@latest"]

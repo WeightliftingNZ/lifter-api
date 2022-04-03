@@ -12,17 +12,17 @@ from rest_framework_simplejwt.views import (
 )
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
+    path("administration/", admin.site.urls),
     path("v1/", include("api.urls")),
-    path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
+    path("", SpectacularAPIView.as_view(), name="schema"),
     # Optional UI:
     path(
-        "api/schema/swagger-ui/",
+        "swagger-ui/",
         SpectacularSwaggerView.as_view(url_name="schema"),
         name="swagger-ui",
     ),
     path(
-        "api/schema/redoc/",
+        "redoc/",
         SpectacularRedocView.as_view(url_name="schema"),
         name="redoc",
     ),

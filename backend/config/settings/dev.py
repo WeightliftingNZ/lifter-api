@@ -1,3 +1,4 @@
+"""config/dev.py - development settings"""
 from .base import *  # noqa F403
 
 # Settings
@@ -11,6 +12,7 @@ SECURE_HSTS_PRELOAD = False
 SRF_COOKIE_SECURE = False
 
 CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = []
 
 # Logging
 LOGGING = {

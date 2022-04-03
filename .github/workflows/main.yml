@@ -2,9 +2,7 @@ name: Build
 
 on:
   push:
-    branches: [ main ]
-    pull_request:
-      branches: [ main ]
+    branches: [main]
 
 jobs:
   build:
@@ -14,9 +12,9 @@ jobs:
       db:
         image: postgres:latest
         env:
-          POSTGRES_NAME: example_db
-          POSTGRES_USER: example_db
-          POSTGRES_PASSWORD: pword
+          POSTGRES_NAME: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
           POSTGRES_HOST: 127.0.0.1
           POSTGRES_PORT: 5432
         ports:
@@ -33,7 +31,7 @@ jobs:
       - name: Install Python, Pipenv and Pipfile packages
         uses: palewire/install-python-pipenv-pipfile@v2
         with:
-          python-version: 3.8
+          python-version: 3.10
 
       - name: Lint code
         uses: py-actions/flake8@v1
@@ -41,6 +39,7 @@ jobs:
           ignore: "E712,W503,F401,F403,F405"
           exclude: "^tests*,*/migrations/*"
           max-line-length: "120"
+        continue-on-error: true
 
       - name: Setting environment and running tests
         env:

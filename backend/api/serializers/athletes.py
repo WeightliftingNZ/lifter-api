@@ -13,7 +13,7 @@ from .lifts import LiftSerializer
 
 
 # TODO: schema
-@extend_schema_serializer(exclude_fields=("id",))
+@extend_schema_serializer(exclude_fields=("reference_id", "full_name"))
 class AthleteSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(
         view_name="athletes-detail", read_only=True
@@ -42,6 +42,7 @@ class AthleteSerializer(serializers.ModelSerializer):
         )
 
 
+@extend_schema_serializer(exclude_fields=("reference_id", "full_name"))
 class AthleteDetailSerializer(AthleteSerializer):
     lift_set = LiftSerializer(many=True, read_only=True)
 
