@@ -13,7 +13,7 @@ repos:
       - id: debug-statements
 
   - repo: https://github.com/ambv/black
-    rev: 22.1.0
+    rev: 22.3.0
     hooks:
       - id: black
 
@@ -47,7 +47,7 @@ repos:
         additional_dependencies: [pylint_django]
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v0.941
+    rev: v0.942
     hooks:
       - id: mypy
         exclude: "[a-zA-Z]*/(migrations)/(.)*"
@@ -83,13 +83,18 @@ repos:
             "--py310-plus",
           ]
 
+  - repo: https://github.com/pycqa/pydocstyle
+    rev: 6.1.1
+    hooks:
+      - id: pydocstyle
+
   - repo: https://github.com/AleksaC/hadolint-py
-    rev: v2.9.1
+    rev: v2.10.0
     hooks:
       - id: hadolint
 
   - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v8.11.0
+    rev: v8.12.0
     hooks:
       - id: eslint
         files: \.[jt]sx?$

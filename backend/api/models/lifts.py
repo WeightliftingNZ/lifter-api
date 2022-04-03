@@ -1,17 +1,19 @@
+from config.settings.base import HASHID_FIELD_SALT
 from django.core.validators import ValidationError
 from django.db import models
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from hashid_field import HashidAutoField
 
-from .competitions import Competition
 from .sessions import Session
 from .utils import DEFAULT_LIFT_STATUS, LIFT_STATUS, WEIGHT_CATEGORIES, ranking_suffix
 
 
 class Lift(models.Model):
     # key fields
-    reference_id = HashidAutoField(primary_key=True)
+    reference_id = HashidAutoField(
+        primary_key=True, salt=f"liftmodel_reference_id_{HASHID_FIELD_SALT}"
+    )
     athlete = models.ForeignKey("api.Athlete", on_delete=models.CASCADE)
     session = models.ForeignKey("api.Session", on_delete=models.CASCADE)
 

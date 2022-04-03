@@ -1,15 +1,13 @@
-from drf_spectacular.utils import OpenApiExample, OpenApiParameter, extend_schema_view
 from rest_framework import filters, permissions, viewsets
 
 from api.models import Athlete
 from api.serializers import AthleteDetailSerializer, AthleteSerializer
 
 
-@extend_schema_view(exclude_fields=("reference_id", "full_name"))
 class AthleteViewSet(viewsets.ModelViewSet):
     """
-    ViewSet for athlete
-    ===================
+    Athletes
+    ========
     - This contains all the athlete's details
     - Can be used to access all lifts from previous competitions
     """

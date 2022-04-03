@@ -6,14 +6,12 @@ from api.serializers import LiftSerializer
 
 class LiftViewSet(viewsets.ModelViewSet):
     """
-    # ViewSet from lifters
+    # Lift
+    Each Session is composed of Lifts performed by Athletes.
     """
-
-    # lookup_field = "lottery_number"
 
     def get_queryset(self):
         return Lift.objects.filter(
-            # competition=self.kwargs["competitions_pk"],
             session=self.kwargs["sessions_pk"],
         )
 

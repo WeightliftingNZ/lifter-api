@@ -1,3 +1,4 @@
+from config.settings.base import HASHID_FIELD_SALT
 from django.db import models
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
@@ -6,7 +7,9 @@ from hashid_field import HashidAutoField
 
 class Session(models.Model):
     # assigned a number
-    reference_id = HashidAutoField(primary_key=True)
+    reference_id = HashidAutoField(
+        primary_key=True, salt=f"sessionmodel_reference_id_{HASHID_FIELD_SALT}"
+    )
     session_datetime = models.DateTimeField(blank=True)
     competition = models.ForeignKey("api.Competition", on_delete=models.CASCADE)
 

@@ -1,4 +1,4 @@
-"""config/prod.py - production settings"""
+"""config/settings/prod.py - production settings"""
 from .base import *  # noqa F403
 
 # setting

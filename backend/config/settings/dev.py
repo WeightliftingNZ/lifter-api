@@ -1,4 +1,4 @@
-"""config/dev.py - development settings"""
+"""config/settings/dev.py - development settings"""
 from .base import *  # noqa F403
 
 # Settings
