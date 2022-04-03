@@ -4,7 +4,7 @@ multi_line_output = 3
 line_length = 88
 default_section = "THIRDPARTY"
 known_first_party = ["api", "users"]
-known_third_party = ["django", "drf_spectacular", "hashid_field", "pytest", "rest_framework", "rest_framework_nested", "rest_framework_simplejwt"]
+known_third_party = ["config", "django", "drf_spectacular", "hashid_field", "pytest", "rest_framework", "rest_framework_nested", "rest_framework_simplejwt"]
 
 [tool.pylint.MESSAGE_CONTROL]
 disable = """
