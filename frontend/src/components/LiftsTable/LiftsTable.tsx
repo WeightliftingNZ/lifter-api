@@ -179,6 +179,9 @@ const LiftsTable = ({ competitionId, sessionId }: any) => {
       </>
     );
   }
+  if (lifts.length === 0) {
+    return <div>No lifts!</div>;
+  }
   return (
     <div className="flex self-center">
       <table {...getTableProps}>

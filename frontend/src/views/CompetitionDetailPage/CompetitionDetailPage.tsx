@@ -77,7 +77,9 @@ const CompetitionDetailPage: FunctionComponent = () => {
       <>
         <div className="mt-6 card">
           <div className="flex justify-around gap-5">
-            <div>First Referee: {sessions[selectedSession].referee_first}</div>
+            <div>
+              <b>First Referee:</b> {sessions[selectedSession].referee_first}
+            </div>
             <div>
               Second Referee: {sessions[selectedSession].referee_second}
             </div>

@@ -10,6 +10,9 @@
   h3 {
     @apply text-lg;
   }
+  b {
+    @apply font-semibold;
+  }
   a {
     @apply text-slate-900;
   }
