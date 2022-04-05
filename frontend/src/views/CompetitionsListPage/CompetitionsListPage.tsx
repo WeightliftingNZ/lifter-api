@@ -48,9 +48,9 @@ const CompetitionsListPage = () => {
   }
   return (
     <>
-      {competitions.results.map((competition: CompetitionObject) => (
+      {competitions.results.map((competition: CompetitionObject, idx) => (
         <Link
-          key={competition.reference_id}
+          key={idx}
           className="card"
           to={`/competitions/${competition.reference_id}`}
         >

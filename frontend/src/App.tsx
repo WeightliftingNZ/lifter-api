@@ -22,6 +22,10 @@ function App() {
             path="/competitions/:competitionReferenceId"
             element={<CompetitionDetailPage />}
           />
+          <Route
+            path="/competitions/:competitionReferenceId/sessions/:sessionReferenceId"
+            element={<CompetitionDetailPage />}
+          />
           <Route path="/athletes" element={<AthletesListPage />}></Route>
           <Route
             path="/athletes/:athleteReferenceId"

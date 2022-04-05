@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 
 from api.models import Session
-from api.serializers import SessionSerializer
+from api.serializers import SessionDetailSerializer, SessionSerializer
 
 
 class SessionViewSet(viewsets.ModelViewSet):
@@ -24,4 +24,6 @@ class SessionViewSet(viewsets.ModelViewSet):
         )
 
     def get_serializer_class(self):
+        if self.action == "retrieve":
+            return SessionDetailSerializer
         return SessionSerializer

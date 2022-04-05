@@ -6,22 +6,6 @@ default_section = "THIRDPARTY"
 known_first_party = ["api", "users"]
 known_third_party = ["config", "dj_rest_auth", "django", "drf_spectacular", "hashid_field", "pytest", "rest_framework", "rest_framework_nested", "rest_framework_simplejwt"]
 
-[tool.pylint.MESSAGE_CONTROL]
-disable = """
-    line-too-long,
-    abstract-method,
-    no-member,
-    """
-enable = "useless-suppression"
-
-[tool.pylint.REPORTS]
-reports = 'no'
-
-[tool.pylint.FORMAT]
-max-line-length = "88"
-
-[tool.pylint.BASIC]
-good-names = "_,i,e,setUp,tearDown,maxDiff"
 
 [tool.black]
 line-length = 88

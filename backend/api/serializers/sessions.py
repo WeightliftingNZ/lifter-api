@@ -1,5 +1,4 @@
-from cgitb import lookup
-
+"""api/serializers/session.py - Serializer for Sessions."""
 from hashid_field.rest import HashidSerializerCharField
 from rest_framework import permissions, serializers
 from rest_framework_nested.relations import NestedHyperlinkedIdentityField
@@ -10,12 +9,13 @@ from .lifts import LiftSerializer
 
 
 class SessionSerializer(serializers.ModelSerializer):
+    """Session Serializer."""
 
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
     lift_count = serializers.SerializerMethodField(read_only=True)
 
     def get_lift_count(self, session):
+        """Provid lift count for a session."""
         return Lift.objects.filter(session=session).count()
 
     reference_id = serializers.PrimaryKeyRelatedField(
@@ -34,10 +34,6 @@ class SessionSerializer(serializers.ModelSerializer):
     competition_name = serializers.CharField(
         source="competition.competition_name", read_only=True
     )
-
-    lift_set = LiftSerializer(many=True, read_only=True)
-
-    # TODO: not giving url for sessions
 
     url = NestedHyperlinkedIdentityField(
         parent_lookup_kwargs={"competitions_pk": "competition__pk"},
@@ -62,5 +58,11 @@ class SessionSerializer(serializers.ModelSerializer):
             "timekeeper",
             "jury",
             "lift_count",
-            "lift_set",
         )
+
+
+class SessionDetailSerializer(SessionSerializer):
+    lift_set = LiftSerializer(many=True, read_only=True)
+
+    class Meta(SessionSerializer.Meta):
+        fields = SessionSerializer.Meta.fields + ("lift_set",)

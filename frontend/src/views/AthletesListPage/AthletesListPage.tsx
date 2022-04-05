@@ -3,6 +3,8 @@ import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 import { useDebounce } from "usehooks-ts";
 import apiClient from "../../utils/http-common";
+import Error from "../../components/Error";
+import Loading from "../../components/Loading";
 
 // search using API filter
 const SearchOutput = (debouncedSearchQuery: any) => {
@@ -47,14 +49,14 @@ const SearchOutput = (debouncedSearchQuery: any) => {
   if (isLoading) {
     return (
       <>
-        <p>Loading...</p>
+        <Loading />
       </>
     );
   }
   if (isError) {
     return (
       <>
-        <p>Error!!</p>
+        <Error />
       </>
     );
   }

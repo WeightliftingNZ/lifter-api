@@ -1,186 +1,10 @@
-import React, { useState, useMemo, FunctionComponent } from "react";
+import React, { useState, FunctionComponent } from "react";
 import { useQuery } from "react-query";
-import { useTable } from "react-table";
-import { Link, useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import apiClient from "../../utils/http-common";
 import Loading from "../../components/Loading";
 import Error from "../../components/Error";
-
-const Table = ({ lifts }: any) => {
-  const isEven = (idx: number) => idx % 2 !== 0;
-
-  const displayWeightCell = ({ cell }: { cell: any }) => {
-    let bolded = false;
-    const arrayLiftType = cell.column.id.split(".");
-    let bestLift = "";
-    if (arrayLiftType[0] === "snatches") {
-      bestLift = cell.row.original.best_snatch_weight[0];
-    } else if (arrayLiftType[0] === "cnjs") {
-      bestLift = cell.row.original.best_cnj_weight[0];
-    }
-    if (arrayLiftType[1] === bestLift) {
-      bolded = true;
-    }
-    return (
-      <div className={bolded ? "font-bold" : ""}>
-        <div
-          className={cell.value.lift_status === "NOLIFT" ? "line-through" : ""}
-        >
-          {cell.value.lift_status === "DNA" ? "-" : cell.value.weight}
-        </div>
-      </div>
-    );
-  };
-
-  const liftData = useMemo(() => [...lifts], [lifts]);
-
-  const liftColumns = useMemo(
-    () => [
-      {
-        Header: "No.",
-        accessor: "lottery_number",
-      },
-      {
-        Header: "Name",
-        accessor: "athlete_name",
-        Cell: ({ cell }: { cell: any }) => {
-          return (
-            <Link to={`/athletes/${cell.row.original.athlete}`}>
-              <div className="text-left text-blue-600 font-semibold underline">
-                {cell.value}
-              </div>
-            </Link>
-          );
-        },
-      },
-      {
-        Header: "Born",
-        accessor: "athlete_yearborn",
-      },
-      {
-        Header: "Cat.",
-        accessor: "weight_category",
-      },
-      {
-        Header: "Team",
-        accessor: "team",
-        Cell: ({ cell }: { cell: any }) => {
-          return <div className="pr-2">{cell.value}</div>;
-        },
-      },
-      {
-        Header: "Snatch",
-        columns: [
-          {
-            Header: "1",
-            accessor: "snatches.1st",
-            Cell: displayWeightCell,
-          },
-          {
-            Header: "2",
-            accessor: "snatches.2nd",
-            Cell: displayWeightCell,
-          },
-          {
-            Header: "3",
-            accessor: "snatches.3rd",
-            Cell: displayWeightCell,
-          },
-        ],
-      },
-      {
-        Header: "Clean & Jerk",
-        columns: [
-          {
-            Header: "1",
-            accessor: "cnjs.1st",
-            Cell: displayWeightCell,
-          },
-          {
-            Header: "2",
-            accessor: "cnjs.2nd",
-            Cell: displayWeightCell,
-          },
-          {
-            Header: "3",
-            accessor: "cnjs.3rd",
-            Cell: displayWeightCell,
-          },
-        ],
-        Cell: ({ cell }: { cell: any }) => {
-          return <h1>{cell.value.weight}</h1>;
-        },
-      },
-      {
-        Header: "Results",
-        columns: [
-          {
-            Header: "Sn",
-            accessor: "best_snatch_weight.1",
-          },
-          {
-            Header: "CJ",
-            accessor: "best_cnj_weight.1",
-          },
-          {
-            Header: "T",
-            accessor: "total_lifted",
-          },
-        ],
-      },
-      {
-        Header: "Placing",
-        accessor: "placing",
-      },
-    ],
-    []
-  );
-
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
-    useTable({ columns: liftColumns, data: liftData } as any);
-
-  return (
-    <div className="flex self-center">
-      <table {...getTableProps}>
-        <thead>
-          {headerGroups.map((headerGroup, idx) => (
-            <tr {...headerGroup.getHeaderGroupProps()} key={idx}>
-              {headerGroup.headers.map((column, idx) => (
-                <th {...column.getHeaderProps()} key={idx}>
-                  {column.render("Header")}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
-          {rows.map((row, idx) => {
-            prepareRow(row);
-            return (
-              <tr
-                {...row.getRowProps()}
-                className={
-                  isEven(idx)
-                    ? "bg-slate-300 hover:bg-slate-400"
-                    : "bg-slate-100 hover:bg-slate-200"
-                }
-                key={idx}
-              >
-                {row.cells.map((cell, idx) => {
-                  return (
-                    <td {...cell.getCellProps()} key={idx}>
-                      {cell.render("Cell")}
-                    </td>
-                  );
-                })}
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </div>
-  );
-};
+import LiftsTable from "../../components/LiftsTable";
 
 const CompetitionDetailPage: FunctionComponent = () => {
   const [selectedSession, setSelectedSession] = useState(0);
@@ -207,12 +31,12 @@ const CompetitionDetailPage: FunctionComponent = () => {
         timekeeper: "",
         jury: "",
         lift_count: "",
-        lift_set: [],
       },
     ],
   });
   const params = useParams();
   const competitionId = params.competitionReferenceId;
+  const sessionId = params.sessionReferenceId;
 
   const { isLoading, isError } = useQuery(
     ["competition", competitionId],
@@ -235,17 +59,51 @@ const CompetitionDetailPage: FunctionComponent = () => {
     }
   );
 
+  // sessions from a competition
   const sessions = competition.session_set;
 
-  if (competition.session_set.length === 0) {
+  const Session = ({ sessions, sessionId, competitionId }: any) => {
+    if (competition.session_set.length === 0) {
+      return (
+        <>
+          <div>{competition.competition_name} Competition has no sessions!</div>
+        </>
+      );
+    }
+    if (!sessionId) {
+      return <div>Please select a session</div>;
+    }
     return (
       <>
-        <div>This Competition has no Sessions!!</div>
+        <div className="mt-6 card">
+          <div className="flex justify-around gap-5">
+            <div>First Referee: {sessions[selectedSession].referee_first}</div>
+            <div>
+              Second Referee: {sessions[selectedSession].referee_second}
+            </div>
+            <div>Third Referee: {sessions[selectedSession].referee_third}</div>
+          </div>
+          <div className="flex justify-start gap-5">
+            <div>
+              Technical Controller:{" "}
+              {sessions[selectedSession].technical_controller}
+            </div>
+            <div>Marshall: {sessions[selectedSession].marshall}</div>
+          </div>
+          <div className="flex justify-start gap-5">
+            <div>Timekeeper: {sessions[selectedSession].timekeeper}</div>
+            <div>Jury: {sessions[selectedSession].jury}</div>
+          </div>
+        </div>
+        <div>
+          <LiftsTable competitionId={competitionId} sessionId={sessionId} />
+        </div>
       </>
     );
-  }
+  };
 
-  const lifts = competition.session_set[selectedSession].lift_set;
+  // const lifts = competition.session_set[selectedSession].lift_set;
+  // add another session
 
   if (isLoading) {
     return (
@@ -267,46 +125,35 @@ const CompetitionDetailPage: FunctionComponent = () => {
         <h1>{competition.competition_name}</h1>
         {competition.location}
       </div>
-      <div className="mt-6 card">
-        <div className="flex justify-around gap-5">
-          <div>First Referee: {sessions[selectedSession].referee_first}</div>
-          <div>Second Referee: {sessions[selectedSession].referee_second}</div>
-          <div>Third Referee: {sessions[selectedSession].referee_third}</div>
-        </div>
-        <div className="flex justify-start gap-5">
-          <div>
-            Technical Controller:{" "}
-            {sessions[selectedSession].technical_controller}
-          </div>
-          <div>Marshall: {sessions[selectedSession].marshall}</div>
-        </div>
-        <div className="flex justify-start gap-5">
-          <div>Timekeeper: {sessions[selectedSession].timekeeper}</div>
-          <div>Jury: {sessions[selectedSession].jury}</div>
-        </div>
-      </div>
       <div className="flex gap-2">
         {sessions.map((session, idx) => {
           return (
-            <button
+            <Link
               key={idx}
-              onClick={() => {
-                setSelectedSession(Number(session.session_number) - 1);
-              }}
-              className={
-                Number(session.session_number) === selectedSession + 1
-                  ? "btn bg-slate-600 border-blue-300"
-                  : "btn"
-              }
+              to={`/competitions/${competitionId}/sessions/${session.reference_id}`}
             >
-              {session.session_number}
-            </button>
+              <button
+                onClick={() => {
+                  setSelectedSession(Number(session.session_number) - 1);
+                }}
+                className={
+                  Number(session.session_number) === selectedSession + 1
+                    ? "btn bg-slate-600 border-blue-300"
+                    : "btn"
+                }
+              >
+                {session.session_number}
+              </button>
+            </Link>
           );
         })}
       </div>
-      <div>
-        {console.dir(lifts)}
-        <Table lifts={lifts} />
+      <div className="flex flex-col">
+        <Session
+          sessions={sessions}
+          sessionId={sessionId}
+          competitionId={competitionId}
+        />
       </div>
     </>
   );

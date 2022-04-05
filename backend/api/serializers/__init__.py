@@ -1,4 +1,4 @@
 from .athletes import AthleteDetailSerializer, AthleteSerializer
 from .competitions import CompetitionDetailSerializer, CompetitionSerializer
 from .lifts import LiftSerializer
-from .sessions import SessionSerializer
+from .sessions import SessionDetailSerializer, SessionSerializer
