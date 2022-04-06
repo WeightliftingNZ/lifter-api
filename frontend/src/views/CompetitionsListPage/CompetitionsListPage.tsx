@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
-import apiClient from "../../utils/http-common";
 import { CompetitionObject } from "../../interfaces";
+import apiClient from "../../utils/http-common";
+import Loading from "../../components/Loading";
+import Error from "../../components/Error";
 
 const CompetitionsListPage = () => {
   const [competitions, setCompetitions] = useState({
@@ -35,14 +37,14 @@ const CompetitionsListPage = () => {
   if (isLoading) {
     return (
       <>
-        <p>Loading...</p>
+        <Loading />
       </>
     );
   }
   if (isError) {
     return (
       <>
-        <p>Error!!</p>
+        <Error />
       </>
     );
   }
@@ -58,7 +60,6 @@ const CompetitionsListPage = () => {
           <p>{competition.location}</p>
           <p>{competition.date_start}</p>
           <p>Sessions: {competition.session_count}</p>
-          <p>Athletes: {competition.lift_count}</p>
         </Link>
       ))}
     </>

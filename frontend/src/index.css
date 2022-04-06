@@ -51,6 +51,9 @@
   input {
     @apply block w-full px-3 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-slate-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none;
   }
+  .error-msg {
+    @apply text-red-400;
+  }
 }
 
 @tailwind components;

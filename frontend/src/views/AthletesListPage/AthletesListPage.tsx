@@ -68,7 +68,7 @@ const SearchOutput = (debouncedSearchQuery: any) => {
 
   if (searchResult.results.length === 0) {
     return (
-      <p className="text-red-400">
+      <p className="error-msg">
         No Athlete named &quot;{debouncedSearchQuery.updateSearchQuery}&quot;
         found.
       </p>

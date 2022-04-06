@@ -4,10 +4,10 @@ import { useParams, Link } from "react-router-dom";
 import apiClient from "../../utils/http-common";
 import Loading from "../../components/Loading";
 import Error from "../../components/Error";
-import LiftsTable from "../../components/LiftsTable";
+import Session from "../../components/Session";
 
 const CompetitionDetailPage: FunctionComponent = () => {
-  const [selectedSession, setSelectedSession] = useState(0);
+  const [selectedSession, setSelectedSession] = useState("");
   const [competition, setCompetition] = useState({
     url: "",
     reference_id: "",
@@ -20,23 +20,11 @@ const CompetitionDetailPage: FunctionComponent = () => {
       {
         reference_id: "",
         session_number: "",
-        session_datetime: "",
-        competition: "",
-        competition_name: "",
-        referee_first: "",
-        referee_second: "",
-        referee_third: "",
-        technical_controller: "",
-        marshall: "",
-        timekeeper: "",
-        jury: "",
-        lift_count: "",
       },
     ],
   });
   const params = useParams();
-  const competitionId = params.competitionReferenceId;
-  const sessionId = params.sessionReferenceId;
+  const competitionId = params.competitionReferenceId || "";
 
   const { isLoading, isError } = useQuery(
     ["competition", competitionId],
@@ -58,54 +46,19 @@ const CompetitionDetailPage: FunctionComponent = () => {
       },
     }
   );
-
-  // sessions from a competition
-  const sessions = competition.session_set;
-
-  const Session = ({ sessions, sessionId, competitionId }: any) => {
-    if (competition.session_set.length === 0) {
-      return (
-        <>
-          <div>{competition.competition_name} Competition has no sessions!</div>
-        </>
-      );
-    }
-    if (!sessionId) {
-      return <div>Please select a session</div>;
-    }
+  if (competition.session_set.length === 0) {
     return (
       <>
-        <div className="mt-6 card">
-          <div className="flex justify-around gap-5">
-            <div>
-              <b>First Referee:</b> {sessions[selectedSession].referee_first}
-            </div>
-            <div>
-              Second Referee: {sessions[selectedSession].referee_second}
-            </div>
-            <div>Third Referee: {sessions[selectedSession].referee_third}</div>
-          </div>
-          <div className="flex justify-start gap-5">
-            <div>
-              Technical Controller:{" "}
-              {sessions[selectedSession].technical_controller}
-            </div>
-            <div>Marshall: {sessions[selectedSession].marshall}</div>
-          </div>
-          <div className="flex justify-start gap-5">
-            <div>Timekeeper: {sessions[selectedSession].timekeeper}</div>
-            <div>Jury: {sessions[selectedSession].jury}</div>
-          </div>
-        </div>
-        <div>
-          <LiftsTable competitionId={competitionId} sessionId={sessionId} />
-        </div>
+        <p className="error-msg">This competition has no sessions!</p>
       </>
     );
-  };
-
-  // const lifts = competition.session_set[selectedSession].lift_set;
-  // add another session
+  }
+  // sessions from a competition
+  const sessions = competition.session_set.reduce(
+    (obj, item) => Object.assign(obj, { [item.reference_id]: item }),
+    {}
+  );
+  console.dir(sessions);
 
   if (isLoading) {
     return (
@@ -121,41 +74,39 @@ const CompetitionDetailPage: FunctionComponent = () => {
       </>
     );
   }
+
   return (
     <>
       <div className="card">
         <h1>{competition.competition_name}</h1>
-        {competition.location}
+        <p>{competition.location}</p>
+        <p>{competition.date_start}</p>
       </div>
       <div className="flex gap-2">
-        {sessions.map((session, idx) => {
+        {Object.keys(sessions).map((newSessionId, idx) => {
           return (
             <Link
               key={idx}
-              to={`/competitions/${competitionId}/sessions/${session.reference_id}`}
+              to={`/competitions/${competitionId}/sessions/${newSessionId}`}
             >
               <button
                 onClick={() => {
-                  setSelectedSession(Number(session.session_number) - 1);
+                  setSelectedSession(newSessionId);
                 }}
                 className={
-                  Number(session.session_number) === selectedSession + 1
+                  newSessionId === selectedSession
                     ? "btn bg-slate-600 border-blue-300"
                     : "btn"
                 }
               >
-                {session.session_number}
+                {idx}
               </button>
             </Link>
           );
         })}
       </div>
-      <div className="flex flex-col">
-        <Session
-          sessions={sessions}
-          sessionId={sessionId}
-          competitionId={competitionId}
-        />
+      <div className="flex flex-col gap-2">
+        <Session sessionId={selectedSession} competitionId={competitionId} />
       </div>
     </>
   );
