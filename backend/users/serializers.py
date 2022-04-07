@@ -1,7 +1,5 @@
 from dj_rest_auth.serializers import UserDetailsSerializer
-from drf_spectacular.utils import (
-    OpenApiExample,
-    OpenApiParameter,
+from drf_spectacular.utils import (  # OpenApiExample,; OpenApiParameter,
     extend_schema_serializer,
 )
 from hashid_field.rest import HashidSerializerCharField
@@ -16,7 +14,6 @@ class UserDetailsSerializer(UserDetailsSerializer):
         ),
         read_only=True,
     )
-    print("test")
 
     class Meta(UserDetailsSerializer.Meta):
         fields = UserDetailsSerializer.Meta.fields + ("pk",)

@@ -1,3 +1,16 @@
+export interface AthleteObject {
+  reference_id: string;
+  url: string;
+  first_name: string;
+  last_name: string;
+  yearborn: number;
+  full_name: string;
+  is_youth: boolean;
+  is_junior: boolean;
+  is_senior: boolean;
+  is_master: boolean;
+  lift_set?: any;
+}
 export interface CompetitionObject {
   reference_id?: string;
   url?: string;

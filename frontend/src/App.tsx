@@ -6,6 +6,7 @@ import CompetitionsListPage from "./views/CompetitionsListPage";
 import CompetitionDetailPage from "./views/CompetitionDetailPage/CompetitionDetailPage"; // TODO: fix this barrel
 import AthletesListPage from "./views/AthletesListPage";
 import AthleteDetailPage from "./views/AthleteDetailPage";
+import Lost from "./components/Lost";
 
 function App() {
   return (
@@ -35,7 +36,7 @@ function App() {
             path="*"
             element={
               <>
-                <div className="card">Whoops!</div>
+                <Lost />
               </>
             }
           />

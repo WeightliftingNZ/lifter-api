@@ -16,7 +16,7 @@ const LiftsTable = ({ lifts }: any) => {
   if (lifts.length === 0) {
     return (
       <>
-        <div>This session has lifts.</div>;
+        <div>This session has no lifts.</div>
       </>
     );
   }
@@ -38,7 +38,6 @@ const LiftsTable = ({ lifts }: any) => {
         <tbody {...getTableBodyProps()}>
           {rows.map((row, idx) => {
             prepareRow(row);
-            console.log(row);
             return (
               <tr
                 {...row.getRowProps()}

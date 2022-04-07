@@ -1,10 +1,8 @@
 import React from "react";
-import apiClient from "../../utils/http-common/http-common";
+import apiClient from "../../utils/http-common";
 import CompetitionsListPage from "../CompetitionsListPage";
 
 const HomePage = () => {
-  console.dir(apiClient.defaults.baseURL);
-
   return (
     <>
       <h2>Welcome to Lifter</h2>

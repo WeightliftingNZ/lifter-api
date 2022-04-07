@@ -58,7 +58,6 @@ const CompetitionDetailPage: FunctionComponent = () => {
     (obj, item) => Object.assign(obj, { [item.reference_id]: item }),
     {}
   );
-  console.dir(sessions);
 
   if (isLoading) {
     return (
@@ -106,7 +105,11 @@ const CompetitionDetailPage: FunctionComponent = () => {
         })}
       </div>
       <div className="flex flex-col gap-2">
-        <Session sessionId={selectedSession} competitionId={competitionId} />
+        {selectedSession === "" ? (
+          <div>Please select a session.</div>
+        ) : (
+          <Session sessionId={selectedSession} competitionId={competitionId} />
+        )}
       </div>
     </>
   );

@@ -1,50 +1,64 @@
-import React, { useState } from "react";
-import { useQuery } from "react-query";
+import React, { useState, useEffect } from "react";
+import { useInfiniteQuery } from "react-query";
 import { Link } from "react-router-dom";
 import { useDebounce } from "usehooks-ts";
+import { useInView } from "react-intersection-observer";
 import apiClient from "../../utils/http-common";
 import Error from "../../components/Error";
 import Loading from "../../components/Loading";
+import { AthleteObject } from "../../interfaces";
 
 // search using API filter
 const SearchOutput = (debouncedSearchQuery: any) => {
-  const [searchResult, setSearchResult] = useState({
-    count: 0,
-    next: "",
-    previous: "",
-    results: [
-      {
-        reference_id: "",
-        full_name: "",
-        first_name: "",
-        last_name: "",
-        yearborn: "",
-      },
-    ],
-  });
+  // const [searchResult, setSearchResult] = useState({
+  //   count: 0,
+  //   next: "",
+  //   previous: "",
+  //   results: [
+  //     {
+  //       reference_id: "",
+  //       full_name: "",
+  //       first_name: "",
+  //       last_name: "",
+  //       yearborn: "",
+  //     },
+  //   ],
+  // });
+  const { ref, inView } = useInView();
 
-  const { isLoading, isError } = useQuery(
+  const {
+    data,
+    error,
+    isLoading,
+    isError,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+    isFetchingNextPage,
+  } = useInfiniteQuery(
     ["athletesSearch", debouncedSearchQuery],
-    async () => {
-      return await apiClient.get(
-        `/athletes?search=${debouncedSearchQuery.updateSearchQuery}`
+    async ({ pageParam = 1 }) => {
+      const pageSearch = pageParam === 1 ? "" : `page=${pageParam}&`;
+      const res = await apiClient.get(
+        `/athletes?${pageSearch}search=${debouncedSearchQuery.updateSearchQuery}`
       );
+      return res.data;
     },
     {
-      enabled: Boolean(debouncedSearchQuery.updateSearchQuery),
-      onSuccess: (res) => {
-        const result = {
-          status: res.status + "-" + res.statusText,
-          headers: res.headers,
-          data: res.data,
-        };
-        setSearchResult(result.data);
-      },
-      onError: (err) => {
-        console.log(err);
+      getNextPageParam: (lastPage, pages) => {
+        if (lastPage.next == null) {
+          return undefined;
+        }
+        return pages.length + 1;
       },
     }
   );
+
+  useEffect(() => {
+    if (inView) {
+      fetchNextPage();
+    }
+  }, [inView]);
 
   if (isLoading) {
     return (
@@ -54,40 +68,41 @@ const SearchOutput = (debouncedSearchQuery: any) => {
     );
   }
   if (isError) {
+    console.log(error);
     return (
       <>
         <Error />
       </>
     );
   }
-  const athletes = searchResult.results;
 
   if (debouncedSearchQuery.updateSearchQuery === "") {
     return <></>;
   }
 
-  if (searchResult.results.length === 0) {
-    return (
-      <p className="error-msg">
-        No Athlete named &quot;{debouncedSearchQuery.updateSearchQuery}&quot;
-        found.
-      </p>
-    );
-  }
-
   return (
     <div className="flex flex-col gap-2">
-      {athletes.map((athlete, idx) => {
-        return (
-          <Link
-            key={idx}
-            className="card"
-            to={`/athletes/${athlete.reference_id}`}
-          >
-            {athlete.full_name}
-          </Link>
-        );
-      })}
+      {data?.pages.map((group, idx) => (
+        <div key={idx}>
+          {group.results.map((athlete: AthleteObject, idx: number) => {
+            return (
+              <Link key={idx} to={`/athletes/${athlete.reference_id}`}>
+                <div className="card">{athlete.full_name}</div>
+              </Link>
+            );
+          })}
+        </div>
+      ))}
+      <div>
+        <button
+          ref={ref}
+          onClick={() => fetchNextPage()}
+          disabled={!hasNextPage || isFetchingNextPage}
+        >
+          {isFetchingNextPage ? <Loading /> : "End"}
+          <div>{isFetching && !isFetchingNextPage ? <Loading /> : null}</div>
+        </button>
+      </div>
     </div>
   );
 };

@@ -71,7 +71,6 @@ const AthleteDetailPage: FunctionComponent = () => {
         Header: "Competition",
         accessor: "competition_name",
         Cell: ({ cell }: { cell: any }) => {
-          console.log(cell);
           return (
             <Link to={`/competitions/${cell.row.original.competition}`}>
               <div className="text-left text-blue-600 font-semibold underline">

@@ -20,7 +20,7 @@
     @apply bg-slate-50;
   }
   .card {
-    @apply px-4 py-2 rounded-xl shadow-md border max-w-fit hover:border-blue-400 hover:bg-sky-100;
+    @apply px-4 py-2 rounded-xl shadow-md border min-w-fit hover:border-blue-400 hover:bg-sky-100;
   }
   .btn {
     @apply border-2 border-slate-700 bg-slate-700 hover:bg-slate-500 px-4 py-2 text-sm leading-5 rounded-full font-semibold text-white;

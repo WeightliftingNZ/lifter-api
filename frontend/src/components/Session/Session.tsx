@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useQuery } from "react-query";
-import apiClient from "../../utils/http-common/http-common";
+import apiClient from "../../utils/http-common";
 import LiftsTable from "../LiftsTable";
 import Loading from "../Loading";
 import Error from "../Error";
@@ -28,6 +28,7 @@ const Session = ({ sessionId, competitionId }: any) => {
     {
       enabled: Boolean(sessionId),
       onSuccess: (res) => {
+        console.log("sessionId: ", sessionId);
         const result = {
           status: res.status + "-" + res.statusText,
           headers: res.headers,
@@ -40,13 +41,6 @@ const Session = ({ sessionId, competitionId }: any) => {
       },
     }
   );
-  if (!sessionId) {
-    return (
-      <>
-        <p>Please select a session.</p>
-      </>
-    );
-  }
   if (isLoading) {
     return (
       <>
@@ -92,7 +86,7 @@ const Session = ({ sessionId, competitionId }: any) => {
             <b>Marshall:</b> {session.marshall}
           </div>
           <div>
-            <b>Announcer:</b> {session.timekeeper}
+            <b>Announcer:</b> {session.announcer}
           </div>
           <div>
             <b>Timekeeper:</b> {session.timekeeper}
