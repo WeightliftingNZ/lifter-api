@@ -24,7 +24,7 @@ const CompetitionDetailPage: FunctionComponent = () => {
     ],
   });
   const params = useParams();
-  const competitionId = params.competitionReferenceId || "";
+  const competitionId = params.competitionReferenceId;
 
   const { isLoading, isError } = useQuery(
     ["competition", competitionId],
@@ -46,13 +46,6 @@ const CompetitionDetailPage: FunctionComponent = () => {
       },
     }
   );
-  if (competition.session_set.length === 0) {
-    return (
-      <>
-        <p className="error-msg">This competition has no sessions!</p>
-      </>
-    );
-  }
   // sessions from a competition
   const sessions = competition.session_set.reduce(
     (obj, item) => Object.assign(obj, { [item.reference_id]: item }),
@@ -105,7 +98,9 @@ const CompetitionDetailPage: FunctionComponent = () => {
         })}
       </div>
       <div className="flex flex-col gap-2">
-        {selectedSession === "" ? (
+        {competition.session_set.length === 0 ? (
+          <div className="error-msg">This competition has no sessions!</div>
+        ) : selectedSession === "" ? (
           <div>Please select a session.</div>
         ) : (
           <Session sessionId={selectedSession} competitionId={competitionId} />

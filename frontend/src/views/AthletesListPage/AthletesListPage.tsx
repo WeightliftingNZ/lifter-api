@@ -10,20 +10,6 @@ import { AthleteObject } from "../../interfaces";
 
 // search using API filter
 const SearchOutput = (debouncedSearchQuery: any) => {
-  // const [searchResult, setSearchResult] = useState({
-  //   count: 0,
-  //   next: "",
-  //   previous: "",
-  //   results: [
-  //     {
-  //       reference_id: "",
-  //       full_name: "",
-  //       first_name: "",
-  //       last_name: "",
-  //       yearborn: "",
-  //     },
-  //   ],
-  // });
   const { ref, inView } = useInView();
 
   const {
