@@ -31,7 +31,7 @@ jobs:
       - name: Install Python, Pipenv and Pipfile packages
         uses: palewire/install-python-pipenv-pipfile@main
         with:
-          python-version: 3.10
+          python-version: "3.10"
 
       - name: Lint code
         uses: py-actions/flake8@v1
