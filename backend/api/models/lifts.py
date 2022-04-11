@@ -236,7 +236,7 @@ class Lift(models.Model):
         """
         # need to check if athlete is newly created or an update
         # this validation does not need to run if it is an update
-        if Lift.objects.filter(reference_id=self.reference_id).exists() == False:
+        if not Lift.objects.filter(reference_id=self.reference_id).exists():
             # 1. check athlete not duplicated in a competition
             sessions = Session.objects.filter(competition=self.session.competition)
             for session in sessions:
@@ -256,48 +256,62 @@ class Lift(models.Model):
 
         DICT_PLACING = {1: "1st", 2: "2nd", 3: "3rd"}
         snatches = self.snatches
-        lst_snatches = [snatch for snatch in snatches.values()]
+        lst_snatches = list(snatches.values())
 
         for i, snatch in enumerate(lst_snatches):
-            if i > 0:
-                if snatch["lift_status"] == "LIFT":
+            #     # if lift is made
+            #     # the next weight must be greater than previous, unless it's DNA
+            if i < 2:
+                if (
+                    snatch["lift_status"] == "LIFT"
+                    and lst_snatches[i + 1]["lift_status"] != "DNA"
+                    and snatch["weight"] >= lst_snatches[i + 1]["weight"]
+                ):
                     # if lift is made
                     # current weight must be greater than previous
-                    if not snatch["weight"] > lst_snatches[i - 1]["weight"]:
-                        raise ValidationError(
-                            _(
-                                f"{DICT_PLACING[i+1]} snatch cannot be lower or same than previous lift if a good lift."
-                            )
+                    raise ValidationError(
+                        _(
+                            f"{DICT_PLACING[i+1]} snatch cannot be lower or same than previous lift if a good lift."
                         )
-                else:
+                    )
+                if (
+                    snatch["lift_status"] == "NOLIFT"
+                    and lst_snatches[i + 1]["lift_status"] != "DNA"
+                    and snatch["weight"] > lst_snatches[i + 1]["weight"]
+                ):
                     # if lift is not made or not attempted
                     # current weight must be same or greater than previous
-                    if not snatch["weight"] >= lst_snatches[i - 1]["weight"]:
-                        raise ValidationError(
-                            _(
-                                f"{DICT_PLACING[i+1]} snatch cannot be less than previous lift."
-                            )
+                    raise ValidationError(
+                        _(
+                            f"{DICT_PLACING[i+1]} snatch cannot be less than previous lift."
                         )
+                    )
 
         cnjs = self.cnjs
-        lst_cnjs = [cnj for cnj in cnjs.values()]
+        lst_cnjs = list(cnjs.values())
 
         for i, cnj in enumerate(lst_cnjs):
-            if i > 0:
-                if cnj["lift_status"] == "LIFT":
-                    if not cnj["weight"] > lst_cnjs[i - 1]["weight"]:
-                        raise ValidationError(
-                            _(
-                                f"{DICT_PLACING[i+1]} clean and jerk cannot be lower or same than previous lift if a good lift."
-                            )
+            if i < 2:
+                if (
+                    cnj["lift_status"] == "LIFT"
+                    and lst_cnjs[i + 1]["lift_status"] != "DNA"
+                    and cnj["weight"] >= lst_cnjs[i + 1]["weight"]
+                ):
+                    raise ValidationError(
+                        _(
+                            f"{DICT_PLACING[i+1]} clean and jerk cannot be lower or same than previous lift if a good lift."
                         )
-                else:
-                    if not cnj["weight"] >= lst_cnjs[i - 1]["weight"]:
-                        raise ValidationError(
-                            _(
-                                f"{DICT_PLACING[i+1]} clean and jerk cannot be less than previous lift."
-                            )
+                    )
+                if (
+                    cnj["lift_status"] == "LIFT"
+                    and lst_cnjs[i + 1]["lift_status"] != "DNA"
+                    and cnj["weight"] > lst_cnjs[i + 1]["weight"]
+                ):
+                    raise ValidationError(
+                        _(
+                            f"{DICT_PLACING[i+1]} clean and jerk cannot be less than previous lift."
                         )
+                    )
         super().clean(*args, **kwargs)
 
     def save(self, *args, **kwargs):

@@ -14,9 +14,5 @@ class Competition(models.Model):
     date_start = models.DateField(blank=True)
     date_end = models.DateField(blank=True)
 
-    @property
-    def name(self):
-        return f"{self.compeition_name} {self.date_start.year}"
-
     def __str__(self):
-        return f"{self.competition_name}"
+        return f"{self.competition_name} {self.date_start.year}"
