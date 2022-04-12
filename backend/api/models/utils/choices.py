@@ -48,9 +48,9 @@ __NEW_MALE_WEIGHT_CATEGORIES = [
     (__M89, "M89"),
     (__M96, "M96"),
     (__M102, "M102"),
-    (__M102p, "M109"),  # Senior/Junior only class
-    (__M102, "M102+"),  # Youth only class
-    (__M102p, "M109+"),  # Senior/Junior only class
+    (__M109, "M109"),  # Senior/Junior only class
+    (__M102p, "M102+"),  # Youth only class
+    (__M109p, "M109+"),  # Senior/Junior only class
 ]
 
 WEIGHT_CATEGORIES = __NEW_MALE_WEIGHT_CATEGORIES + __NEW_FEMALE_WEIGHT_CATEGORIES
