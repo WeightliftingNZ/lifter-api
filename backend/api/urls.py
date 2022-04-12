@@ -27,7 +27,7 @@ sessions_router.register(r"lifts", LiftViewSet, basename="session-lifts")
 
 urlpatterns = [
     path("auth/", include("dj_rest_auth.urls")),
-    path("auth/registration/", include("dj_rest_auth.registration.urls")),
+    # path("auth/registration/", include("dj_rest_auth.registration.urls")), # block registration for now
     path("", include(router.urls)),
     path("", include(competitions_router.urls)),
     path("", include(sessions_router.urls)),

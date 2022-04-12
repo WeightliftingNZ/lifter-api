@@ -1,5 +1,4 @@
 # TODO include old weight categories
-# TODO change labels to e.g Mens' 81kg
 
 __W45 = "W45"
 __W49 = "W49"
