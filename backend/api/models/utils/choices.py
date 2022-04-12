@@ -9,7 +9,9 @@ __W64 = "W64"
 __W71 = "W71"
 __W76 = "W76"
 __W81 = "W81"
-__W81p = "W81+"
+__W87 = "W87"  # Senior/Junior only class
+__W81p = "W81+"  # Youth only class
+__W87p = "W87+"  # Senior/Junior only class
 
 __NEW_FEMALE_WEIGHT_CATEGORIES = [
     (__W45, "W45"),
@@ -20,7 +22,9 @@ __NEW_FEMALE_WEIGHT_CATEGORIES = [
     (__W71, "W71"),
     (__W76, "W76"),
     (__W81, "W81"),
-    (__W81p, "W81+"),
+    (__W87, "W87"),  # Senior/Junior only class
+    (__W81p, "W81+"),  # Youth only class
+    (__W87p, "W87+"),  # Senior/Junior only class
 ]
 
 __M55 = "M55"
@@ -31,9 +35,9 @@ __M81 = "M81"
 __M89 = "M89"
 __M96 = "M96"
 __M102 = "M102"
-__M102p = "M102+"
-__M109 = "M102+"
-__M109p = "M102+"
+__M109 = "M109"  # Senior/Junior only class
+__M102p = "M102+"  # Youth only class
+__M109p = "M109+"  # Senior/Junior only class
 
 __NEW_MALE_WEIGHT_CATEGORIES = [
     (__M55, "M55"),
@@ -44,9 +48,9 @@ __NEW_MALE_WEIGHT_CATEGORIES = [
     (__M89, "M89"),
     (__M96, "M96"),
     (__M102, "M102"),
-    (__M102p, "M102+"),
-    (__M102, "M102"),
-    (__M102p, "M102+"),
+    (__M102p, "M109"),  # Senior/Junior only class
+    (__M102, "M102+"),  # Youth only class
+    (__M102p, "M109+"),  # Senior/Junior only class
 ]
 
 WEIGHT_CATEGORIES = __NEW_MALE_WEIGHT_CATEGORIES + __NEW_FEMALE_WEIGHT_CATEGORIES
