@@ -19,7 +19,7 @@ class Lift(models.Model):
 
     # other fields
     lottery_number = models.IntegerField(blank=True)
-    bodyweight = models.IntegerField()
+    bodyweight = models.DecimalField(blank=True, max_digits=5, decimal_places=2)
     weight_category = models.CharField(
         max_length=5, choices=WEIGHT_CATEGORIES, blank=True
     )
