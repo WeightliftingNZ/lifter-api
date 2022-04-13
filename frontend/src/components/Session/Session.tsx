@@ -114,7 +114,6 @@ const Session = ({ sessionId, competitionId }: any) => {
       <div className="mt-6 card self-center">
         <div>
           <h1>Session: {session.session_number}</h1>
-          {console.log(new Date(session.session_datetime))}
           <p>{sessionDateTimeConvert(session.session_datetime)}</p>
         </div>
         <div className="flex flex-col justify-center">

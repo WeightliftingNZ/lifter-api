@@ -55,6 +55,10 @@ export const liftColumns = [
     accessor: "weight_category",
   },
   {
+    Header: "Weight",
+    accessor: "bodyweight",
+  },
+  {
     Header: "Team",
     accessor: "team",
     Cell: ({ cell }: { cell: any }) => {
@@ -108,7 +112,7 @@ export const liftColumns = [
     Header: "Results",
     columns: [
       {
-        Header: "Sn",
+        Header: "S",
         accessor: "best_snatch_weight.1",
         Cell: ({ cell }: { cell: any }) => {
           return <div>{cell.value === 0 ? "-" : cell.value}</div>;
