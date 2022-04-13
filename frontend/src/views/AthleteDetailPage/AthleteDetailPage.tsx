@@ -72,7 +72,9 @@ const AthleteDetailPage: FunctionComponent = () => {
         accessor: "competition_name",
         Cell: ({ cell }: { cell: any }) => {
           return (
-            <Link to={`/competitions/${cell.row.original.competition}`}>
+            <Link
+              to={`/competitions/${cell.row.original.competition}/sessions/${cell.row.original.session}`}
+            >
               <div className="text-left text-blue-600 font-semibold underline">
                 {cell.value}
               </div>
@@ -87,6 +89,10 @@ const AthleteDetailPage: FunctionComponent = () => {
       {
         Header: "Cat.",
         accessor: "weight_category",
+      },
+      {
+        Header: "Weight",
+        accessor: "bodyweight",
       },
       {
         Header: "Snatch",

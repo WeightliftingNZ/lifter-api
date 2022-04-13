@@ -52,6 +52,9 @@ class Lift(models.Model):
     )
     cnj_third_weight = models.IntegerField(blank=True, default=0)
 
+    class Meta:
+        ordering = ["weight_category", "lottery_number"]
+
     # custom fields
     @property
     def snatches(self) -> dict[str, dict[str, str | int]]:

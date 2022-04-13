@@ -14,5 +14,8 @@ class Competition(models.Model):
     date_start = models.DateField(blank=True)
     date_end = models.DateField(blank=True)
 
+    class Meta:
+        ordering = ["-date_start", "competition_name"]
+
     def __str__(self):
         return f"{self.competition_name} {self.date_start.year}"

@@ -25,6 +25,7 @@ const CompetitionDetailPage: FunctionComponent = () => {
   });
   const params = useParams();
   const competitionId = params.competitionReferenceId;
+  const sessionId = params.sessionReferenceId;
 
   const { isLoading, isError } = useQuery(
     ["competition", competitionId],
@@ -102,10 +103,11 @@ const CompetitionDetailPage: FunctionComponent = () => {
       <div className="flex flex-col gap-2">
         {competition.session_set.length === 0 ? (
           <div className="error-msg">This competition has no sessions!</div>
-        ) : selectedSession === "" ? (
-          <div>Please select a session.</div>
         ) : (
-          <Session sessionId={selectedSession} competitionId={competitionId} />
+          <Session
+            sessionId={selectedSession || sessionId}
+            competitionId={competitionId}
+          />
         )}
       </div>
     </>

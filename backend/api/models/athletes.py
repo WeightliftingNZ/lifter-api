@@ -13,6 +13,9 @@ class Athlete(models.Model):
     last_name = models.CharField(max_length=128)
     yearborn = models.IntegerField(default=1900)
 
+    class Meta:
+        ordering = ["last_name", "first_name"]
+
     @property
     def full_name(self):
         return f"{self.last_name.upper()}, {self.first_name.title()}"

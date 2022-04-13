@@ -23,6 +23,9 @@ class Session(models.Model):
     announcer = models.CharField(max_length=255, blank=True)
     jury = models.CharField(max_length=255, blank=True)
 
+    class Meta:
+        ordering = ["session_datetime"]
+
     @cached_property
     def session_number(self) -> int:
         """This is the session number, which is the order determined by the date/time of the session
