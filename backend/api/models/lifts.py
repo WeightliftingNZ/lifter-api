@@ -24,7 +24,7 @@ class Lift(models.Model):
         max_length=5, choices=WEIGHT_CATEGORIES, blank=True
     )
     # TODO: create list of clubs?
-    team = models.CharField(max_length=4, blank=True, default="IND")
+    team = models.CharField(max_length=20, blank=True, default="IND")
 
     # lifts fields
     snatch_first = models.CharField(
@@ -235,7 +235,8 @@ class Lift(models.Model):
         """Customised validation
         1. Check if an athlete is already in a competition (if new addition, not new instance)
         2. Check if lottery_number's are used more than once per session, this cannot be entered as a unique=True since lifts are shared in different sessions/competitions (only if new instance, not update)
-        3. if a lift is made, then the next lift has to be an increment
+        3. If a lift is made, then the next lift has to be an increment
+        4. Older
         """
         # need to check if athlete is newly created or an update
         # this validation does not need to run if it is an update

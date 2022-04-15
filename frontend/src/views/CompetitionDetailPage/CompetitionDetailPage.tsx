@@ -8,49 +8,16 @@ import Session from "../../components/Session";
 
 const CompetitionDetailPage: FunctionComponent = () => {
   const [selectedSession, setSelectedSession] = useState("");
-  const [competition, setCompetition] = useState({
-    url: "",
-    reference_id: "",
-    date_start: "",
-    date_end: "",
-    location: "",
-    competition_name: "",
-    session_count: 0,
-    session_set: [
-      {
-        reference_id: "",
-        session_number: "",
-      },
-    ],
-  });
+
   const params = useParams();
   const competitionId = params.competitionReferenceId;
   const sessionId = params.sessionReferenceId;
 
-  const { isLoading, isError } = useQuery(
+  const { data, isLoading, isError } = useQuery(
     ["competition", competitionId],
     async () => {
       return await apiClient.get(`/competitions/${competitionId}`);
-    },
-    {
-      enabled: Boolean(competition),
-      onSuccess: (res) => {
-        const result = {
-          status: res.status + "-" + res.statusText,
-          headers: res.headers,
-          data: res.data,
-        };
-        setCompetition(result.data);
-      },
-      onError: (err) => {
-        console.log(err);
-      },
     }
-  );
-  // sessions from a competition
-  const sessions = competition.session_set.reduce(
-    (obj, item) => Object.assign(obj, { [item.reference_id]: item }),
-    {}
   );
 
   if (isLoading) {
@@ -68,12 +35,18 @@ const CompetitionDetailPage: FunctionComponent = () => {
     );
   }
 
+  const competition: any = data?.data;
+
+  // sessions from a competition
+  const sessions = competition.session_set.reduce(
+    (obj: any, item: any) => Object.assign(obj, { [item.reference_id]: item }),
+    {}
+  );
+
   return (
     <>
       <div className="card">
-        <h1>
-          {competition.competition_name} {competition.date_start.split("-")[0]}
-        </h1>
+        <h1>{competition.competition_name}</h1>
         <p>{competition.location}</p>
         <p>{competition.date_start}</p>
       </div>

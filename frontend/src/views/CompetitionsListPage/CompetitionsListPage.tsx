@@ -68,10 +68,7 @@ const CompetitionsListPage = () => {
                   to={`/competitions/${competition.reference_id}`}
                 >
                   <div className="card">
-                    <h1>
-                      {competition.competition_name}{" "}
-                      {competition.date_start?.split("-")[0]}
-                    </h1>
+                    <h1>{competition.competition_name}</h1>
                     <p>{competition.location}</p>
                     <p>{competition.date_start}</p>
                     <p>Sessions: {competition.session_count}</p>
