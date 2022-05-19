@@ -7,6 +7,8 @@ This is a database of all lifts and competitions in the past, present and future
 
 ## About
 
+[Video Outlining the project](https://youtu.be/1kObqjeRs2I).
+
 Instead of using .pdf's and Excel files to display competition results, I wanted to make a database for [Weightlifting New Zealand](https://weightlifting.nz). This allows more flexibility in reviewing results. Another bonus is that we can peek into an individual's athletic career.
 
 ## Local Development
@@ -53,7 +55,7 @@ make run-frontend
 
 There is also a wrapper if you want to perform some cool data analytics!
 
-[Check it out Lifter API Wrapper!](https://github.com/ChristchurchCityWeightlifting/lifter-api-wrapper).
+[Check it out Lifter API Wrapper!](https://github.com/WeightliftingNZ/lifter-api-wrapper).
 
 [It is also available on PyPI!](https://pypi.org/lifter-api-wrapper)
 
@@ -64,6 +66,11 @@ You can easily install it:
 pip install lifter-api-wrapper
 
 ```
+
+## Todo:
+
+- Write a blog post
+- Add more data onto the main database
 
 ## Contribution
 
