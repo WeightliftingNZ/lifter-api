@@ -1,3 +1,5 @@
+"""Athlete view."""
+
 from rest_framework import filters, permissions, viewsets
 
 from api.models import Athlete
@@ -9,7 +11,7 @@ class AthleteViewSet(viewsets.ModelViewSet):
     Athletes
     ========
     - This contains all the athlete's details
-    - Can be used to access all lifts from previous competitions
+    - Can be used to access all lifts from athlete's previous competitions.
     """
 
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]

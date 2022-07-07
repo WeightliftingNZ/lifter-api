@@ -1,15 +1,21 @@
 [tool.isort]
 profile = "black"
 multi_line_output = 3
-line_length = 88
+line_length = 79
 default_section = "THIRDPARTY"
 known_first_party = ["api", "users"]
 known_third_party = ["config", "dj_rest_auth", "django", "drf_spectacular", "hashid_field", "pytest", "rest_framework", "rest_framework_nested", "rest_framework_simplejwt"]
 
-
 [tool.black]
-line-length = 88
+line-length = 79
 include = '\.pyi?%'
 
-[tool.pydocstyle]
-match = ".*/.py"
+[tool.mypy]
+mypy_path = "backend"
+ignore_missing_imports = true
+
+[tool.pyright]
+include = ["src"]
+exclude = [".venv"]
+venvPath = "./backend"
+venv = ".venv"

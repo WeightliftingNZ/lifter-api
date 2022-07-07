@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Athlete, Competition, Lift, Session
+from .models import Athlete, Competition, Lift
 
 # from django.utils.translation import gettext_lazy as _
 
@@ -24,7 +24,6 @@ class LiftAdmin(admin.ModelAdmin):
                 "fields": (
                     "reference_id",
                     "athlete",
-                    "session",
                 )
             },
         ),
@@ -98,4 +97,3 @@ class SessionAdmin(admin.ModelAdmin):
 admin.site.register(Athlete, AthleteAdmin)
 admin.site.register(Competition, CompetitionAdmin)
 admin.site.register(Lift, LiftAdmin)
-admin.site.register(Session, SessionAdmin)

@@ -5,54 +5,85 @@ from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from hashid_field import HashidAutoField
 
-from .sessions import Session
-from .utils import DEFAULT_LIFT_STATUS, LIFT_STATUS, WEIGHT_CATEGORIES, ranking_suffix
+from .utils import (
+    DEFAULT_LIFT_STATUS,
+    LIFT_STATUS,
+    WEIGHT_CATEGORIES,
+    ranking_suffixer,
+    key_sort_lifts,
+)
 
 
 class Lift(models.Model):
+    """Lift."""
+
     # key fields
     reference_id = HashidAutoField(
         primary_key=True, salt=f"liftmodel_reference_id_{HASHID_FIELD_SALT}"
     )
+    competition = models.ForeignKey(
+        "api.Competition", on_delete=models.CASCADE
+    )
     athlete = models.ForeignKey("api.Athlete", on_delete=models.CASCADE)
-    session = models.ForeignKey("api.Session", on_delete=models.CASCADE)
 
     # other fields
+    session_number = models.IntegerField(null=True)
     lottery_number = models.IntegerField(blank=True)
-    bodyweight = models.DecimalField(blank=True, max_digits=5, decimal_places=2)
+    bodyweight = models.DecimalField(
+        blank=True, max_digits=5, decimal_places=2
+    )
     weight_category = models.CharField(
         max_length=5, choices=WEIGHT_CATEGORIES, blank=True
     )
-    # TODO: create list of clubs?
     team = models.CharField(max_length=20, blank=True, default="IND")
 
     # lifts fields
     snatch_first = models.CharField(
-        max_length=6, choices=LIFT_STATUS, blank=True, default=DEFAULT_LIFT_STATUS
+        max_length=6,
+        choices=LIFT_STATUS,
+        blank=True,
+        default=DEFAULT_LIFT_STATUS,
     )
     snatch_first_weight = models.IntegerField(blank=True, default=0)
     snatch_second = models.CharField(
-        max_length=6, choices=LIFT_STATUS, blank=True, default=DEFAULT_LIFT_STATUS
+        max_length=6,
+        choices=LIFT_STATUS,
+        blank=True,
+        default=DEFAULT_LIFT_STATUS,
     )
     snatch_second_weight = models.IntegerField(blank=True, default=0)
     snatch_third = models.CharField(
-        max_length=6, choices=LIFT_STATUS, blank=True, default=DEFAULT_LIFT_STATUS
+        max_length=6,
+        choices=LIFT_STATUS,
+        blank=True,
+        default=DEFAULT_LIFT_STATUS,
     )
     snatch_third_weight = models.IntegerField(blank=True, default=0)
     cnj_first = models.CharField(
-        max_length=6, choices=LIFT_STATUS, blank=True, default=DEFAULT_LIFT_STATUS
+        max_length=6,
+        choices=LIFT_STATUS,
+        blank=True,
+        default=DEFAULT_LIFT_STATUS,
     )
     cnj_first_weight = models.IntegerField(blank=True, default=0)
     cnj_second = models.CharField(
-        max_length=6, choices=LIFT_STATUS, blank=True, default=DEFAULT_LIFT_STATUS
+        max_length=6,
+        choices=LIFT_STATUS,
+        blank=True,
+        default=DEFAULT_LIFT_STATUS,
     )
     cnj_second_weight = models.IntegerField(blank=True, default=0)
     cnj_third = models.CharField(
-        max_length=6, choices=LIFT_STATUS, blank=True, default=DEFAULT_LIFT_STATUS
+        max_length=6,
+        choices=LIFT_STATUS,
+        blank=True,
+        default=DEFAULT_LIFT_STATUS,
     )
     cnj_third_weight = models.IntegerField(blank=True, default=0)
 
     class Meta:
+        """Meta."""
+
         ordering = ["weight_category", "lottery_number"]
 
     # custom fields
@@ -82,7 +113,7 @@ class Lift(models.Model):
 
     @property
     def cnjs(self) -> dict[str, dict[str, str]]:
-        """Clean and Jerk custom field
+        """Clean and Jerk custom field.
 
         e.g. key is attempt, then another key pair to determine if lift is made and what the weight was lifted
 
@@ -158,7 +189,8 @@ class Lift(models.Model):
     def total_lifted(self) -> int:
         """Returns the calculated total
 
-        This takes the best snatch and the best clean and jerk to work out the total. If one lift if not completed, then 0 will be returned.
+        This takes the best snatch and the best clean and jerk to work out the total.
+        If one lift if not completed, then 0 will be returned.
 
         Returns:
             int: total e.g 200, 0
@@ -182,6 +214,7 @@ class Lift(models.Model):
         return total_lifted
 
     @cached_property
+    # TODO: placings for junior, senior etc
     def placing(self) -> str:
         """Returns the placing of the athlete
 
@@ -194,7 +227,7 @@ class Lift(models.Model):
             return "-"
 
         query = Lift.objects.filter(
-            session=self.session, weight_category=self.weight_category
+            competition=self.competition, weight_category=self.weight_category
         )
         lifts = [
             {
@@ -207,32 +240,13 @@ class Lift(models.Model):
             if q.total_lifted > 0  # ensures sorted lifts have a total
         ]
 
-        def sort_lift_key(lift: dict[str, str | int]) -> tuple[int, int, int, int]:
-            """This gives the keys for sorting
-
-            Args:
-                lift (dict[str, str | int]): this contains the lift data
-
-            Returns:
-                tuple[int, int, int, int]: the keys to be used in the sorted parameter
-            """
-            keys = []
-            # total
-            keys.append(-lift["total_lifted"])
-            # lowest cnj
-            keys.append(lift["best_cnj_weight"][1])
-            # least attempts
-            keys.append(lift["best_cnj_weight"][0])
-            # lott number
-            keys.append(lift["lottery_number"])
-            return tuple(keys)
-
-        sorted_lifts = sorted(lifts, key=sort_lift_key)
+        sorted_lifts = sorted(lifts, key=key_sort_lifts)
         sorted_lifts_ids = [lift["reference_id"] for lift in sorted_lifts]
-        return ranking_suffix(sorted_lifts_ids.index(self.reference_id) + 1)
+        return ranking_suffixer(sorted_lifts_ids.index(self.reference_id) + 1)
 
     def clean(self, *args, **kwargs):
-        """Customised validation
+        """Customise validation.
+
         1. Check if an athlete is already in a competition (if new addition, not new instance)
         2. Check if lottery_number's are used more than once per session, this cannot be entered as a unique=True since lifts are shared in different sessions/competitions (only if new instance, not update)
         3. If a lift is made, then the next lift has to be an increment
@@ -240,23 +254,30 @@ class Lift(models.Model):
         """
         # need to check if athlete is newly created or an update
         # this validation does not need to run if it is an update
-        if not Lift.objects.filter(reference_id=self.reference_id).exists():
-            # 1. check athlete not duplicated in a competition
-            sessions = Session.objects.filter(competition=self.session.competition)
-            for session in sessions:
-                if Lift.objects.filter(
-                    session=session.reference_id, athlete=self.athlete
-                ).exists():
-                    raise ValidationError(_(f"{self.athlete} already in competition."))
+        # if not Lift.objects.filter(reference_id=self.reference_id).exists():
+        #     # 1. check athlete not duplicated in a competition
+        #     competitions = Competition.objects.filter(
+        #         reference_id=self.competition)
+        #     for  in sessions:
+        #         if Lift.objects.filter(
+        #             session=session.reference_id, athlete=self.athlete
+        #         ).exists():
+        #             raise ValidationError(
+        #                 _(f"{self.athlete} already in competition."))
 
-            # 2. check lottery_number
-            if Lift.objects.filter(
-                session=self.session,
-                lottery_number=self.lottery_number,
-            ).exists():
-                raise ValidationError(
-                    _(f"{self.lottery_number} already exists in this session.")
-                )
+        # 2. check lottery_number
+        # if Lift.objects.filter(
+        #     session=self.session,
+        #     lottery_number=self.lottery_number,
+        # ).exists():
+        #     raise ValidationError(
+        #         _(f"{self.lottery_number} already exists in this session.")
+        #     )
+
+        # if Lift.objects.filter(
+        #         competition=self.competition,
+        #         athlete=self.athlete
+        #         ).exists()
 
         DICT_PLACING = {1: "1st", 2: "2nd", 3: "3rd"}
         snatches = self.snatches
@@ -319,8 +340,15 @@ class Lift(models.Model):
         super().clean(*args, **kwargs)
 
     def save(self, *args, **kwargs):
+        """save.
+
+        Args:
+            args:
+            kwargs:
+        """
         self.full_clean()
         super().save(*args, **kwargs)
 
     def __str__(self):
+        """__str__."""
         return f"{self.athlete} - {self.session.competition} {self.session.competition.date_start.year}"

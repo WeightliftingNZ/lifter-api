@@ -22,7 +22,7 @@ class Athlete(models.Model):
 
     @property
     def years_from_birth(self) -> int:
-        """calculatute years from birth"""
+        """Calculatute years from birth."""
         return datetime.now().year - self.yearborn
 
     @property

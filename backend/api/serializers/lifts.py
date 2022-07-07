@@ -2,7 +2,7 @@ from hashid_field.rest import HashidSerializerCharField
 from rest_framework import permissions, serializers
 from rest_framework_nested.relations import NestedHyperlinkedIdentityField
 
-from api.models import Athlete, Lift, Session
+from api.models import Athlete, Lift
 
 
 class LiftSerializer(serializers.ModelSerializer):
@@ -11,19 +11,16 @@ class LiftSerializer(serializers.ModelSerializer):
 
     url = NestedHyperlinkedIdentityField(
         parent_lookup_kwargs={
-            "sessions_pk": "session__pk",
-            "competitions_pk": "session__competition__pk",
+            "competitions_pk": "competition__pk",
         },
-        view_name="session-lifts-detail",
+        view_name="competition-lifts-detail",
     )
-
     reference_id = serializers.PrimaryKeyRelatedField(
         pk_field=HashidSerializerCharField(
             source_field="api.Lift.reference_id",
         ),
         read_only=True,
     )
-
     athlete = serializers.PrimaryKeyRelatedField(
         pk_field=HashidSerializerCharField(
             source_field="api.Athlete.reference_id",
@@ -31,35 +28,23 @@ class LiftSerializer(serializers.ModelSerializer):
         read_only=False,
         queryset=Athlete.objects.all(),
     )
-
     athlete_name = serializers.CharField(
         source="athlete.full_name",
         read_only=True,
     )
-
     athlete_yearborn = serializers.IntegerField(
         source="athlete.yearborn", read_only=True
     )
-
     competition = HashidSerializerCharField(
-        source="session.competition.reference_id", read_only=True
+        source="competition.reference_id", read_only=True
     )
-
     competition_name = serializers.CharField(
-        source="session.competition.competition_name",
+        source="competition.competition_name",
         read_only=True,
     )
-
     competition_date_start = serializers.CharField(
-        source="session.competition.date_start",
+        source="competition.date_start",
         read_only=True,
-    )
-    session = serializers.PrimaryKeyRelatedField(
-        pk_field=HashidSerializerCharField(
-            source_field="api.Session.reference_id",
-        ),
-        read_only=False,
-        queryset=Session.objects.all(),
     )
 
     class Meta:
@@ -74,7 +59,6 @@ class LiftSerializer(serializers.ModelSerializer):
             "competition",
             "competition_name",
             "competition_date_start",
-            "session",
             "snatches",
             "snatch_first",
             "snatch_first_weight",
@@ -95,5 +79,6 @@ class LiftSerializer(serializers.ModelSerializer):
             "bodyweight",
             "weight_category",
             "team",
+            "session_number",
             "placing",
         )

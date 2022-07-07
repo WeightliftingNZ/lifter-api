@@ -1,1 +1,1 @@
-"""__init__.py - API App."""
+"""API App root."""

@@ -10,7 +10,7 @@ def main():
     if "DJANGO_DEVELOPMENT" not in os.environ:
         logging.warning("DJANGO_DEVELOPMENT not set, defaulting to production set up")
     settings_file = "config.settings.prod"
-    if os.getenv("DJANGO_DEVELOPMENT") == "yes":
+    if os.getenv("DJANGO_DEVELOPMENT"):
         logging.debug("Entering development settings")
         settings_file = "config.settings.dev"
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", settings_file)

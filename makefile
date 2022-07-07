@@ -14,3 +14,12 @@ migrate:
 	cd ./backend && \
 	pipenv run python manage.py makemigrations && \
 	pipenv run python manage.py migrate
+
+ARGPATH=.
+
+.PHONY: test
+test:
+	clear
+	docker-compose up --build db -d && \
+	cd ./backend && \
+	pipenv run pytest -vv -k $(ARGPATH)
