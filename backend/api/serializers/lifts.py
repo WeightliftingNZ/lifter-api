@@ -2,7 +2,7 @@ from hashid_field.rest import HashidSerializerCharField
 from rest_framework import permissions, serializers
 from rest_framework_nested.relations import NestedHyperlinkedIdentityField
 
-from api.models import Athlete, Lift
+from api.models import Athlete, Competition, Lift
 
 
 class LiftSerializer(serializers.ModelSerializer):
@@ -21,6 +21,7 @@ class LiftSerializer(serializers.ModelSerializer):
         ),
         read_only=True,
     )
+
     athlete = serializers.PrimaryKeyRelatedField(
         pk_field=HashidSerializerCharField(
             source_field="api.Athlete.reference_id",
@@ -35,8 +36,13 @@ class LiftSerializer(serializers.ModelSerializer):
     athlete_yearborn = serializers.IntegerField(
         source="athlete.yearborn", read_only=True
     )
-    competition = HashidSerializerCharField(
-        source="competition.reference_id", read_only=True
+
+    competition = serializers.PrimaryKeyRelatedField(
+        pk_field=HashidSerializerCharField(
+            source_field="api.Competition.reference_id",
+        ),
+        read_only=False,
+        queryset=Competition.objects.all(),
     )
     competition_name = serializers.CharField(
         source="competition.competition_name",

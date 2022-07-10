@@ -2,10 +2,15 @@
 
 Athletes to retrieve, create, edit and delete.
 """
+from contextlib import nullcontext as does_not_raise
+from datetime import datetime
+
 import pytest
+from django.core.exceptions import ValidationError
 from rest_framework import status
 
 from api.models import Athlete
+from api.models.athletes import MINIMUM_YEAR_FROM_BIRTH
 
 pytestmark = pytest.mark.django_db
 
@@ -21,20 +26,23 @@ class TestAthleteCase:
         assert response.status_code == status.HTTP_200_OK
         result = response.json()
         assert result["count"] >= 1
-        assert (
-            mock_athlete["data"]["last_name"]
-            == result["results"][0]["last_name"]
-        )
+        mock_athlete_ids = [athlete.reference_id for athlete in mock_athlete]
+        result_athlete_ids = [
+            comp["reference_id"] for comp in result["results"]
+        ]
+        assert set(mock_athlete_ids) == set(result_athlete_ids)
 
     def test_get_athlete(self, client, mock_athlete):
         """Retrieve a particular athlete by id using the url."""
-        response = client.get(f"{self.url}/{mock_athlete['reference_id']}")
+        response = client.get(f"{self.url}/{mock_athlete[0].reference_id}")
         assert response.status_code == status.HTTP_200_OK
+        result = response.json()
+        assert result["last_name"] == mock_athlete[0].last_name
 
     def test_find_athlete(self, client, mock_athlete):
         """Find a athlete using the url search terms."""
         response = client.get(
-            f"{self.url}?search={mock_athlete['data']['first_name']}"
+            f"{self.url}?search={mock_athlete[0].first_name}"
         )
         assert response.status_code == status.HTTP_200_OK
         result = response.json()
@@ -51,19 +59,59 @@ class TestAthleteCase:
                 },
                 status.HTTP_201_CREATED,
             ),
-            pytest.param(
+            (
                 {
                     # missing `first_name`
                     "last_name": "InCorrect",
                     "yearborn": 1900,
                 },
                 status.HTTP_400_BAD_REQUEST,
-                marks=pytest.mark.xfail,
             ),
         ],
     )
     def test_admin_create_athlete(self, admin_client, test_input, expected):
         """Admin user can create athletes."""
+        response = admin_client.post(
+            self.url, data=test_input, content_type="application/json"
+        )
+        assert response.status_code == expected
+
+    @pytest.mark.parametrize(
+        "test_input,expected",
+        [
+            pytest.param(
+                {
+                    "first_name": "Athlete",
+                    "last_name": "Correct",
+                    "yearborn": 1900,
+                },
+                status.HTTP_201_CREATED,
+                id="Normal input.",
+            ),
+            pytest.param(
+                {
+                    "first_name": "Athlete",
+                    "last_name": "OldEnough",
+                    "yearborn": datetime.now().year - MINIMUM_YEAR_FROM_BIRTH,
+                },
+                status.HTTP_201_CREATED,
+            ),
+            pytest.param(
+                {
+                    "first_name": "Athlete",
+                    "last_name": "TooYoung",
+                    "yearborn": datetime.now().year
+                    - (MINIMUM_YEAR_FROM_BIRTH - 1),
+                },
+                status.HTTP_400_BAD_REQUEST,
+                id="`yearborn` after acceptable year.",
+            ),
+        ],
+    )
+    def test_create_athlete_custom_validation(
+        self, admin_client, test_input, expected
+    ):
+        """Test custom validation for competition creation."""
         response = admin_client.post(
             self.url, data=test_input, content_type="application/json"
         )
@@ -99,7 +147,7 @@ class TestAthleteCase:
     ):
         """Admin users can edit athletes."""
         response = admin_client.patch(
-            f"{self.url}/{mock_athlete['reference_id']}",
+            f"{self.url}/{mock_athlete[0].reference_id}",
             data=test_input,
             content_type="application/json",
         )
@@ -108,7 +156,7 @@ class TestAthleteCase:
     def test_anon_edit_athlete(self, client, mock_athlete):
         """Anon users cannot edit athletes."""
         anon_response = client.patch(
-            f"{self.url}/{mock_athlete['reference_id']}",
+            f"{self.url}/{mock_athlete[0].reference_id}",
             data={},
             content_type="application/json",
         )
@@ -117,17 +165,11 @@ class TestAthleteCase:
     def test_admin_delete_athlete(self, admin_client, mock_athlete):
         """Admin users can delete athletes."""
         response = admin_client.delete(
-            f"{self.url}/{mock_athlete['reference_id']}"
+            f"{self.url}/{mock_athlete[0].reference_id}"
         )
         assert response.status_code == status.HTTP_204_NO_CONTENT
 
     def test_anon_delete_athlete(self, client, mock_athlete):
         """Anonymous users cannot delete athletes."""
-        response = client.delete(f"{self.url}/{mock_athlete['reference_id']}")
+        response = client.delete(f"{self.url}/{mock_athlete[0].reference_id}")
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
-        assert (
-            Athlete.objects.filter(
-                reference_id=str(mock_athlete.get("reference_id"))
-            ).exists()
-            is True
-        )
