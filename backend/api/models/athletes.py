@@ -44,22 +44,22 @@ class Athlete(models.Model):
 
     @property
     def is_youth(self) -> bool:
-        """13-17 years"""
+        """13-17 years."""
         return self.years_from_birth >= 13 and self.years_from_birth <= 17
 
     @property
     def is_junior(self) -> bool:
-        """15-20 years"""
+        """15-20 years."""
         return self.years_from_birth >= 15 and self.years_from_birth <= 20
 
     @property
     def is_senior(self) -> bool:
-        """15+ years"""
+        """15+ years."""
         return self.years_from_birth > 15
 
     @property
     def is_master(self) -> bool:
-        """35+ years"""
+        """35+ years."""
         return self.years_from_birth > 35
 
     def __str__(self):

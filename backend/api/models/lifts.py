@@ -35,6 +35,7 @@ class Lift(models.Model):
     weight_category = models.CharField(
         max_length=5, choices=WEIGHT_CATEGORIES, blank=True
     )
+    # TODO: if `team` is "GUEST", then lifter is a guest
     team = models.CharField(max_length=20, blank=True, default="IND")
 
     # lifts fields
@@ -85,8 +86,22 @@ class Lift(models.Model):
         """Meta."""
 
         ordering = ["weight_category", "lottery_number"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["competition", "lottery_number", "session_number"],
+                name="session_lottery_unique_combination",
+            ),
+            models.UniqueConstraint(
+                fields=["competition", "athlete"],
+                name="competition_athlete_unique_combination",
+            ),
+        ]
 
+    #
     # custom fields
+    #
+    # lifts
+    #
     @property
     def snatches(self):
         """Snatches custom field."""
@@ -178,6 +193,37 @@ class Lift(models.Model):
             total_lifted = self.best_snatch_weight[1] + self.best_cnj_weight[1]
         return total_lifted
 
+    #
+    # age
+    #
+    # TODO: write tests to determine placing as well as juniors etc
+    @property
+    def years_from_birth(self) -> int:
+        """Calculate year from birth at time of competition."""
+        # TODO: is the start of the compeitition used to determine the year or
+        # time of the session?
+        return self.competition.date_start.year - self.yearborn
+
+    @property
+    def is_youth(self) -> bool:
+        """13-17 years."""
+        return self.years_from_birth >= 13 and self.years_from_birth <= 17
+
+    @property
+    def is_junior(self) -> bool:
+        """15-20 years."""
+        return self.years_from_birth >= 15 and self.years_from_birth <= 20
+
+    @property
+    def is_senior(self) -> bool:
+        """15+ years."""
+        return self.years_from_birth > 15
+
+    @property
+    def is_master(self) -> bool:
+        """35+ years."""
+        return self.years_from_birth > 35
+
     @cached_property
     # TODO: placings for junior, senior etc
     def placing(self) -> str:
@@ -204,40 +250,8 @@ class Lift(models.Model):
     def clean(self, *args, **kwargs):
         """Customise validation.
 
-        1. Check if an athlete is already in a competition.
-        2. Check if lottery_numbers are unique for each session of lifting.
-        3. If a lift is made, then the next lift has to be an increment
+        If a lift is made, then the next lift has to be an increment
         """
-        # 1.
-        # error if athlete is already in competition
-        #
-        # first check if lift is CREATE (i.e. not UPDATE)
-        if not Lift.objects.filter(reference_id=self.reference_id).exists():
-            if Lift.objects.filter(
-                competition=self.competition, athlete=self.athlete
-            ).exists():
-                raise ValidationError(
-                    _(f"{self.athlete} already in competition.")
-                )
-
-            # TODO: what happens if editing and editing lift into athlete and
-            # competition that exists??
-
-            # 2.
-            # error if `lottery_number` and `session_number` are the same
-            if Lift.objects.filter(
-                competition=self.competition,
-                lottery_number=self.lottery_number,
-                session_number=self.session_number,
-            ).exists():
-
-                raise ValidationError(
-                    _("Cannot have the same lottery number in a session.")
-                )
-
-        # TODO: what happens if editing and editing lift into athlete and
-        # competition that exists??
-
         DICT_PLACING = {1: "1st", 2: "2nd", 3: "3rd"}
         snatches = self.snatches
         lst_snatches = list(snatches.values())

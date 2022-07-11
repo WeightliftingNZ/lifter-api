@@ -18,13 +18,17 @@ class TestLiftCase:
 
     def test_get_lifts(self, client, mock_lift):
         """Retrieve lifts for a competition."""
-        response = client.get(
-            f"{self.url}/{str(mock_lift[0].competition.reference_id)}/lifts"
-        )
+        IDX = 0
+        competition_id = mock_lift[0].competition.reference_id
+        response = client.get(f"{self.url}/{str(competition_id)}/lifts")
         assert response.status_code == status.HTTP_200_OK
         result = response.json()
         assert result["count"] >= 1
-        mock_lift_ids = [lift.reference_id for lift in mock_lift]
+        mock_lift_ids = [
+            lift.reference_id
+            for lift in mock_lift
+            if lift.competition.reference_id == competition_id
+        ]
         result_lift_ids = [lift["reference_id"] for lift in result["results"]]
         assert set(mock_lift_ids) == set(result_lift_ids)
 
@@ -274,7 +278,7 @@ class TestLiftCase:
                 },
                 pytest.raises(
                     ValidationError,
-                    match="Cannot have the same lottery number in a session.",
+                    match="Lift with this Competition, Lottery number and Session number already exists.",
                 ),
                 id="Same lottery number in same competition",
             ),
@@ -324,9 +328,58 @@ class TestLiftCase:
                 does_not_raise(),
                 id="Same lottery number in different competitions",
             ),
+            pytest.param(
+                {
+                    "competition": 0,
+                    "athlete": 0,
+                    "snatch_first": "LIFT",
+                    "snatch_first_weight": 100,
+                    "snatch_second": "LIFT",
+                    "snatch_second_weight": 101,
+                    "snatch_third": "LIFT",
+                    "snatch_third_weight": 102,
+                    "cnj_first": "LIFT",
+                    "cnj_first_weight": 100,
+                    "cnj_second": "LIFT",
+                    "cnj_second_weight": 101,
+                    "cnj_third": "LIFT",
+                    "cnj_third_weight": 102,
+                    "bodyweight": 102.00,
+                    "weight_category": "M102+",
+                    "team": "TEST",
+                    "session_number": 0,
+                    "lottery_number": 1,
+                },
+                {
+                    "competition": 0,
+                    "athlete": 0,
+                    "snatch_first": "LIFT",
+                    "snatch_first_weight": 100,
+                    "snatch_second": "LIFT",
+                    "snatch_second_weight": 101,
+                    "snatch_third": "LIFT",
+                    "snatch_third_weight": 102,
+                    "cnj_first": "LIFT",
+                    "cnj_first_weight": 100,
+                    "cnj_second": "LIFT",
+                    "cnj_second_weight": 101,
+                    "cnj_third": "LIFT",
+                    "cnj_third_weight": 102,
+                    "bodyweight": 102.00,
+                    "weight_category": "M102+",
+                    "team": "TEST",
+                    "session_number": 1,
+                    "lottery_number": 1,
+                },
+                pytest.raises(
+                    ValidationError,
+                    match="Lift with this Competition and Athlete already exists.",
+                ),
+                id="Athlete twice in same competition.",
+            ),
         ],
     )
-    def test_create_lift_lottery_number(
+    def test_create_lift_constraints(
         self,
         admin_client,
         mock_athlete,
@@ -335,7 +388,13 @@ class TestLiftCase:
         test_input_lift_2,
         expected,
     ):
-        """Lottery Numbers cannot be the same for the same session."""
+        """Test builtin constraints on Lift model.
+
+        1. `lottery_number` and `session_numbers` must be unique for every
+        competition (i.e. a no two lifts can have the same `lottery_number`
+        and `session_number`.
+        2. An athlete cannot be entered more than once into a competition.
+        """
         with expected:
             test_input_lift_1["competition"] = str(
                 mock_competition[test_input_lift_1["competition"]].reference_id
@@ -402,8 +461,9 @@ class TestLiftCase:
         self, admin_client, mock_lift, test_input, expected
     ):
         """Admin users can edit lifts."""
+        IDX = 0
         response = admin_client.patch(
-            f"{self.url}/{str(mock_lift[0].competition.reference_id)}/lifts/{str(mock_lift[0].reference_id)}",
+            f"{self.url}/{str(mock_lift[IDX].competition.reference_id)}/lifts/{str(mock_lift[IDX].reference_id)}",
             data=test_input,
             content_type="application/json",
         )
@@ -414,7 +474,7 @@ class TestLiftCase:
         [
             pytest.param(
                 {
-                    "lift": 1,
+                    "reference_id": 0,
                     "lottery_number": 4,
                 },
                 does_not_raise(),
@@ -422,29 +482,74 @@ class TestLiftCase:
             ),
             pytest.param(
                 {
-                    "lift": 1,
-                    "lottery_number": 1,
+                    "reference_id": 0,
+                    "lottery_number": 2,
                 },
-                pytest.raises(ValidationError, match=""),
+                pytest.raises(
+                    ValidationError,
+                    match="Lift with this Competition, Lottery number and Session number already exists.",
+                ),
                 id="Edit same lottery number in same competition",
             ),
             pytest.param(
                 {
-                    "lift": 2,
-                    "lottery_number": 1,
+                    "reference_id": 2,
+                    "lottery_number": 2,
                 },
                 does_not_raise(),
                 id="Edit same lottery number but different competitions",
             ),
+            pytest.param(
+                {
+                    "reference_id": 1,
+                    "lottery_number": 3,
+                    "athlete": 0,
+                },
+                pytest.raises(
+                    ValidationError,
+                    match="Lift with this Competition and Athlete already exists.",
+                ),
+                id="Edit athlete duplicated competition.",
+            ),
+            pytest.param(
+                {
+                    "reference_id": 2,
+                    "competition": 0,
+                },
+                pytest.raises(
+                    ValidationError,
+                    match="['Lift with this Competition, Lottery number and Session number already exists.', 'Lift with this Competition and Athlete already exists.']",
+                ),
+                id="Edit athlete already exists.",
+            ),
         ],
     )
-    def test_edit_lift_lottery_number(
-        self, admin_client, mock_lift, test_input, expected
+    def test_edit_lift_constraints(
+        self,
+        admin_client,
+        mock_lift,
+        mock_athlete,
+        mock_competition,
+        test_input,
+        expected,
     ):
-        """Edit lottery numbers."""
+        """Test builtin constraints on edit.
+
+        1. `lottery_number` and `session_number` must remain unique for each
+        competition.
+        2. An athlete can not have more than one lift per competition.
+        """
         with expected:
-            idx = test_input["lift"]
-            test_input.pop("lift")
+            if test_input.get("competition") is not None:
+                test_input["competition"] = str(
+                    mock_competition[test_input["competition"]].reference_id
+                )
+            if test_input.get("athlete") is not None:
+                test_input["athlete"] = str(
+                    mock_athlete[test_input["athlete"]].reference_id
+                )
+            idx = test_input["reference_id"]
+            test_input.pop("reference_id")
             response = admin_client.patch(
                 f"{self.url}/{str(mock_lift[idx].competition.reference_id)}/lifts/{str(mock_lift[idx].reference_id)}",
                 data=test_input,

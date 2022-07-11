@@ -9,7 +9,6 @@ import pytest
 from django.core.exceptions import ValidationError
 from rest_framework import status
 
-from api.models import Athlete
 from api.models.athletes import MINIMUM_YEAR_FROM_BIRTH
 
 pytestmark = pytest.mark.django_db
@@ -26,7 +25,9 @@ class TestAthleteCase:
         assert response.status_code == status.HTTP_200_OK
         result = response.json()
         assert result["count"] >= 1
-        mock_athlete_ids = [athlete.reference_id for athlete in mock_athlete]
+        mock_athlete_ids = [
+            str(athlete.reference_id) for athlete in mock_athlete
+        ]
         result_athlete_ids = [
             comp["reference_id"] for comp in result["results"]
         ]
