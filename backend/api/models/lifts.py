@@ -5,18 +5,11 @@ from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from hashid_field import HashidAutoField
 
-from .utils import (
-    DEFAULT_LIFT_STATUS,
-    LIFT_STATUS,
-    WEIGHT_CATEGORIES,
-    key_sort_lifts,
-    ranking_suffixer,
-)
+from .utils import (DEFAULT_LIFT_STATUS, LIFT_STATUS, WEIGHT_CATEGORIES,
+                    age_category, key_sort_lifts, ranking_suffixer)
 
 
 class Lift(models.Model):
-    """Lift."""
-
     # key fields
     reference_id = HashidAutoField(
         primary_key=True, salt=f"liftmodel_reference_id_{HASHID_FIELD_SALT}"
@@ -83,8 +76,6 @@ class Lift(models.Model):
     cnj_third_weight = models.IntegerField(blank=True, default=0)
 
     class Meta:
-        """Meta."""
-
         ordering = ["weight_category", "lottery_number"]
         constraints = [
             models.UniqueConstraint(
@@ -196,37 +187,17 @@ class Lift(models.Model):
     #
     # age
     #
-    # TODO: write tests to determine placing as well as juniors etc
     @property
-    def years_from_birth(self) -> int:
-        """Calculate year from birth at time of competition."""
-        # TODO: is the start of the compeitition used to determine the year or
-        # time of the session?
-        return self.competition.date_start.year - self.yearborn
-
-    @property
-    def is_youth(self) -> bool:
-        """13-17 years."""
-        return self.years_from_birth >= 13 and self.years_from_birth <= 17
-
-    @property
-    def is_junior(self) -> bool:
-        """15-20 years."""
-        return self.years_from_birth >= 15 and self.years_from_birth <= 20
-
-    @property
-    def is_senior(self) -> bool:
-        """15+ years."""
-        return self.years_from_birth > 15
-
-    @property
-    def is_master(self) -> bool:
-        """35+ years."""
-        return self.years_from_birth > 35
+    def age_categories(self):
+        """Age category of the athlete at the time of the lift."""
+        return age_category(
+                yearborn=self.athlete.yearborn,
+                competition_year=self.competition.date_start.year
+                )
 
     @cached_property
     # TODO: placings for junior, senior etc
-    def placing(self) -> str:
+    def placing(self):
         """Determine placing of the athlete from weightclass."""
         if self.total_lifted == 0:
             return "-"

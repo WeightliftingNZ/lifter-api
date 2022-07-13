@@ -1,8 +1,7 @@
+from api.models import Athlete, Competition, Lift
 from hashid_field.rest import HashidSerializerCharField
 from rest_framework import permissions, serializers
 from rest_framework_nested.relations import NestedHyperlinkedIdentityField
-
-from api.models import Athlete, Competition, Lift
 
 
 class LiftSerializer(serializers.ModelSerializer):
@@ -82,6 +81,7 @@ class LiftSerializer(serializers.ModelSerializer):
             "cnj_third_weight",
             "best_cnj_weight",
             "total_lifted",
+            "age_categories",
             "bodyweight",
             "weight_category",
             "team",

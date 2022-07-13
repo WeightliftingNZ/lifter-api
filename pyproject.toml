@@ -15,7 +15,10 @@ mypy_path = "backend"
 ignore_missing_imports = true
 
 [tool.pyright]
-include = ["src"]
+include = ["backend"]
 exclude = [".venv"]
 venvPath = "./backend"
 venv = ".venv"
+
+[tool.pydocstyle]
+ignore = *

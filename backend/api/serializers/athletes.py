@@ -1,14 +1,9 @@
+from api.models import Athlete
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import (
-    OpenApiExample,
-    OpenApiParameter,
-    extend_schema,
-    extend_schema_serializer,
-)
+from drf_spectacular.utils import (OpenApiExample, OpenApiParameter,
+                                   extend_schema, extend_schema_serializer)
 from hashid_field.rest import HashidSerializerCharField
 from rest_framework import serializers
-
-from api.models import Athlete
 
 from .lifts import LiftSerializer
 
@@ -26,10 +21,12 @@ from .lifts import LiftSerializer
                 "first_name": "Douglas",
                 "last_name": "Sekone-Fraser",
                 "yearborn": 1991,
+                "age_categories": {
                 "is_youth": False,
                 "is_junior": False,
                 "is_senior": True,
                 "is_master": False,
+                    }
             },
             request_only=False,
             response_only=True,
@@ -57,10 +54,7 @@ class AthleteSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "yearborn",
-            "is_youth",
-            "is_junior",
-            "is_senior",
-            "is_master",
+            "age_categories",
         )
 
 

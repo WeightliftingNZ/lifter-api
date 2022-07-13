@@ -1,4 +1,5 @@
 """Contains helper functions for the models."""
+from datetime import datetime
 
 
 def ranking_suffixer(rank: int) -> str:
@@ -29,7 +30,7 @@ def best_lift(lifts: dict[str, dict[str, str | int]]) -> tuple[str, int]:
 
     This will return the lift attempt and the best lift e.g. ("1st", 100)
 
-    If no attempt was made then an empty string and 0 will be returned e.g 
+    If no attempt was made then an empty string and 0 will be returned e.g
     ("", 0)
 
     Returns:
@@ -68,3 +69,36 @@ def key_sort_lifts(lift: dict[str, str | int]) -> tuple[int, int, int, int]:
         lift["lottery_number"],
     )
     return keys
+
+def age_category(yearborn, competition_year=None)  -> dict[str, bool]:
+    """Give age category.
+
+    From: https://iwf.sport/weightlifting_/participants/
+        - YOUTH: 13 – 17 years of age
+        - JUNIOR: 15 – 20 years of age
+        - SENIOR: ≥15 years of age
+        - MASTERS: ≥35 years of age
+
+    Args:
+        yearborn: The year the athlete was born.
+        competition_year: The year when the competition took place.
+        Default is None. If not supplied, then it is set to current year.
+
+    Returns:
+        dict[str, bool]: Validations.
+    """
+    if competition_year is None:
+        competition_year = datetime.now().year
+
+    years_from_birth = competition_year - yearborn
+
+    if years_from_birth < 0:
+        # TODO: what to do if this happens?
+        pass
+
+    return {
+            "is_youth": years_from_birth >= 13 and years_from_birth <= 17,
+            "is_junior": years_from_birth >= 15 and years_from_birth <= 20,
+            "is_senior": years_from_birth >= 15,
+            "is_master": years_from_birth >= 35,
+            }

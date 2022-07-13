@@ -3,6 +3,7 @@
 Lift retrieve, create, edit and delete.
 """
 from contextlib import nullcontext as does_not_raise
+from datetime import datetime
 
 import pytest
 from django.core.exceptions import ValidationError
@@ -18,7 +19,6 @@ class TestLiftCase:
 
     def test_get_lifts(self, client, mock_lift):
         """Retrieve lifts for a competition."""
-        IDX = 0
         competition_id = mock_lift[0].competition.reference_id
         response = client.get(f"{self.url}/{str(competition_id)}/lifts")
         assert response.status_code == status.HTTP_200_OK
@@ -583,3 +583,136 @@ class TestLiftCase:
             f"{self.url}/{str(mock_lift[0].competition.reference_id)}/lifts/{str(mock_lift[0].reference_id)}",
         )
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+    @pytest.mark.parametrize(
+        "test_input,expected",
+        [
+            pytest.param(
+                {
+                    "athlete": {
+                        "first_name": "One",
+                        "last_name": "Athlete-One",
+                        "yearborn": datetime.now().year - 21,
+                    },
+                    "lift": {
+                        "snatch_first": "LIFT",
+                        "snatch_first_weight": 100,
+                        "snatch_second": "NOLIFT",
+                        "snatch_second_weight": 110,
+                        "snatch_third": "DNA",
+                        "snatch_third_weight": 0,
+                        "cnj_first": "NOLIFT",
+                        "cnj_first_weight": 140,
+                        "cnj_second": "LIFT",
+                        "cnj_second_weight": 140,
+                        "cnj_third": "LIFT",
+                        "cnj_third_weight": 145,
+                        "bodyweight": 101.00,
+                        "weight_category": "M102+",
+                        "team": "TEST",
+                        "session_number": 1,
+                        "lottery_number": 1,
+                    },
+                },
+                {
+                    "snatches": {
+                        "1st": {"lift_status": "LIFT", "weight": 100},
+                        "2nd": {"lift_status": "NOLIFT", "weight": 110},
+                        "3rd": {"lift_status": "DNA", "weight": 0},
+                    },
+                    "best_snatch_weight": ["1st", 100],
+                    "cnjs": {
+                        "1st": {"lift_status": "NOLIFT", "weight": 140},
+                        "2nd": {"lift_status": "LIFT", "weight": 140},
+                        "3rd": {"lift_status": "LIFT", "weight": 145},
+                    },
+                    "best_cnj_weight": ["3rd", 145],
+                    "total_lifted": 245,
+                    "age_categories": {
+                        "is_youth": False,
+                        "is_junior": False,
+                        "is_senior": True,
+                        "is_master": False,
+                    },
+                },
+                id="Normal Senior"
+            ),
+            pytest.param(
+                {
+                    "athlete": {
+                        "first_name": "One",
+                        "last_name": "Athlete-One",
+                        "yearborn": datetime.now().year - 15,
+                    },
+                    "lift": {
+                        "snatch_first": "LIFT",
+                        "snatch_first_weight": 100,
+                        "snatch_second": "NOLIFT",
+                        "snatch_second_weight": 110,
+                        "snatch_third": "DNA",
+                        "snatch_third_weight": 0,
+                        "cnj_first": "NOLIFT",
+                        "cnj_first_weight": 140,
+                        "cnj_second": "LIFT",
+                        "cnj_second_weight": 140,
+                        "cnj_third": "LIFT",
+                        "cnj_third_weight": 145,
+                        "bodyweight": 101.00,
+                        "weight_category": "M102+",
+                        "team": "TEST",
+                        "session_number": 1,
+                        "lottery_number": 1,
+                    },
+                },
+                {
+                    "snatches": {
+                        "1st": {"lift_status": "LIFT", "weight": 100},
+                        "2nd": {"lift_status": "NOLIFT", "weight": 110},
+                        "3rd": {"lift_status": "DNA", "weight": 0},
+                    },
+                    "best_snatch_weight": ["1st", 100],
+                    "cnjs": {
+                        "1st": {"lift_status": "NOLIFT", "weight": 140},
+                        "2nd": {"lift_status": "LIFT", "weight": 140},
+                        "3rd": {"lift_status": "LIFT", "weight": 145},
+                    },
+                    "best_cnj_weight": ["3rd", 145],
+                    "total_lifted": 245,
+                    "age_categories": {
+                        "is_youth": True,
+                        "is_junior": True,
+                        "is_senior": True,
+                        "is_master": False,
+                        },
+                },
+                id="Youth, Junior, Senior"
+            ),
+        ],
+    )
+    def test_lift_payload_custom_properties(
+        self, admin_client, mock_competition, test_input, expected
+    ):
+        """Test the lift payload of custom properties."""
+        athlete_url = "/v1/athletes"
+        athlete = admin_client.post(
+            athlete_url,
+            data=test_input["athlete"],
+            content_type="application/json",
+        )
+        test_input["lift"]["competition"] = str(
+            mock_competition[0].reference_id
+        )
+        test_input["lift"]["athlete"] = athlete.json()["reference_id"]
+        response = admin_client.post(
+            f"{self.url}/{str(mock_competition[0].reference_id)}/lifts",
+            data=test_input["lift"],
+            content_type="application/json",
+        )
+        assert response.status_code == status.HTTP_201_CREATED
+        result = response.json()
+        assert result["snatches"] == expected["snatches"]
+        assert result["best_snatch_weight"] == expected["best_snatch_weight"]
+        assert result["cnjs"] == expected["cnjs"]
+        assert result["best_cnj_weight"] == expected["best_cnj_weight"]
+        assert result["total_lifted"] == expected["total_lifted"]
+        assert result["age_categories"] == expected["age_categories"]

@@ -6,6 +6,8 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from hashid_field import HashidAutoField
 
+from .utils import age_category
+
 MINIMUM_YEAR_FROM_BIRTH = 5
 
 
@@ -35,32 +37,16 @@ class Athlete(models.Model):
 
     @property
     def full_name(self):
+        """Give full name.
+
+        Format: LASTNAME, firstname.
+        """
         return f"{self.last_name.upper()}, {self.first_name.title()}"
 
     @property
-    def years_from_birth(self) -> int:
-        """Calculatute years from birth."""
-        return datetime.now().year - self.yearborn
-
-    @property
-    def is_youth(self) -> bool:
-        """13-17 years."""
-        return self.years_from_birth >= 13 and self.years_from_birth <= 17
-
-    @property
-    def is_junior(self) -> bool:
-        """15-20 years."""
-        return self.years_from_birth >= 15 and self.years_from_birth <= 20
-
-    @property
-    def is_senior(self) -> bool:
-        """15+ years."""
-        return self.years_from_birth > 15
-
-    @property
-    def is_master(self) -> bool:
-        """35+ years."""
-        return self.years_from_birth > 35
+    def age_categories(self):
+        """Age category of the athlete at the time of the lift."""
+        return age_category(yearborn=self.yearborn)
 
     def __str__(self):
         return self.full_name
