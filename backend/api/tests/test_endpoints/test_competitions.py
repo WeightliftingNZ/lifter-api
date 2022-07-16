@@ -171,3 +171,18 @@ class TestCompetitionCase:
             f"{self.url}/{mock_competition[0].reference_id}"
         )
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+    def test_competition_custom_payload(self, client, mock_lift):
+        """Test competition custom payload."""
+        IDX = 0
+        competition_id = mock_lift[IDX].competition.reference_id
+        response = client.get(f"{self.url}/{str(competition_id)}")
+        assert response.status_code == status.HTTP_200_OK
+        result = response.json()
+        assert result["lifts_count"] == len(
+            [
+                lift
+                for lift in mock_lift
+                if lift.competition.reference_id == competition_id
+            ]
+        )
