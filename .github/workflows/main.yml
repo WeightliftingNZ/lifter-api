@@ -28,27 +28,38 @@ jobs:
           --health-retries 5
 
     steps:
-      - name: Checkout
+      - id: checkout
+        name: Checkout
         uses: actions/checkout@v3
 
-      - name: Install Python
+      - id: install-python
+        name: Install Python
         uses: actions/setup-python@v3
         with:
           python-version: "3.10"
 
-      - name: Install pipenv
+      - id: install-pipenv
+        name: Install pipenv
         run: |
           python -m pip install --upgrade --no-cache-dir pip
           python -m pip install --no-cache-dir pipenv
         shell: bash
 
-      - name: Install dependencies
-        run: |
-          cd backend
-          pipenv install --skip-lock
+      - id: cache-pipfile
+        name: Cache Pipfile
+        uses: actions/cache@v2
+        with:
+          path: ~/.local/share/virtualenvs
+          key: ${{ runner.os }}-python-${{ steps.install-python.outputs.python-version }}-pipenv-${{ hashFiles('Pipfile.lock') }}
 
-      - name: Test with tox
+      - id: install-dependancies
+        name: Install dependencies
         run: |
           cd backend
-          pipenv install --skip-lock tox-gh-actions
-          pipenv run tox
+          pipenv sync --dev --python ${{ steps.install-python.outputs.python-version }}
+
+      - id: test-tox
+        name: Test with tox
+        run: |
+          python -m pip install tox tox-gh-actions
+          tox
