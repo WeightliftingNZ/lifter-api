@@ -1,15 +1,98 @@
+[build-system]
+requires = ["setuptools >= 62.1.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lifter_api"
+# description = "A database and API for weightlifting results"
+version = "0.1.0"
+# requires-python = ">=3.10"
+# keywords = ["weightlifting", "sports"]
+# authors = [
+#   {email = "shivan.sivakumaran@gmail.com"},
+#   {name = "Shivan Sivakumaran"}
+# ]
+# classifiers = [
+#     "Development Status :: 2 - Pre-Alpha",
+#     "License :: OSI Approved :: MIT License",
+#     "Framework :: Django :: 4",
+#     "Framework :: Django",
+#     "Programming Language :: Python :: 3",
+#     "Programming Language :: Python :: 3.10",
+#     "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
+# ]
+# dependencies = [
+#   "django",
+#   "djangorestframework",
+# ]
+# package_dir = "backend"
+# dynamic = ["readme", "license"]
+
+[project.optional-dependencies]
+test = [
+  "pytest",
+  "pytest-cov",
+  "pytest-django",
+  "tox",
+  "mypy",
+  "flake8",
+]
+
+# [tool.setuptools.dynamic]
+# readme = {file ="README.md"}
+# license = {file="LICENSE"}
+
+[tool.setuptools.packages.find]
+where = ["backend"]
+exclude = ["*tests*", "htmlcov"]
+
 [tool.isort]
 profile = "black"
 multi_line_output = 3
-line_length = 88
+line_length = 79
 default_section = "THIRDPARTY"
-known_first_party = ["api", "users"]
-known_third_party = ["config", "dj_rest_auth", "django", "drf_spectacular", "hashid_field", "pytest", "rest_framework", "rest_framework_nested", "rest_framework_simplejwt"]
-
+known_first_party = ["api", "users", "config"]
+known_third_party = ["dj_rest_auth", "django", "drf_spectacular", "hashid_field", "pytest", "rest_framework", "rest_framework_nested", "rest_framework_simplejwt", "setuptools"]
 
 [tool.black]
-line-length = 88
+line-length = 79
 include = '\.pyi?%'
 
+[tool.pyright]
+include = ["backend"]
+exclude = ["backend/.venv"]
+venvPath = "./backend"
+venv = ".venv"
+
+[tool.mypy]
+mypy_path = "./backend"
+plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main"]
+warn_unused_ignores = true
+warn_redundant_casts = true
+check_untyped_defs = true
+strict_optional = false
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+addopts = "--cov-report html"
+testpaths = ["tests"]
+DJANGO_SETTINGS_MODULE = "config.settings"
+python_files = ["tests.py", "test_*.py", "*_tests.py"]
+log_format = "%(asctime)s %(levelname)s %(message)s"
+log_date_format = "%Y-%m-%d %H:%M:%S"
+
+[tool.coverage.run]
+omit = ["tests/*", "*/migrations/*"]
+
+[[tool.mypy.overrides]]
+module = "*.migrations.*"
+ignore_errors = true
+
+[tool.django-stubs]
+django_settings_module = "config.settings"
+
+[tool.mypy_django_plugin]
+ignore_missing_model_attributes = true
+
 [tool.pydocstyle]
-match = ".*/.py"
+ignore = "D100,D101,D102,D103,D104,D105,D106,D107"

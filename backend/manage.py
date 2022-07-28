@@ -1,19 +1,12 @@
 #!/usr/bin/env python
 """Django's command-line utility for administrative tasks."""
-import logging
 import os
 import sys
 
 
 def main():
     """Run administrative tasks."""
-    if "DJANGO_DEVELOPMENT" not in os.environ:
-        logging.warning("DJANGO_DEVELOPMENT not set, defaulting to production set up")
-    settings_file = "config.settings.prod"
-    if os.getenv("DJANGO_DEVELOPMENT") == "yes":
-        logging.debug("Entering development settings")
-        settings_file = "config.settings.dev"
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", settings_file)
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

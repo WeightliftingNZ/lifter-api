@@ -58,26 +58,31 @@ const CompetitionsListPage = () => {
   }
   return (
     <>
+      {console.dir(data)}
       <div className="flex flex-col gap-2">
-        {data?.pages.map((group, idx) => (
-          <div key={idx}>
-            {group.results.map(
-              (competition: CompetitionObject, idx: number) => (
-                <Link
-                  key={idx}
-                  to={`/competitions/${competition.reference_id}`}
-                >
-                  <div className="card">
-                    <h1>{competition.competition_name}</h1>
-                    <p>{competition.location}</p>
-                    <p>{competition.date_start}</p>
-                    <p>Sessions: {competition.session_count}</p>
-                  </div>
-                </Link>
-              )
-            )}
-          </div>
-        ))}
+        {data?.pages[0].count === 0 ? (
+          <div className="error-msg">There are no competitions.</div>
+        ) : (
+          data?.pages.map((group, idx) => (
+            <div key={idx}>
+              {group.results.map(
+                (competition: CompetitionObject, idx: number) => (
+                  <Link
+                    key={idx}
+                    to={`/competitions/${competition.reference_id}`}
+                  >
+                    <div className="card">
+                      <h1>{competition.name}</h1>
+                      <p>{competition.location}</p>
+                      <p>{competition.date_start}</p>
+                      <p>Sessions: {competition.lift_count}</p>
+                    </div>
+                  </Link>
+                )
+              )}
+            </div>
+          ))
+        )}
       </div>
       <div>
         <button
@@ -85,7 +90,7 @@ const CompetitionsListPage = () => {
           onClick={() => fetchNextPage()}
           disabled={!hasNextPage || isFetchingNextPage}
         >
-          {isFetchingNextPage ? <Loading /> : "End"}
+          {isFetchingNextPage ? <Loading /> : "-"}
         </button>
         <div>{isFetching && !isFetchingNextPage ? <Loading /> : null}</div>
       </div>

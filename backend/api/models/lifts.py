@@ -1,70 +1,144 @@
-from config.settings.base import HASHID_FIELD_SALT
-from django.core.validators import ValidationError
+"""Lift model."""
+
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from hashid_field import HashidAutoField
 
-from .sessions import Session
-from .utils import DEFAULT_LIFT_STATUS, LIFT_STATUS, WEIGHT_CATEGORIES, ranking_suffix
+from config.settings import HASHID_FIELD_SALT
+
+from .utils import (
+    DEFAULT_LIFT_STATUS,
+    LIFT_STATUS,
+    WEIGHT_CATEGORIES,
+    age_category,
+    best_lift,
+    ranking_suffixer,
+    validate_attempts,
+)
+from .utils.types import LiftT
+
+
+class Session(models.Model):
+    reference_id = HashidAutoField(
+        primary_key=True, salt=f"sessionmodel_reference_id_{HASHID_FIELD_SALT}"
+    )
+    competition = models.ForeignKey(
+        "api.Competition", on_delete=models.CASCADE
+    )
+    number = models.IntegerField(blank=True)
+    date_time = models.DateTimeField(blank=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["competition", "number"],
+                name="competition_number_unique_combination",
+            ),
+        ]
+
+
+class Team(models.Model):
+    reference_id = HashidAutoField(
+        primary_key=True, salt=f"teammodel_reference_id_{HASHID_FIELD_SALT}"
+    )
+    team = models.CharField(max_length=20, blank=True)
+    location = models.CharField(max_length=128, blank=True)
 
 
 class Lift(models.Model):
+    """Lift model."""
+
     # key fields
     reference_id = HashidAutoField(
         primary_key=True, salt=f"liftmodel_reference_id_{HASHID_FIELD_SALT}"
     )
+    competition = models.ForeignKey(
+        "api.Competition", on_delete=models.CASCADE
+    )
     athlete = models.ForeignKey("api.Athlete", on_delete=models.CASCADE)
-    session = models.ForeignKey("api.Session", on_delete=models.CASCADE)
 
     # other fields
+    session_number = models.IntegerField(null=True)
     lottery_number = models.IntegerField(blank=True)
-    bodyweight = models.DecimalField(blank=True, max_digits=5, decimal_places=2)
+    bodyweight = models.DecimalField(
+        blank=True, max_digits=5, decimal_places=2
+    )
     weight_category = models.CharField(
         max_length=5, choices=WEIGHT_CATEGORIES, blank=True
     )
-    # TODO: create list of clubs?
-    team = models.CharField(max_length=20, blank=True, default="IND")
+    # TODO: if `team` is "GUEST", then lifter is a guest
+    team = models.CharField(max_length=128, blank=True, default="IND")
 
     # lifts fields
+    # snatches
     snatch_first = models.CharField(
-        max_length=6, choices=LIFT_STATUS, blank=True, default=DEFAULT_LIFT_STATUS
+        max_length=6,
+        choices=LIFT_STATUS,
+        blank=True,
+        default=DEFAULT_LIFT_STATUS,
     )
     snatch_first_weight = models.IntegerField(blank=True, default=0)
     snatch_second = models.CharField(
-        max_length=6, choices=LIFT_STATUS, blank=True, default=DEFAULT_LIFT_STATUS
+        max_length=6,
+        choices=LIFT_STATUS,
+        blank=True,
+        default=DEFAULT_LIFT_STATUS,
     )
     snatch_second_weight = models.IntegerField(blank=True, default=0)
     snatch_third = models.CharField(
-        max_length=6, choices=LIFT_STATUS, blank=True, default=DEFAULT_LIFT_STATUS
+        max_length=6,
+        choices=LIFT_STATUS,
+        blank=True,
+        default=DEFAULT_LIFT_STATUS,
     )
     snatch_third_weight = models.IntegerField(blank=True, default=0)
+
+    # cnj
     cnj_first = models.CharField(
-        max_length=6, choices=LIFT_STATUS, blank=True, default=DEFAULT_LIFT_STATUS
+        max_length=6,
+        choices=LIFT_STATUS,
+        blank=True,
+        default=DEFAULT_LIFT_STATUS,
     )
     cnj_first_weight = models.IntegerField(blank=True, default=0)
     cnj_second = models.CharField(
-        max_length=6, choices=LIFT_STATUS, blank=True, default=DEFAULT_LIFT_STATUS
+        max_length=6,
+        choices=LIFT_STATUS,
+        blank=True,
+        default=DEFAULT_LIFT_STATUS,
     )
     cnj_second_weight = models.IntegerField(blank=True, default=0)
     cnj_third = models.CharField(
-        max_length=6, choices=LIFT_STATUS, blank=True, default=DEFAULT_LIFT_STATUS
+        max_length=6,
+        choices=LIFT_STATUS,
+        blank=True,
+        default=DEFAULT_LIFT_STATUS,
     )
     cnj_third_weight = models.IntegerField(blank=True, default=0)
 
     class Meta:
         ordering = ["weight_category", "lottery_number"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["competition", "lottery_number", "weight_category"],
+                name="session_lottery_unique_combination",
+            ),
+            models.UniqueConstraint(
+                fields=["competition", "athlete"],
+                name="competition_athlete_unique_combination",
+            ),
+        ]
 
+    #
     # custom fields
+    #
+    # lifts
+    #
     @property
-    def snatches(self) -> dict[str, dict[str, str | int]]:
-        """Snatches custom field
-
-        e.g. key is attempt, then another key pair to determine if lift is made and what the weight was lifted
-
-        Returns:
-            dict[str, dict[str, str]]: snatch lifts
-        """
+    def snatches(self) -> dict[str, LiftT]:
+        """Snatches custom field."""
         return {
             "1st": {
                 "lift_status": self.snatch_first,
@@ -81,14 +155,8 @@ class Lift(models.Model):
         }
 
     @property
-    def cnjs(self) -> dict[str, dict[str, str]]:
-        """Clean and Jerk custom field
-
-        e.g. key is attempt, then another key pair to determine if lift is made and what the weight was lifted
-
-        Returns:
-            dict[str, dict[str, str]]: clean and jerk lifts
-        """
+    def cnjs(self) -> dict[str, LiftT]:
+        """Clean and Jerk custom field."""
         return {
             "1st": {
                 "lift_status": self.cnj_first,
@@ -106,63 +174,17 @@ class Lift(models.Model):
 
     @property
     def best_snatch_weight(self) -> tuple[str, int]:
-        """Best snatch weight returned
-
-        This will return the lift attempt and the best lift e.g. ("1st", 100)
-
-        If no attempt was made then an empty string and 0 will be returned  e.g ("", 0)
-
-        Returns:
-            tuple[str, int]: e.g. ("1st", 100) and ("", 0)
-        """
-        snatches = [
-            # (if lift was made, weight of lift)
-            ("1st", self.snatch_first, self.snatch_first_weight),
-            ("2nd", self.snatch_second, self.snatch_second_weight),
-            ("3rd", self.snatch_third, self.snatch_third_weight),
-        ]
-        best_snatch = 0
-        best_snatch_attempt = ""
-        for snatch_attempt, snatch_made, snatch_weight in snatches:
-            if snatch_made == "LIFT" and snatch_weight > best_snatch:
-                best_snatch = snatch_weight
-                best_snatch_attempt = snatch_attempt
-        return best_snatch_attempt, best_snatch
+        """Best snatch weight returned."""
+        return best_lift(self.snatches)
 
     @property
-    def best_cnj_weight(self) -> tuple[str, str]:
-        """Best clean and jerk returned
-
-        This will return the lift attempt and the best lift e.g. ("1st", 100)
-
-        If no attempt was made then an empty string and 0 will be returned  e.g ("", 0)
-
-        Returns:
-            tuple[str, int]: e.g. ("1st", 100) and ("", 0)
-        """
-        cnjs = [
-            ("1st", self.cnj_first, self.cnj_first_weight),
-            ("2nd", self.cnj_second, self.cnj_second_weight),
-            ("3rd", self.cnj_third, self.cnj_third_weight),
-        ]
-
-        best_cnj = 0
-        best_cnj_attempt = ""
-        for cnj_attempt, cnj_made, cnj_weight in cnjs:
-            if cnj_made == "LIFT" and cnj_weight > best_cnj:
-                best_cnj = cnj_weight
-                best_cnj_attempt = cnj_attempt
-        return best_cnj_attempt, best_cnj
+    def best_cnj_weight(self) -> tuple[str, int]:
+        """Best clean and jerk returned."""
+        return best_lift(self.cnjs)
 
     @property
     def total_lifted(self) -> int:
-        """Returns the calculated total
-
-        This takes the best snatch and the best clean and jerk to work out the total. If one lift if not completed, then 0 will be returned.
-
-        Returns:
-            int: total e.g 200, 0
-        """
+        """Calculate total."""
         total_lifted = 0
         snatch_lifts = [
             self.snatch_first,
@@ -181,20 +203,34 @@ class Lift(models.Model):
             total_lifted = self.best_snatch_weight[1] + self.best_cnj_weight[1]
         return total_lifted
 
+    #
+    # age
+    #
+    @property
+    def age_categories(self):
+        """Age category of the athlete at the time of the lift."""
+        return age_category(
+            yearborn=self.athlete.yearborn,
+            competition_year=self.competition.date_start.year,
+        )
+
     @cached_property
-    def placing(self) -> str:
-        """Returns the placing of the athlete
+    # TODO: placings for junior, senior etc
+    def placing(self):
+        """Determine placing of the athlete from weightclass.
 
-        e.g. 1st, 11th and '-' if no total (i.e. 0) is made
-
-        Returns:
-            str: placing (e.g. '1st', '11th' '-')
+        How placing is determined in weightlifting:
+        1. Best total
+        - If totals are tied, then we need to determine who achieved the total
+        first.
+        2. Lowest clean and jerk
+        3. Least number of attempts
+        4. Lowest lottery number
         """
         if self.total_lifted == 0:
             return "-"
-
         query = Lift.objects.filter(
-            session=self.session, weight_category=self.weight_category
+            competition=self.competition, weight_category=self.weight_category
         )
         lifts = [
             {
@@ -206,116 +242,42 @@ class Lift(models.Model):
             for q in query
             if q.total_lifted > 0  # ensures sorted lifts have a total
         ]
-
-        def sort_lift_key(lift: dict[str, str | int]) -> tuple[int, int, int, int]:
-            """This gives the keys for sorting
-
-            Args:
-                lift (dict[str, str | int]): this contains the lift data
-
-            Returns:
-                tuple[int, int, int, int]: the keys to be used in the sorted parameter
-            """
-            keys = []
-            # total
-            keys.append(-lift["total_lifted"])
-            # lowest cnj
-            keys.append(lift["best_cnj_weight"][1])
-            # least attempts
-            keys.append(lift["best_cnj_weight"][0])
-            # lott number
-            keys.append(lift["lottery_number"])
-            return tuple(keys)
-
-        sorted_lifts = sorted(lifts, key=sort_lift_key)
+        sorted_lifts = sorted(
+            lifts,
+            key=lambda x: (
+                -x["total_lifted"],
+                x["best_cnj_weight"][1],
+                x["best_cnj_weight"][0],
+                x["lottery_number"],
+            ),
+        )
         sorted_lifts_ids = [lift["reference_id"] for lift in sorted_lifts]
-        return ranking_suffix(sorted_lifts_ids.index(self.reference_id) + 1)
+        return ranking_suffixer(sorted_lifts_ids.index(self.reference_id) + 1)
 
     def clean(self, *args, **kwargs):
-        """Customised validation
-        1. Check if an athlete is already in a competition (if new addition, not new instance)
-        2. Check if lottery_number's are used more than once per session, this cannot be entered as a unique=True since lifts are shared in different sessions/competitions (only if new instance, not update)
-        3. If a lift is made, then the next lift has to be an increment
-        4. Older
+        """Customise validation.
+
+        0. Validation attempts to ensure they are increasing depending on the
+        current lift status.
         """
-        # need to check if athlete is newly created or an update
-        # this validation does not need to run if it is an update
-        if not Lift.objects.filter(reference_id=self.reference_id).exists():
-            # 1. check athlete not duplicated in a competition
-            sessions = Session.objects.filter(competition=self.session.competition)
-            for session in sessions:
-                if Lift.objects.filter(
-                    session=session.reference_id, athlete=self.athlete
-                ).exists():
-                    raise ValidationError(_(f"{self.athlete} already in competition."))
+        errors = []
+        errors.extend(
+            validate_attempts(attempts=self.snatches, lift_type="snatch")
+        )
+        errors.extend(
+            validate_attempts(attempts=self.cnjs, lift_type="clean and jerk")
+        )
 
-            # 2. check lottery_number
-            if Lift.objects.filter(
-                session=self.session,
-                lottery_number=self.lottery_number,
-            ).exists():
-                raise ValidationError(
-                    _(f"{self.lottery_number} already exists in this session.")
-                )
+        if len(errors) > 0:
+            error_msg = "\n".join(errors)
+            raise ValidationError(
+                _("%(error_msg)s"),
+                code="Invalid Attempt",
+                params={
+                    "error_msg": error_msg,
+                },
+            )
 
-        DICT_PLACING = {1: "1st", 2: "2nd", 3: "3rd"}
-        snatches = self.snatches
-        lst_snatches = list(snatches.values())
-
-        for i, snatch in enumerate(lst_snatches):
-            #     # if lift is made
-            #     # the next weight must be greater than previous, unless it's DNA
-            if i < 2:
-                if (
-                    snatch["lift_status"] == "LIFT"
-                    and lst_snatches[i + 1]["lift_status"] != "DNA"
-                    and snatch["weight"] >= lst_snatches[i + 1]["weight"]
-                ):
-                    # if lift is made
-                    # current weight must be greater than previous
-                    raise ValidationError(
-                        _(
-                            f"{DICT_PLACING[i+1]} snatch cannot be lower or same than previous lift if a good lift."
-                        )
-                    )
-                if (
-                    snatch["lift_status"] == "NOLIFT"
-                    and lst_snatches[i + 1]["lift_status"] != "DNA"
-                    and snatch["weight"] > lst_snatches[i + 1]["weight"]
-                ):
-                    # if lift is not made or not attempted
-                    # current weight must be same or greater than previous
-                    raise ValidationError(
-                        _(
-                            f"{DICT_PLACING[i+1]} snatch cannot be less than previous lift."
-                        )
-                    )
-
-        cnjs = self.cnjs
-        lst_cnjs = list(cnjs.values())
-
-        for i, cnj in enumerate(lst_cnjs):
-            if i < 2:
-                if (
-                    cnj["lift_status"] == "LIFT"
-                    and lst_cnjs[i + 1]["lift_status"] != "DNA"
-                    and cnj["weight"] >= lst_cnjs[i + 1]["weight"]
-                ):
-                    raise ValidationError(
-                        _(
-                            f"{DICT_PLACING[i+1]} clean and jerk cannot be lower or same than previous lift if a good lift."
-                        )
-                    )
-                if (
-                    cnj["lift_status"] == "LIFT"
-                    and lst_cnjs[i + 1]["lift_status"] != "DNA"
-                    and cnj["weight"] > lst_cnjs[i + 1]["weight"]
-                ):
-                    raise ValidationError(
-                        _(
-                            f"{DICT_PLACING[i+1]} clean and jerk cannot be less than previous lift."
-                        )
-                    )
         super().clean(*args, **kwargs)
 
     def save(self, *args, **kwargs):
@@ -323,4 +285,5 @@ class Lift(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.athlete} - {self.session.competition} {self.session.competition.date_start.year}"
+        """__str__."""
+        return f"{self.athlete} - {self.competition} {self.competition.date_start.year}"

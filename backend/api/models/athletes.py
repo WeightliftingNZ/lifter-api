@@ -1,8 +1,34 @@
-from datetime import datetime
+"""Athlete model.
 
-from config.settings.base import HASHID_FIELD_SALT
+This is all the Athlete model.
+"""
+
+from datetime import datetime
+from typing import Any
+
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 from hashid_field import HashidAutoField
+
+from config.settings import HASHID_FIELD_SALT
+
+from .utils import age_category
+from .utils.types import AgeCategories
+
+MINIMUM_YEAR_FROM_BIRTH = 5
+
+
+def check_yearborn(yearborn: Any) -> None:
+    """Check is the start date is before the end date."""
+    # TODO: What is the youngest someone can lift?
+    years_from_birth = datetime.now().year - yearborn
+    if years_from_birth < MINIMUM_YEAR_FROM_BIRTH:
+        raise ValidationError(
+            _("Years after %(year)s not accepted."),
+            code="invalid year",
+            params={"year": datetime.now().year - MINIMUM_YEAR_FROM_BIRTH},
+        )
 
 
 class Athlete(models.Model):
@@ -11,39 +37,23 @@ class Athlete(models.Model):
     )
     first_name = models.CharField(max_length=128)
     last_name = models.CharField(max_length=128)
-    yearborn = models.IntegerField(default=1900)
+    yearborn = models.IntegerField(default=1900, validators=[check_yearborn])
 
     class Meta:
         ordering = ["last_name", "first_name"]
 
     @property
-    def full_name(self):
+    def full_name(self) -> str:
+        """Give full name.
+
+        Format: LASTNAME, firstname.
+        """
         return f"{self.last_name.upper()}, {self.first_name.title()}"
 
     @property
-    def years_from_birth(self) -> int:
-        """calculatute years from birth"""
-        return datetime.now().year - self.yearborn
+    def age_categories(self) -> AgeCategories:
+        """Age category of the athlete at the time of the lift."""
+        return age_category(yearborn=self.yearborn)
 
-    @property
-    def is_youth(self) -> bool:
-        """13-17 years"""
-        return self.years_from_birth >= 13 and self.years_from_birth <= 17
-
-    @property
-    def is_junior(self) -> bool:
-        """15-20 years"""
-        return self.years_from_birth >= 15 and self.years_from_birth <= 20
-
-    @property
-    def is_senior(self) -> bool:
-        """15+ years"""
-        return self.years_from_birth > 15
-
-    @property
-    def is_master(self) -> bool:
-        """35+ years"""
-        return self.years_from_birth > 35
-
-    def __str__(self):
+    def __str__(self) -> str:
         return self.full_name

@@ -14,8 +14,7 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data/
       - pgconf:/etc/postgresql
-      - pglog:/var/log/postgresql
-    restart: always
+      - pglog:/var/log/postgresql restart: always
 
 volumes:
   pgdata:
