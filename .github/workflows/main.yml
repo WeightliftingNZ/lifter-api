@@ -44,9 +44,11 @@ jobs:
 
       - name: Install dependencies
         run: |
+          cd backend
           pipenv install --skip-lock
 
       - name: Test with tox
         run: |
+          cd backend
           pipenv install --skip-lock tox-gh-actions
           pipenv run tox
