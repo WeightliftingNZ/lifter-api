@@ -1,8 +1,9 @@
 """Lift viewset."""
 
+from rest_framework import viewsets
+
 from api.models import Lift
 from api.serializers import LiftSerializer
-from rest_framework import viewsets
 
 
 class LiftViewSet(viewsets.ModelViewSet):

@@ -23,13 +23,13 @@ class TestLiftCase:
         response = client.get(f"{self.url}/{str(competition_id)}/lifts")
         assert response.status_code == status.HTTP_200_OK
         result = response.json()
-        assert result["count"] >= 1
+        assert len(result) >= 1
         mock_lift_ids = [
             lift.reference_id
             for lift in mock_lift
             if lift.competition.reference_id == competition_id
         ]
-        result_lift_ids = [lift["reference_id"] for lift in result["results"]]
+        result_lift_ids = [lift["reference_id"] for lift in result]
         assert set(mock_lift_ids) == set(result_lift_ids)
 
     def test_get_lift(self, client, mock_lift):
@@ -159,9 +159,35 @@ class TestLiftCase:
                 },
                 pytest.raises(
                     ValidationError,
-                    match="2nd snatch cannot be lower or same than previous lift if a good lift.",
+                    match=r"1st snatch is a GOOD lift. Next attempt cannot be lower or same than previous lift.",
                 ),
                 id="2nd snatch not incremented",
+            ),
+            pytest.param(
+                {
+                    "snatch_first": "LIFT",
+                    "snatch_first_weight": 101,
+                    "snatch_second": "LIFT",
+                    "snatch_second_weight": 101,
+                    "snatch_third": "LIFT",
+                    "snatch_third_weight": 102,
+                    "cnj_first": "NOLIFT",
+                    "cnj_first_weight": 100,
+                    "cnj_second": "LIFT",
+                    "cnj_second_weight": 99,
+                    "cnj_third": "DNA",
+                    "cnj_third_weight": 0,
+                    "bodyweight": 102.00,
+                    "weight_category": "M102+",
+                    "team": "TEST",
+                    "session_number": 0,
+                    "lottery_number": 3,
+                },
+                pytest.raises(
+                    ValidationError,
+                    match=r"1st snatch is a GOOD lift. Next attempt cannot be lower or same than previous lift.\\n1st clean and jerk is a NO lift. Next attempt cannot be less than previous lift.",
+                ),
+                id="Multiple attempts do not increment",
             ),
         ],
     )
@@ -278,7 +304,7 @@ class TestLiftCase:
                 },
                 pytest.raises(
                     ValidationError,
-                    match="Lift with this Competition, Lottery number and Session number already exists.",
+                    match="Lift with this Competition, Lottery number and Weight category already exists.",
                 ),
                 id="Same lottery number in same competition",
             ),
@@ -428,9 +454,10 @@ class TestLiftCase:
         mock_competition,
     ):
         """Anonymous users cannot create lifts."""
-        data = {}
-        data["competition"] = str(mock_competition[0].reference_id)
-        data["athlete"] = str(mock_athlete[0].reference_id)
+        data = {
+            "competition": str(mock_competition[0].reference_id),
+            "athlete": str(mock_athlete[0].reference_id),
+        }
         response = client.post(
             f"{self.url}/{str(mock_competition[0].reference_id)}/lifts",
             data=data,
@@ -487,7 +514,7 @@ class TestLiftCase:
                 },
                 pytest.raises(
                     ValidationError,
-                    match="Lift with this Competition, Lottery number and Session number already exists.",
+                    match="Lift with this Competition, Lottery number and Weight category already exists.",
                 ),
                 id="Edit same lottery number in same competition",
             ),
@@ -635,7 +662,7 @@ class TestLiftCase:
                         "is_master": False,
                     },
                 },
-                id="Normal Senior"
+                id="Normal Senior",
             ),
             pytest.param(
                 {
@@ -683,9 +710,9 @@ class TestLiftCase:
                         "is_junior": True,
                         "is_senior": True,
                         "is_master": False,
-                        },
+                    },
                 },
-                id="Youth, Junior, Senior"
+                id="Youth, Junior, Senior",
             ),
         ],
     )

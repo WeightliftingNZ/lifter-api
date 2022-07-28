@@ -1,15 +1,55 @@
-from config.settings.base import HASHID_FIELD_SALT
-from django.core.validators import ValidationError
+"""Lift model."""
+
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from hashid_field import HashidAutoField
 
-from .utils import (DEFAULT_LIFT_STATUS, LIFT_STATUS, WEIGHT_CATEGORIES,
-                    age_category, key_sort_lifts, ranking_suffixer)
+from config.settings import HASHID_FIELD_SALT
+
+from .utils import (
+    DEFAULT_LIFT_STATUS,
+    LIFT_STATUS,
+    WEIGHT_CATEGORIES,
+    age_category,
+    best_lift,
+    ranking_suffixer,
+    validate_attempts,
+)
+from .utils.types import LiftT
+
+
+class Session(models.Model):
+    reference_id = HashidAutoField(
+        primary_key=True, salt=f"sessionmodel_reference_id_{HASHID_FIELD_SALT}"
+    )
+    competition = models.ForeignKey(
+        "api.Competition", on_delete=models.CASCADE
+    )
+    number = models.IntegerField(blank=True)
+    date_time = models.DateTimeField(blank=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["competition", "number"],
+                name="competition_number_unique_combination",
+            ),
+        ]
+
+
+class Team(models.Model):
+    reference_id = HashidAutoField(
+        primary_key=True, salt=f"teammodel_reference_id_{HASHID_FIELD_SALT}"
+    )
+    team = models.CharField(max_length=20, blank=True)
+    location = models.CharField(max_length=128, blank=True)
 
 
 class Lift(models.Model):
+    """Lift model."""
+
     # key fields
     reference_id = HashidAutoField(
         primary_key=True, salt=f"liftmodel_reference_id_{HASHID_FIELD_SALT}"
@@ -29,9 +69,10 @@ class Lift(models.Model):
         max_length=5, choices=WEIGHT_CATEGORIES, blank=True
     )
     # TODO: if `team` is "GUEST", then lifter is a guest
-    team = models.CharField(max_length=20, blank=True, default="IND")
+    team = models.CharField(max_length=128, blank=True, default="IND")
 
     # lifts fields
+    # snatches
     snatch_first = models.CharField(
         max_length=6,
         choices=LIFT_STATUS,
@@ -53,6 +94,8 @@ class Lift(models.Model):
         default=DEFAULT_LIFT_STATUS,
     )
     snatch_third_weight = models.IntegerField(blank=True, default=0)
+
+    # cnj
     cnj_first = models.CharField(
         max_length=6,
         choices=LIFT_STATUS,
@@ -79,7 +122,7 @@ class Lift(models.Model):
         ordering = ["weight_category", "lottery_number"]
         constraints = [
             models.UniqueConstraint(
-                fields=["competition", "lottery_number", "session_number"],
+                fields=["competition", "lottery_number", "weight_category"],
                 name="session_lottery_unique_combination",
             ),
             models.UniqueConstraint(
@@ -94,7 +137,7 @@ class Lift(models.Model):
     # lifts
     #
     @property
-    def snatches(self):
+    def snatches(self) -> dict[str, LiftT]:
         """Snatches custom field."""
         return {
             "1st": {
@@ -112,7 +155,7 @@ class Lift(models.Model):
         }
 
     @property
-    def cnjs(self):
+    def cnjs(self) -> dict[str, LiftT]:
         """Clean and Jerk custom field."""
         return {
             "1st": {
@@ -130,38 +173,14 @@ class Lift(models.Model):
         }
 
     @property
-    def best_snatch_weight(self):
+    def best_snatch_weight(self) -> tuple[str, int]:
         """Best snatch weight returned."""
-        snatches = [
-            # (if lift was made, weight of lift)
-            ("1st", self.snatch_first, self.snatch_first_weight),
-            ("2nd", self.snatch_second, self.snatch_second_weight),
-            ("3rd", self.snatch_third, self.snatch_third_weight),
-        ]
-        best_snatch = 0
-        best_snatch_attempt = ""
-        for snatch_attempt, snatch_made, snatch_weight in snatches:
-            if snatch_made == "LIFT" and snatch_weight > best_snatch:
-                best_snatch = snatch_weight
-                best_snatch_attempt = snatch_attempt
-        return best_snatch_attempt, best_snatch
+        return best_lift(self.snatches)
 
     @property
-    def best_cnj_weight(self):
+    def best_cnj_weight(self) -> tuple[str, int]:
         """Best clean and jerk returned."""
-        cnjs = [
-            ("1st", self.cnj_first, self.cnj_first_weight),
-            ("2nd", self.cnj_second, self.cnj_second_weight),
-            ("3rd", self.cnj_third, self.cnj_third_weight),
-        ]
-
-        best_cnj = 0
-        best_cnj_attempt = ""
-        for cnj_attempt, cnj_made, cnj_weight in cnjs:
-            if cnj_made == "LIFT" and cnj_weight > best_cnj:
-                best_cnj = cnj_weight
-                best_cnj_attempt = cnj_attempt
-        return best_cnj_attempt, best_cnj
+        return best_lift(self.cnjs)
 
     @property
     def total_lifted(self) -> int:
@@ -191,14 +210,23 @@ class Lift(models.Model):
     def age_categories(self):
         """Age category of the athlete at the time of the lift."""
         return age_category(
-                yearborn=self.athlete.yearborn,
-                competition_year=self.competition.date_start.year
-                )
+            yearborn=self.athlete.yearborn,
+            competition_year=self.competition.date_start.year,
+        )
 
     @cached_property
     # TODO: placings for junior, senior etc
     def placing(self):
-        """Determine placing of the athlete from weightclass."""
+        """Determine placing of the athlete from weightclass.
+
+        How placing is determined in weightlifting:
+        1. Best total
+        - If totals are tied, then we need to determine who achieved the total
+        first.
+        2. Lowest clean and jerk
+        3. Least number of attempts
+        4. Lowest lottery number
+        """
         if self.total_lifted == 0:
             return "-"
         query = Lift.objects.filter(
@@ -214,73 +242,42 @@ class Lift(models.Model):
             for q in query
             if q.total_lifted > 0  # ensures sorted lifts have a total
         ]
-        sorted_lifts = sorted(lifts, key=key_sort_lifts)
+        sorted_lifts = sorted(
+            lifts,
+            key=lambda x: (
+                -x["total_lifted"],
+                x["best_cnj_weight"][1],
+                x["best_cnj_weight"][0],
+                x["lottery_number"],
+            ),
+        )
         sorted_lifts_ids = [lift["reference_id"] for lift in sorted_lifts]
         return ranking_suffixer(sorted_lifts_ids.index(self.reference_id) + 1)
 
     def clean(self, *args, **kwargs):
         """Customise validation.
 
-        If a lift is made, then the next lift has to be an increment
+        0. Validation attempts to ensure they are increasing depending on the
+        current lift status.
         """
-        DICT_PLACING = {1: "1st", 2: "2nd", 3: "3rd"}
-        snatches = self.snatches
-        lst_snatches = list(snatches.values())
+        errors = []
+        errors.extend(
+            validate_attempts(attempts=self.snatches, lift_type="snatch")
+        )
+        errors.extend(
+            validate_attempts(attempts=self.cnjs, lift_type="clean and jerk")
+        )
 
-        for i, snatch in enumerate(lst_snatches):
-            # if lift is made
-            # the next weight must be greater than previous, unless it's DNA
-            if i < 2:
-                if (
-                    snatch["lift_status"] == "LIFT"
-                    and lst_snatches[i + 1]["lift_status"] != "DNA"
-                    and snatch["weight"] >= lst_snatches[i + 1]["weight"]
-                ):
-                    # if lift is made
-                    # current weight must be greater than previous
-                    raise ValidationError(
-                        _(
-                            f"{DICT_PLACING[i+2]} snatch cannot be lower or same than previous lift if a good lift."
-                        )
-                    )
-                if (
-                    snatch["lift_status"] == "NOLIFT"
-                    and lst_snatches[i + 1]["lift_status"] != "DNA"
-                    and snatch["weight"] > lst_snatches[i + 1]["weight"]
-                ):
-                    # if lift is not made or not attempted
-                    # current weight must be same or greater than previous
-                    raise ValidationError(
-                        _(
-                            f"{DICT_PLACING[i+2]} snatch cannot be less than previous lift."
-                        )
-                    )
+        if len(errors) > 0:
+            error_msg = "\n".join(errors)
+            raise ValidationError(
+                _("%(error_msg)s"),
+                code="Invalid Attempt",
+                params={
+                    "error_msg": error_msg,
+                },
+            )
 
-        cnjs = self.cnjs
-        lst_cnjs = list(cnjs.values())
-
-        for i, cnj in enumerate(lst_cnjs):
-            if i < 2:
-                if (
-                    cnj["lift_status"] == "LIFT"
-                    and lst_cnjs[i + 1]["lift_status"] != "DNA"
-                    and cnj["weight"] >= lst_cnjs[i + 1]["weight"]
-                ):
-                    raise ValidationError(
-                        _(
-                            f"{DICT_PLACING[i+2]} clean and jerk cannot be lower or same than previous lift if a good lift."
-                        )
-                    )
-                if (
-                    cnj["lift_status"] == "LIFT"
-                    and lst_cnjs[i + 1]["lift_status"] != "DNA"
-                    and cnj["weight"] > lst_cnjs[i + 1]["weight"]
-                ):
-                    raise ValidationError(
-                        _(
-                            f"{DICT_PLACING[i+2]} clean and jerk cannot be less than previous lift."
-                        )
-                    )
         super().clean(*args, **kwargs)
 
     def save(self, *args, **kwargs):

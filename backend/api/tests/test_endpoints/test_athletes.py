@@ -1,14 +1,9 @@
-"""Test athlete endpoints.
-
-Athletes to retrieve, create, edit and delete.
-"""
-from contextlib import nullcontext as does_not_raise
 from datetime import datetime
 
 import pytest
-from api.models.athletes import MINIMUM_YEAR_FROM_BIRTH
-from django.core.exceptions import ValidationError
 from rest_framework import status
+
+from api.models.athletes import MINIMUM_YEAR_FROM_BIRTH
 
 pytestmark = pytest.mark.django_db
 
@@ -175,32 +170,34 @@ class TestAthleteCase:
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
     @pytest.mark.parametrize(
-            "test_input,expected", [
-                pytest.param(
-                    {
+        "test_input,expected",
+        [
+            pytest.param(
+                {
                     "first_name": "First",
                     "last_name": "Last",
                     "yearborn": datetime.now().year - 21,
-                        },
-                    {
-                        "full_name": "LAST, First",
-                        "age_categories": {
-                            "is_youth": False,
-                            "is_junior": False,
-                            "is_senior": True,
-                            "is_master": False,
-                            },
-                        },
-                    id="Normal"
-                    )
-                ]
+                },
+                {
+                    "full_name": "LAST, First",
+                    "age_categories": {
+                        "is_youth": False,
+                        "is_junior": False,
+                        "is_senior": True,
+                        "is_master": False,
+                    },
+                },
+                id="Normal",
             )
-    def test_athlete_payload_custom_properties(self, admin_client, test_input, expected):
+        ],
+    )
+    def test_athlete_payload_custom_properties(
+        self, admin_client, test_input, expected
+    ):
         """Test athlete payload for custom properties."""
         response = admin_client.post(
-                self.url,
-                data=test_input,
-                content_type="application/json")
+            self.url, data=test_input, content_type="application/json"
+        )
         assert response.status_code == status.HTTP_201_CREATED
         result = response.json()
         assert result["full_name"] == expected["full_name"]

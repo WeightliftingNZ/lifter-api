@@ -249,3 +249,9 @@ dist
 
 # build
 build/
+
+#MacOS
+.DS_Store
+
+# Django
+schema.yml

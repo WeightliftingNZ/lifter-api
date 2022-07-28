@@ -1,4 +1,5 @@
-from django import forms
+"""User forms."""
+
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 
 from .models import CustomUser

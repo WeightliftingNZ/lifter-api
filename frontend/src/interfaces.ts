@@ -14,12 +14,11 @@ export interface AthleteObject {
 export interface CompetitionObject {
   reference_id?: string;
   url?: string;
-  competition_name?: string;
+  name?: string;
   location?: string;
   lift_count?: number;
   date_end?: string;
   date_start?: string;
-  session_count?: number;
 }
 
 export interface LiftObject {
@@ -43,7 +42,6 @@ export interface LiftObject {
   team: string;
   lottery_number: number;
   session_number: number;
-  session_datetime: string;
 }
 
 export interface CompetitionDetailObject extends CompetitionObject {

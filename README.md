@@ -3,11 +3,11 @@
 [![Build](https://github.com/ChristchurchCityWeightlifting/lifter-api/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/ChristchurchCityWeightlifting/lifter-api/actions/workflows/main.yml)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-This is a database of all lifts and competitions in the past, present and future!
+This is a database of all lifts and competitions in the past, present and future.
 
 ## About
 
-[Video Outlining the project](https://youtu.be/1kObqjeRs2I).
+[Here is a video outlining the project](https://youtu.be/1kObqjeRs2I).
 
 Instead of using .pdf's and Excel files to display competition results, I wanted to make a database for [Weightlifting New Zealand](https://weightlifting.nz). This allows more flexibility in reviewing results. Another bonus is that we can peek into an individual's athletic career.
 
@@ -53,11 +53,9 @@ make run-frontend
 
 ## Lifter API Wrapper
 
-There is also a wrapper if you want to perform some cool data analytics!
+[Here](https://github.com/WeightliftingNZ/lifter-api-wrapper) is an API wrapper implementation to allow ease of use with the RESTful framework.
 
-[Check it out Lifter API Wrapper!](https://github.com/WeightliftingNZ/lifter-api-wrapper).
-
-[It is also available on PyPI!](https://pypi.org/lifter-api-wrapper)
+[It is also available on PyPI](https://pypi.org/lifter-api-wrapper).
 
 You can easily install it:
 
@@ -67,11 +65,18 @@ pip install lifter-api-wrapper
 
 ```
 
-## Todo:
+## ToDos
 
-- Write a blog post
-- Add more data onto the main database
+| Release | Functionality                                                 | Time Required | Likely Delivery |
+| ------- | ------------------------------------------------------------- | ------------- | --------------- |
+| #1      | Import from OWLCMS and Excel results from 2022 onwards        | 1-2 months    | Sep/22          |
+| #2      | Visual and usability review                                   | 1-2 months    | Sep/22          |
+| #3      | Indication of Standards met based on comp results for lifters | 1-2 months    | Oct/22          |
+| #4      | Lifter directory and history based on available results       | 3-4 months    | Jan/23          |
+| #5      | Historical pre 2022 results import                            | 4-6 months    | Jun/23          |
+| #6      | Records directory                                             | 3-4 months    | Aug/23          |
+| #7      | Records integration with OWLCMS (currently in Alpha)          | 1-2 months    | ??              |
 
 ## Contribution
 
-I will sort this out soon. I'm currently working on an MVP.
+I will sort this out soon!

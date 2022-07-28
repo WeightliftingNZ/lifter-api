@@ -33,9 +33,7 @@ class TestCompetitionCase:
         response = client.get(f"{self.url}/{mock_competition[0].reference_id}")
         assert response.status_code == status.HTTP_200_OK
         result = response.json()
-        assert (
-            mock_competition[0].competition_name == result["competition_name"]
-        )
+        assert mock_competition[0].name == result["name"]
 
     @pytest.mark.skip("There is no find functionality!")
     def test_find_competition(self):
@@ -51,7 +49,7 @@ class TestCompetitionCase:
                     "date_start": "2022-01-01",
                     "date_end": "2022-01-02",
                     "location": "Mock",
-                    "competition_name": "Competition",
+                    "name": "Competition",
                 },
                 status.HTTP_201_CREATED,
             ),
@@ -61,7 +59,7 @@ class TestCompetitionCase:
                     "date_start": "2022-13-01",
                     "date_end": "2022-01-02",
                     "location": "Mock",
-                    "competition_name": "Competition",
+                    "name": "Competition",
                 },
                 status.HTTP_400_BAD_REQUEST,
             ),
@@ -84,7 +82,7 @@ class TestCompetitionCase:
                     "date_start": "2022-01-01",
                     "date_end": "2022-01-02",
                     "location": "Mock",
-                    "competition_name": "Competition",
+                    "name": "Competition",
                 },
                 does_not_raise(),
                 id="Normal input.",
@@ -94,7 +92,7 @@ class TestCompetitionCase:
                     "date_start": "2022-01-03",
                     "date_end": "2022-01-02",
                     "location": "Mock",
-                    "competition_name": "Competition",
+                    "name": "Competition",
                 },
                 pytest.raises(
                     ValidationError,
@@ -126,7 +124,7 @@ class TestCompetitionCase:
         [
             (
                 {
-                    "competition_name": "Edited Name",
+                    "name": "Edited Name",
                 },
                 status.HTTP_200_OK,
             ),

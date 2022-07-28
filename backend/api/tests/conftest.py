@@ -34,24 +34,24 @@ def mock_athlete(django_db_blocker) -> list[Athlete]:
 
 
 @pytest.fixture
-def mock_competition(django_db_blocker) -> dict[str, str | dict[str, str]]:
+def mock_competition(django_db_blocker) -> list[Competition]:
     """Mock competition data.
 
     Returns:
-        dict[str, str | dict[str, str]]
+        list[Competition]: list of mock competitions
     """
     competitions = [
         {
             "date_start": "2022-01-01",
             "date_end": "2022-01-01",
             "location": "One",
-            "competition_name": "Competition One",
+            "name": "Competition One",
         },
         {
             "date_start": "2022-02-02",
             "date_end": "2022-02-02",
             "location": "Two",
-            "competition_name": "Competition Two",
+            "name": "Competition Two",
         },
     ]
     created = []
@@ -62,13 +62,11 @@ def mock_competition(django_db_blocker) -> dict[str, str | dict[str, str]]:
 
 
 @pytest.fixture
-def mock_lift(
-    django_db_blocker, mock_competition, mock_athlete
-) -> dict[str, str | dict[str, str]]:
+def mock_lift(django_db_blocker, mock_competition, mock_athlete) -> list[Lift]:
     """Mock lift data.
 
     Returns:
-        dict[str, str | dict[str, str]]
+        list[Lift]: list of mock lifts
     """
     lifts = [
         {  # 0

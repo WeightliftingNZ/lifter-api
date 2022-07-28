@@ -109,30 +109,15 @@ export const liftColumns = [
     },
   },
   {
-    Header: "Results",
-    columns: [
-      {
-        Header: "S",
-        accessor: "best_snatch_weight.1",
-        Cell: ({ cell }: { cell: any }) => {
-          return <div>{cell.value === 0 ? "-" : cell.value}</div>;
-        },
-      },
-      {
-        Header: "CJ",
-        accessor: "best_cnj_weight.1",
-        Cell: ({ cell }: { cell: any }) => {
-          return <div>{cell.value === 0 ? "-" : cell.value}</div>;
-        },
-      },
-      {
-        Header: "T",
-        accessor: "total_lifted",
-        Cell: ({ cell }: { cell: any }) => {
-          return <div>{cell.value === 0 ? "-" : cell.value}</div>;
-        },
-      },
-    ],
+    Header: "Total",
+    accessor: "total_lifted",
+    Cell: ({ cell }: { cell: any }) => {
+      return (
+        <div>
+          <b>{cell.value === 0 ? "-" : cell.value}</b>
+        </div>
+      );
+    },
   },
   {
     Header: "Placing",

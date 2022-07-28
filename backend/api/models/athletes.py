@@ -1,27 +1,34 @@
-from datetime import datetime
+"""Athlete model.
 
-from config.settings.base import HASHID_FIELD_SALT
-from django.core.validators import ValidationError
+This is all the Athlete model.
+"""
+
+from datetime import datetime
+from typing import Any
+
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from hashid_field import HashidAutoField
 
+from config.settings import HASHID_FIELD_SALT
+
 from .utils import age_category
+from .utils.types import AgeCategories
 
 MINIMUM_YEAR_FROM_BIRTH = 5
 
 
-def check_yearborn(yearborn):
+def check_yearborn(yearborn: Any) -> None:
     """Check is the start date is before the end date."""
     # TODO: What is the youngest someone can lift?
     years_from_birth = datetime.now().year - yearborn
     if years_from_birth < MINIMUM_YEAR_FROM_BIRTH:
         raise ValidationError(
-            _(
-                f"Years after {datetime.now().year - MINIMUM_YEAR_FROM_BIRTH} not accepted."
-            )
+            _("Years after %(year)s not accepted."),
+            code="invalid year",
+            params={"year": datetime.now().year - MINIMUM_YEAR_FROM_BIRTH},
         )
-    return yearborn
 
 
 class Athlete(models.Model):
@@ -36,7 +43,7 @@ class Athlete(models.Model):
         ordering = ["last_name", "first_name"]
 
     @property
-    def full_name(self):
+    def full_name(self) -> str:
         """Give full name.
 
         Format: LASTNAME, firstname.
@@ -44,9 +51,9 @@ class Athlete(models.Model):
         return f"{self.last_name.upper()}, {self.first_name.title()}"
 
     @property
-    def age_categories(self):
+    def age_categories(self) -> AgeCategories:
         """Age category of the athlete at the time of the lift."""
         return age_category(yearborn=self.yearborn)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.full_name

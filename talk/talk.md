@@ -101,7 +101,7 @@ Rules:
 
 E.g.
 Correct: +100 -105 +105
-Incorrect: -100 +95 -  
+Incorrect: -100 +95 -
 
 ---
 

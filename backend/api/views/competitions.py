@@ -2,17 +2,22 @@ from rest_framework import filters, viewsets
 
 from api.models import Competition
 from api.serializers import CompetitionDetailSerializer, CompetitionSerializer
+from api.views.pagination import StandardSetPagination
 
 
 class CompetitionViewSet(viewsets.ModelViewSet):
     """
-    # ViewSet for competitions
+    Competiition
+    ========
+    - List of Competitions on database.
+    - Paginated
     """
 
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ["competition_name", "location"]
+    search_fields = ["name", "location"]
     ordering_fields = ["date_start"]
     ordering = ["-date_start"]
+    pagination_class = StandardSetPagination
 
     def get_queryset(self):
         return Competition.objects.all()

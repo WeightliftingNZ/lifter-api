@@ -1,5 +1,4 @@
 from django.contrib import admin
-from django.utils.translation import gettext_lazy as _
 
 from .models import Athlete, Competition, Lift
 
@@ -11,7 +10,7 @@ class AthleteAdmin(admin.ModelAdmin):
 
 class CompetitionAdmin(admin.ModelAdmin):
     readonly_fields = ("reference_id",)
-    list_display = ("date_start", "date_end", "location", "competition_name")
+    list_display = ("date_start", "date_end", "location", "name")
 
 
 class LiftAdmin(admin.ModelAdmin):
@@ -20,7 +19,7 @@ class LiftAdmin(admin.ModelAdmin):
         (
             None,
             {
-                _("fields"): (
+                "fields": (
                     "reference_id",
                     "athlete",
                     "competition",

@@ -89,7 +89,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "name",
-                    models.CharField(blank=True, max_length=155, verbose_name="name"),
+                    models.CharField(
+                        blank=True, max_length=155, verbose_name="name"
+                    ),
                 ),
                 (
                     "email",

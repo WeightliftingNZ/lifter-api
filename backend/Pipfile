@@ -22,11 +22,15 @@ uritemplate = "*"
 drf-spectacular = {extras = ["sidecar"], version = "*"}
 djangorestframework-simplejwt = "*"
 drf-nested-routers = "*"
+django-extensions = "*"
 
 [dev-packages]
 pytest = "*"
 pytest-django = "*"
 pytest-cov = "*"
+djangorestframework-stubs = {extras = ["compatible-mypy"], version = "*"}
+django-stubs = {extras = ["compatible-mypy"], version = "*"}
+types-setuptools = "*"
 
 [requires]
 python_version = "3.10"

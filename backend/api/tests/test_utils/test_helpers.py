@@ -1,6 +1,7 @@
 from datetime import datetime
 
 import pytest
+
 from api.models.utils import age_category, best_lift, ranking_suffixer
 
 
@@ -65,6 +66,7 @@ def test_best_lift(test_input, expected):
     """Test best lift."""
     assert best_lift(test_input) == expected
 
+
 @pytest.mark.parametrize(
     "test_input_yearborn,test_input_competition_year,expected",
     [
@@ -77,7 +79,7 @@ def test_best_lift(test_input, expected):
                 "is_senior": True,
                 "is_master": False,
             },
-            id="15 is Youth, Junior, Senior"
+            id="15 is Youth, Junior, Senior",
         ),
         pytest.param(
             (2022 - 13),
@@ -88,7 +90,7 @@ def test_best_lift(test_input, expected):
                 "is_senior": False,
                 "is_master": False,
             },
-            id="13 is Youth"
+            id="13 is Youth",
         ),
         pytest.param(
             (2022 - 35),
@@ -99,13 +101,21 @@ def test_best_lift(test_input, expected):
                 "is_senior": True,
                 "is_master": True,
             },
-            id="35 is Senior, Master"
+            id="35 is Senior, Master",
         ),
     ],
-    )
-def test_age_category(test_input_yearborn, test_input_competition_year, expected):
+)
+def test_age_category(
+    test_input_yearborn, test_input_competition_year, expected
+):
     """Test age category."""
     if test_input_competition_year is None:
         assert age_category(yearborn=test_input_yearborn) == expected
     else:
-        assert age_category(yearborn=test_input_yearborn, competition_year=test_input_competition_year) == expected
+        assert (
+            age_category(
+                yearborn=test_input_yearborn,
+                competition_year=test_input_competition_year,
+            )
+            == expected
+        )
