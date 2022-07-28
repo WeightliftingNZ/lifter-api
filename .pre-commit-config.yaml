@@ -66,6 +66,7 @@ repos:
             "psycopg2-binary",
             "django-hashid-field",
             "django_extensions",
+            "sentry-sdk",
           ]
 
   - repo: https://github.com/asottile/seed-isort-config

@@ -52,7 +52,7 @@ multi_line_output = 3
 line_length = 79
 default_section = "THIRDPARTY"
 known_first_party = ["api", "users", "config"]
-known_third_party = ["dj_rest_auth", "django", "drf_spectacular", "hashid_field", "pytest", "rest_framework", "rest_framework_nested", "rest_framework_simplejwt", "setuptools"]
+known_third_party = ["dj_rest_auth", "django", "drf_spectacular", "hashid_field", "pytest", "rest_framework", "rest_framework_nested", "rest_framework_simplejwt", "sentry_sdk", "setuptools"]
 
 [tool.black]
 line-length = 79

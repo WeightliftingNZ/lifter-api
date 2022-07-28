@@ -50,6 +50,13 @@ graph:
 	cd ./backend && \
 	pipenv run python manage.py graph_models --rankdir BT api users -o my_project_visualised.png && \
 	open my_project_visualised.png
+
 .PHONY: actions
 actions:
 	act --container-architecture linux/amd64
+
+.PHONY: generate-key
+generate-key:
+	@echo '' && \
+	cd ./backend && \
+	pipenv -q run python manage.py shell -c 'from django.core.management import utils; print(utils.get_random_secret_key())'

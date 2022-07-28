@@ -1,21 +1,27 @@
+"""Setting file."""
+
 import os
 from datetime import timedelta
 from pathlib import Path
 from urllib.parse import urlparse
 
+import sentry_sdk
 from django.core.management.utils import get_random_secret_key
+from sentry_sdk.integrations.django import DjangoIntegration
 
-# import sentry_sdk
-# from sentry_sdk.integrations.django import DjangoIntegration
+SENTRY_DSN_1 = os.getenv("SENTRY_DSN_1", None)
+SENTRY_DSN_2 = os.getenv("SENTRY_DSN_2", None)
+SENTRY_SAMPLE_RATE = os.getenv("SENTRY_SAMPLE_RATE", 1.0)
 
-# sentry_sdk.init(
-#     dsn="",
-#     integrations=[DjangoIntegration()],
-#     traces_sample_rate=1.0,
-#     send_default_pii=True,
-# )
+if SENTRY_DSN_1 is not None and SENTRY_DSN_2 is not None:
+    sentry_sdk.init(
+        dsn=f"https://{SENTRY_DSN_1}.ingest.sentry.io/{SENTRY_DSN_2}",
+        integrations=[DjangoIntegration()],
+        traces_sample_rate=SENTRY_SAMPLE_RATE,  # type: ignore
+        send_default_pii=True,
+    )
 
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv("SECRET_KEY", get_random_secret_key())
 HASHID_FIELD_SALT = os.getenv("HASHID_FIELD_SALT", get_random_secret_key())
