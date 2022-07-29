@@ -33,7 +33,9 @@ Note the `config.wsgi`
 
 #### 2. API Domain
 
-Ensure the domain provided this is set to: `https://lifter.shivan.xyz`
+Ensure the domain provided this is set to: `https://api.lifter.shivan.xyz`.
+
+This may take time to configure. And this is all handled by Digital Ocean.
 
 #### 3. Backend Environment Variables
 
@@ -83,17 +85,42 @@ sentry_sdk.init(
 
 In the console of the Digital Ocean App Platform migrations and a creation of a superuser is required.
 
+Migration:
+
+```shell
+python manage.py makemigrations
+python manage.py migrate
+```
+
+Create superuser:
+
+```shell
+python manage.py createsuperuser
+```
+
+#### 5. Debugging
+
+There is a `debug.log` file provided.
+
+Use this command to follow the debug log in realtime:
+
+```shell
+tail -f debug.log
+```
+
 ### Setting up the Frontend
 
 #### 1. Catch-all
 
-Catch-all needs to be set to `build`. This is because `react-router` uses the url link to decide what content to serve, rather than a url requesting something on the server. That means a url other than the root url will return a 404 error.
+Catch-all needs to be set to `index.html`. This is because `react-router` uses the url link to decide what content to serve, rather than a url requesting something on the server. That means a url other than the root url will return a 404 error.
 
 A catch-all will return the root url for processing by javascript.
 
 #### 2. Main Domain
 
-Another domain is provided. Ensure this is set to: `https://lifter.shivan.xyz`
+Another domain is provided. Ensure this is set to: `https://lifter.shivan.xyz`.
+
+This takes time and is all handled by Digital Ocean.
 
 #### 3. Frontend Environment Variables
 
