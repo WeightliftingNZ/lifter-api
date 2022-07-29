@@ -47,10 +47,10 @@ jobs:
 
       - id: cache-pipfile
         name: Cache Pipfile
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-python-${{ steps.install-python.outputs.python-version }}-pipenv-${{ hashFiles('Pipfile.lock') }}
+          key: ${{ runner.os }}-python-${{ steps.install-python.outputs.python-version }}-pipenv-${{ hashFiles('backend/Pipfile.lock') }}
 
       - id: install-dependancies
         name: Install dependencies
