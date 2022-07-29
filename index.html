@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="description" content="None" /><link rel="canonical" href="https://lifter-api.github.io/" />
+      <link rel="shortcut icon" href="img/favicon.ico" />
+    <title>Lifter API</title>
+    <link rel="stylesheet" href="css/theme.css" />
+    <link rel="stylesheet" href="css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Lifter API Documentation";
+        var mkdocs_page_input_path = "index.md";
+        var mkdocs_page_url = "/";
+      </script>
+    
+    <script src="js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="." class="icon icon-home"> Lifter API
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href=".">Lifter API Documentation</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#hosting">Hosting</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#setting-up-the-backend">Setting up the Backend</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#1-run-command">1. Run command</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#2-api-domain">2. API Domain</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#3-backend-environment-variables">3. Backend Environment Variables</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#4-migrations-and-superuser">4. Migrations and Superuser</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#5-debugging">5. Debugging</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#setting-up-the-frontend">Setting up the Frontend</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#1-catch-all">1. Catch-all</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#2-main-domain">2. Main Domain</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#3-frontend-environment-variables">3. Frontend Environment Variables</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#local-development">Local Development</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#lifter-api-wrapper">Lifter API Wrapper</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href=".">Lifter API</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="." class="icon icon-home" alt="Docs"></a> &raquo;</li>
+      <li>Lifter API Documentation</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="lifter-api-documentation">Lifter API Documentation</h1>
+<h2 id="hosting">Hosting</h2>
+<p>This is hosted on <a href="https://www.digitalocean.com/products/app-platform">Digital Ocean's App Platform</a>. Code changes to this repository on the main branch will automatically trigger changes to the live web application.</p>
+<p>The backend API and the frontend are set up on their own apps. And there is set up required (see below). Normally, this is first time.</p>
+<h3 id="setting-up-the-backend">Setting up the Backend</h3>
+<h4 id="1-run-command">1. Run command</h4>
+<p>This is the run command:</p>
+<pre><code class="language-shell">
+gunicorn --worker-tmp-dir /dev/shm config.wsgi
+
+</code></pre>
+<p>Note the <code>config.wsgi</code></p>
+<h4 id="2-api-domain">2. API Domain</h4>
+<p>Ensure the domain provided this is set to: <code>https://api.lifter.shivan.xyz</code>.</p>
+<p>This may take time to configure. And this is all handled by Digital Ocean.</p>
+<h4 id="3-backend-environment-variables">3. Backend Environment Variables</h4>
+<p>The following environment variables should be set:</p>
+<pre><code class="language-shell">DJANGO_DEVELOPMENT = 0
+ALLOWED_HOSTS = ${APP_DOMAIN}
+DATABASE_URL = ${db.DATABASE_URL}
+CORS_ALLOWED_ORIGINS = https://lifter.shivan.xyz
+SECRET_KEY = &lt;see below&gt;
+HASHID_FIELD_SALT = &lt;see below&gt;
+SENTRY_DSN_1 = &lt;see below&gt;
+SENTRY_DSN_2 = &lt;see below&gt;
+SENTRY_SAMPLE_RATE = 1.0 # depends
+</code></pre>
+<h5 id="secret-keys">Secret Keys</h5>
+<p>Running the below code will provide the a random hash to set <code>SECRET_KEY</code> and <code>HASHID_FIELD_SALT</code>.</p>
+<pre><code class="language-shell">
+$ make generate-key
+
+ffqd6(a-&amp;dqk#znv!4@!1u=&amp;_et9b^wdgpm5cz4=^b=9_3xaux
+
+</code></pre>
+<p>Tip: Use <code>make generate-key | pbcopy</code> on MacOS if you want to copy the key to clipboard.</p>
+<h5 id="sentry-environment-variables">Sentry Environment Variables</h5>
+<p>These are mapped accordingly:</p>
+<pre><code class="language-python">sentry_sdk.init(
+    dsn=f&quot;https://{SENTRY_DSN_1}.ingest.sentry.io/{SENTRY_DSN_2}&quot;,
+    integrations=[
+        DjangoIntegration(),
+    ],
+    # set this to between 0 and 1.0 when in production
+    trace_sample_rate=SENTRY_SAMPLE_RATE
+</code></pre>
+<h4 id="4-migrations-and-superuser">4. Migrations and Superuser</h4>
+<p>In the console of the Digital Ocean App Platform migrations and a creation of a superuser is required.</p>
+<p>Migration:</p>
+<pre><code class="language-shell">python manage.py makemigrations
+python manage.py migrate
+</code></pre>
+<p>Create superuser:</p>
+<pre><code class="language-shell">python manage.py createsuperuser
+</code></pre>
+<h4 id="5-debugging">5. Debugging</h4>
+<p>There is a <code>debug.log</code> file provided.</p>
+<p>Use this command to follow the debug log in realtime:</p>
+<pre><code class="language-shell">tail -f debug.log
+</code></pre>
+<h3 id="setting-up-the-frontend">Setting up the Frontend</h3>
+<h4 id="1-catch-all">1. Catch-all</h4>
+<p>Catch-all needs to be set to <code>index.html</code>. This is because <code>react-router</code> uses the url link to decide what content to serve, rather than a url requesting something on the server. That means a url other than the root url will return a 404 error.</p>
+<p>A catch-all will return the root url for processing by javascript.</p>
+<h4 id="2-main-domain">2. Main Domain</h4>
+<p>Another domain is provided. Ensure this is set to: <code>https://lifter.shivan.xyz</code>.</p>
+<p>This takes time and is all handled by Digital Ocean.</p>
+<h4 id="3-frontend-environment-variables">3. Frontend Environment Variables</h4>
+<p>The environment variables need to be set:</p>
+<pre><code class="language-shell">REACT_APP_API_URL = &quot;https://api.lifter.shivan.xyz/v1&quot;
+</code></pre>
+<h2 id="local-development">Local Development</h2>
+<p>Base requirements include:</p>
+<ul>
+<li>Docker v20.10.8</li>
+<li>Docker Compose v2.0.0</li>
+<li>Node v16.14.2</li>
+<li>Python v3.10.0</li>
+</ul>
+<p>Here is the rough layout of the application:</p>
+<pre><code class="language-shell">lifter-api
+├── backend/
+│   ├── ... Django Rest Framework stuff
+├── frontend
+│   ├── ... React Typescript TailwindCSS stuff
+└── ...other files
+</code></pre>
+<p>The PostgreSQL database runs in a docker container and to start the API all you need to do is run:</p>
+<pre><code class="language-shell">make run
+</code></pre>
+<p>You might have to perform migrations:</p>
+<pre><code class="language-shell">make migrations
+</code></pre>
+<p>There is an API backend as well as a <em>nice</em> looking frontend layout.</p>
+<p>To run the frontend:</p>
+<pre><code class="language-shell">make run-frontend
+</code></pre>
+<h2 id="lifter-api-wrapper">Lifter API Wrapper</h2>
+<p><a href="https://github.com/WeightliftingNZ/lifter-api-wrapper">Here</a> is an API wrapper implementation to allow ease of use with the RESTful framework.</p>
+<p><a href="https://pypi.org/lifter-api-wrapper">It is also available on PyPI</a>.</p>
+<p>You can easily install it:</p>
+<pre><code class="language-sh">
+pip install lifter-api-wrapper
+
+</code></pre>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+    
+  </span>
+</div>
+    <script>var base_url = '.';</script>
+    <script src="js/theme_extra.js" defer></script>
+    <script src="js/theme.js" defer></script>
+      <script src="search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>
+
+<!--
+MkDocs version : 1.3.1
+Build Date UTC : 2022-07-29 01:35:28.104412+00:00
+-->
