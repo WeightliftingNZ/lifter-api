@@ -75,7 +75,7 @@ const CompetitionsListPage = () => {
                       <h1>{competition.name}</h1>
                       <p>{competition.location}</p>
                       <p>{competition.date_start}</p>
-                      <p>Sessions: {competition.lift_count}</p>
+                      <p>Lifts: {competition.lifts_count}</p>
                     </div>
                   </Link>
                 )

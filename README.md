@@ -1,13 +1,14 @@
 # Lifter API
 
 [![Build](https://github.com/ChristchurchCityWeightlifting/lifter-api/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/ChristchurchCityWeightlifting/lifter-api/actions/workflows/main.yml)
+[![Documentation Status](https://readthedocs.org/projects/lifter-api/badge/?version=latest)](https://lifter-api.readthedocs.io/en/latest/?badge=latest)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 This is a database of all lifts and competitions in the past, present and future.
 
 ## Documentation
 
-The documentation can be found here.
+[The documentation can be found here](https://lifter-api.readthedocs.io)
 
 ## About
 

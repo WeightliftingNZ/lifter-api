@@ -16,7 +16,7 @@ export interface CompetitionObject {
   url?: string;
   name?: string;
   location?: string;
-  lift_count?: number;
+  lifts_count?: number;
   date_end?: string;
   date_start?: string;
 }

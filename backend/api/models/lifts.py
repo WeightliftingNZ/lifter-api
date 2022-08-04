@@ -9,15 +9,29 @@ from hashid_field import HashidAutoField
 from config.settings import HASHID_FIELD_SALT
 
 from .utils import (
+    CURRENT_FEMALE_WEIGHT_CATEGORIES,
+    CURRENT_MALE_WEIGHT_CATEGORIES,
     DEFAULT_LIFT_STATUS,
     LIFT_STATUS,
-    WEIGHT_CATEGORIES,
+    OLD_1998_2018_FEMALE_WEIGHT_CATEGORIES,
+    OLD_1998_2018_MALE_WEIGHT_CATEGORIES,
     age_category,
     best_lift,
     ranking_suffixer,
     validate_attempts,
 )
 from .utils.types import LiftT
+
+CURRENT_WEIGHT_CATEGORIES = (
+    CURRENT_FEMALE_WEIGHT_CATEGORIES + CURRENT_MALE_WEIGHT_CATEGORIES
+)
+
+OLD_WEIGHT_CATEGORIES = (
+    OLD_1998_2018_FEMALE_WEIGHT_CATEGORIES
+    + OLD_1998_2018_MALE_WEIGHT_CATEGORIES
+)
+
+ALL_WEIGHT_CATEGORIES = CURRENT_WEIGHT_CATEGORIES + OLD_WEIGHT_CATEGORIES
 
 
 class Session(models.Model):
@@ -66,7 +80,7 @@ class Lift(models.Model):
         blank=True, max_digits=5, decimal_places=2
     )
     weight_category = models.CharField(
-        max_length=5, choices=WEIGHT_CATEGORIES, blank=True
+        max_length=5, choices=ALL_WEIGHT_CATEGORIES, blank=True
     )
     # TODO: if `team` is "GUEST", then lifter is a guest
     team = models.CharField(max_length=128, blank=True, default="IND")
@@ -259,8 +273,10 @@ class Lift(models.Model):
 
         0. Validation attempts to ensure they are increasing depending on the
         current lift status.
+        1. Weightclasses are relevant to the date of the competition.
         """
         errors = []
+        # 0. lift validation
         errors.extend(
             validate_attempts(attempts=self.snatches, lift_type="snatch")
         )
@@ -268,6 +284,18 @@ class Lift(models.Model):
             validate_attempts(attempts=self.cnjs, lift_type="clean and jerk")
         )
 
+        # 1. Weightclass validation
+        # CATEGORY is list of tuples e.g. `[..., ('M102+', 'M102+'), ...]`
+        if (
+            self.competition.date_start.year >= 2018
+            and self.weight_category
+            not in (w[0] for w in CURRENT_WEIGHT_CATEGORIES)
+        ) or (
+            self.competition.date_start.year <= 2018
+            and self.weight_category
+            not in (w[0] for w in OLD_WEIGHT_CATEGORIES)
+        ):
+            errors.append("Weightclass from wrong era.")
         if len(errors) > 0:
             error_msg = "\n".join(errors)
             raise ValidationError(

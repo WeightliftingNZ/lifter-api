@@ -116,6 +116,7 @@ class TestLiftCase:
         [
             pytest.param(
                 {
+                    # comp in in 2022
                     "snatch_first": "LIFT",
                     "snatch_first_weight": 100,
                     "snatch_second": "LIFT",
@@ -188,6 +189,32 @@ class TestLiftCase:
                     match=r"1st snatch is a GOOD lift. Next attempt cannot be lower or same than previous lift.\\n1st clean and jerk is a NO lift. Next attempt cannot be less than previous lift.",
                 ),
                 id="Multiple attempts do not increment",
+            ),
+            pytest.param(
+                {
+                    "snatch_first": "LIFT",
+                    "snatch_first_weight": 101,
+                    "snatch_second": "LIFT",
+                    "snatch_second_weight": 101,
+                    "snatch_third": "LIFT",
+                    "snatch_third_weight": 102,
+                    "cnj_first": "NOLIFT",
+                    "cnj_first_weight": 100,
+                    "cnj_second": "LIFT",
+                    "cnj_second_weight": 99,
+                    "cnj_third": "DNA",
+                    "cnj_third_weight": 0,
+                    "bodyweight": 102.00,
+                    "weight_category": "M105+",
+                    "team": "TEST",
+                    "session_number": 0,
+                    "lottery_number": 3,
+                },
+                pytest.raises(
+                    ValidationError,
+                    match=r"Weightclass from wrong era.",
+                ),
+                id="Weightclass from wrong era.",
             ),
         ],
     )

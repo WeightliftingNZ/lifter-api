@@ -1,3 +1,4 @@
+---
 # .pre-commit-config.yaml
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -31,7 +32,7 @@ repos:
       - id: black
 
   - repo: https://github.com/pycqa/flake8
-    rev: 4.0.1
+    rev: 5.0.4
     hooks:
       - id: flake8
         additional_dependencies:
@@ -99,7 +100,7 @@ repos:
       - id: hadolint
 
   - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v8.20.0
+    rev: v8.21.0
     hooks:
       - id: eslint
         files: \.[jt]sx?$

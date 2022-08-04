@@ -1,3 +1,5 @@
+"""Contains current and old weightclasses."""
+
 # 2018-Present
 
 __W45 = "W45"
@@ -12,7 +14,7 @@ __W87 = "W87"  # Senior/Junior only class
 __W81p = "W81+"  # Youth only class
 __W87p = "W87+"  # Senior/Junior only class
 
-__CURRENT_FEMALE_WEIGHT_CATEGORIES = [
+CURRENT_FEMALE_WEIGHT_CATEGORIES = [
     (__W45, "W45"),
     (__W49, "W49"),
     (__W55, "W55"),
@@ -38,7 +40,7 @@ __M109 = "M109"  # Senior/Junior only class
 __M102p = "M102+"  # Youth only class
 __M109p = "M109+"  # Senior/Junior only class
 
-__CURRENT_MALE_WEIGHT_CATEGORIES = [
+CURRENT_MALE_WEIGHT_CATEGORIES = [
     (__M55, "M55"),
     (__M61, "M61"),
     (__M67, "M67"),
@@ -63,7 +65,7 @@ __W75 = "W75"
 __W90 = "W90"
 __W90p = "W90+"
 
-__OLD_FEMALE_WEIGHT_CATEGORIES = [
+OLD_1998_2018_FEMALE_WEIGHT_CATEGORIES = [
     (__W48, "W48"),
     (__W53, "W53"),
     (__W58, "W58"),
@@ -83,7 +85,7 @@ __M94 = "M94"
 __M105 = "M105"
 __M105p = "M105+"
 
-__OLD_MALE_WEIGHT_CATEGORIES = [
+OLD_1998_2018_MALE_WEIGHT_CATEGORIES = [
     (__M56, "M56"),
     (__M62, "M62"),
     (__M69, "M69"),
@@ -96,10 +98,10 @@ __OLD_MALE_WEIGHT_CATEGORIES = [
 
 
 WEIGHT_CATEGORIES = (
-    __CURRENT_FEMALE_WEIGHT_CATEGORIES
-    + __CURRENT_MALE_WEIGHT_CATEGORIES
-    + __OLD_FEMALE_WEIGHT_CATEGORIES
-    + __OLD_MALE_WEIGHT_CATEGORIES
+    CURRENT_FEMALE_WEIGHT_CATEGORIES
+    + CURRENT_MALE_WEIGHT_CATEGORIES
+    + OLD_1998_2018_FEMALE_WEIGHT_CATEGORIES
+    + OLD_1998_2018_MALE_WEIGHT_CATEGORIES
 )
 
 
