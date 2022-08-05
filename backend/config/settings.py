@@ -11,13 +11,13 @@ from sentry_sdk.integrations.django import DjangoIntegration
 
 SENTRY_DSN_1 = os.getenv("SENTRY_DSN_1", None)
 SENTRY_DSN_2 = os.getenv("SENTRY_DSN_2", None)
-SENTRY_SAMPLE_RATE = os.getenv("SENTRY_SAMPLE_RATE", 1.0)
+SENTRY_SAMPLE_RATE = os.getenv("SENTRY_SAMPLE_RATE", "1.0")
 
 if SENTRY_DSN_1 is not None and SENTRY_DSN_2 is not None:
     sentry_sdk.init(
         dsn=f"https://{SENTRY_DSN_1}.ingest.sentry.io/{SENTRY_DSN_2}",
         integrations=[DjangoIntegration()],
-        traces_sample_rate=SENTRY_SAMPLE_RATE,  # type: ignore
+        traces_sample_rate=float(SENTRY_SAMPLE_RATE),
         send_default_pii=True,
     )
 
