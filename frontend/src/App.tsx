@@ -1,49 +1,45 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
-import HomePage from "./views/HomePage";
-import CompetitionsListPage from "./views/CompetitionsListPage";
-import CompetitionDetailPage from "./views/CompetitionDetailPage/CompetitionDetailPage"; // TODO: fix this barrel
-import AthletesListPage from "./views/AthletesListPage";
+import CompetitionListPage from "./views/CompetitionListPage";
+import CompetitionDetailPage from "./views/CompetitionDetailPage";
+import AthleteListPage from "./views/AthleteListPage";
 import AthleteDetailPage from "./views/AthleteDetailPage";
-import Lost from "./components/Lost";
+import Box from "@mui/material/Box";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { grey } from "@mui/material/colors";
 
-function App() {
+const theme = createTheme({
+  palette: {
+    primary: grey,
+  },
+});
+
+const App = () => {
   return (
-    <div className="grid grid-rows-1">
-      <Navbar />
-      <div className="px-6 py-4 flex flex-col gap-2 justify-center items-center min-w-full">
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route
-            path="/competitions"
-            element={<CompetitionsListPage />}
-          ></Route>
-          <Route
-            path="/competitions/:competitionReferenceId"
-            element={<CompetitionDetailPage />}
-          />
-          <Route
-            path="/competitions/:competitionReferenceId/sessions/:sessionReferenceId"
-            element={<CompetitionDetailPage />}
-          />
-          <Route path="/athletes" element={<AthletesListPage />}></Route>
-          <Route
-            path="/athletes/:athleteReferenceId"
-            element={<AthleteDetailPage />}
-          ></Route>
-          <Route
-            path="*"
-            element={
-              <>
-                <Lost />
-              </>
-            }
-          />
-        </Routes>
-      </div>
-    </div>
+    <>
+      <ThemeProvider theme={theme}>
+        <Box sx={{ display: "flex" }}>
+          <Navbar />
+          <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+            <Routes>
+              <Route path="/" element={<CompetitionListPage />} />
+              <Route path="/competitions" element={<CompetitionListPage />} />
+              <Route path="/athletes" element={<AthleteListPage />} />
+              <Route
+                path="/competitions:competitionReferenceId"
+                element={<CompetitionDetailPage />}
+              />
+              <Route
+                path="/athletes:athleteReferenceId"
+                element={<AthleteDetailPage />}
+              />
+            </Routes>
+          </Box>
+        </Box>
+      </ThemeProvider>
+    </>
   );
-}
+};
 
 export default App;

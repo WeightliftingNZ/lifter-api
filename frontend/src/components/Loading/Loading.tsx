@@ -1,14 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
+import LinearProgress from "@mui/material/LinearProgress";
+import Box from "@mui/material/Box";
 
 const Loading = () => {
   return (
-    <>
-      <div className="card">
-        <div className="animate-pulse">
-          <p>Loading...</p>
-        </div>
-      </div>
-    </>
+    <Box sx={{ width: "100%", height: "20%" }}>
+      <LinearProgress />
+    </Box>
   );
 };
 
