@@ -33,6 +33,8 @@ django-stubs = {extras = ["compatible-mypy"], version = "*"}
 types-setuptools = "*"
 flake8 = "*"
 mypy = "*"
+mkdocs = "*"
+mkdocs-material = "*"
 
 [requires]
 python_version = "3.10"

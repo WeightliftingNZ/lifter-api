@@ -65,6 +65,7 @@ repos:
             "drf_spectacular_sidecar",
             "djangorestframework-simplejwt",
             "psycopg2-binary",
+            "psycopg2",
             "django-hashid-field",
             "django_extensions",
             "sentry-sdk",
