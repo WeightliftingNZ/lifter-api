@@ -3,6 +3,7 @@ site_name: Lifter API
 site_url: https://WeightliftingNZ.github.io/lifter-api
 nav:
   - Home: index.md
+  - How it works: how.md
 theme:
   name: material
   palette:
