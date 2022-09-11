@@ -4,13 +4,15 @@ import SearchIcon from "@mui/icons-material/Search";
 import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
 
-interface SearchBoxProps {
-  beingSearched: "competitions" | "athletes";
+interface CustomSearchInputProps {
+  beingSearched?: "competitions" | "athletes";
   searchTerm?: string;
   handleOnChange: any; // TODO: what type is this?
 }
 
-const SearchInput: React.FC<SearchBoxProps> = (props: SearchBoxProps) => {
+const CustomSearchInput: React.FC<CustomSearchInputProps> = (
+  props: CustomSearchInputProps
+) => {
   const { searchTerm, handleOnChange, beingSearched } = props;
   return (
     <Stack direction="row" alignItems="center" spacing={2}>
@@ -29,4 +31,4 @@ const SearchInput: React.FC<SearchBoxProps> = (props: SearchBoxProps) => {
   );
 };
 
-export default SearchInput;
+export default CustomSearchInput;

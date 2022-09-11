@@ -5,24 +5,33 @@ import apiClient from "../../utils/http-common";
 import Box from "@mui/material/Box";
 import CustomError from "../../components/Error";
 import CustomLoading from "../../components/Loading";
-import { DRFPaginatedResponseProps } from "../../interfaces";
-import { CompetitionObjectPropsKeys } from "./interfaces";
-import CompetitionListTable from "./table";
-import SearchInput from "./search";
+import {
+  CompetitionObjectProps,
+  DRFPaginatedResponseProps,
+} from "../../interfaces";
+import CustomTable from "../../components/CustomTable";
+import CustomSearchInput from "../../components/CustomSearchInput";
+import Typography from "@mui/material/Typography";
+import Alert from "@mui/material/Alert";
 
-const COLUMNS_TO_SHOW: CompetitionObjectPropsKeys[] = [
+const COLUMNS_TO_SHOW: (keyof CompetitionObjectProps)[] = [
   "name",
   "date_start",
   "lifts_count",
   "location",
 ];
 
-interface FooProps {
+interface CompetitionDataLoaderProps {
   searchQuery?: string;
   page: number;
   handleChangePage: any; // TODO: Whatis this type?
 }
-const Foo: React.FC<FooProps> = ({ searchQuery, page, handleChangePage }) => {
+
+const CompetitionDataLoader: React.FC<CompetitionDataLoaderProps> = ({
+  searchQuery,
+  page,
+  handleChangePage,
+}) => {
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
   const { data, isLoading, isError } = useQuery(
@@ -42,28 +51,28 @@ const Foo: React.FC<FooProps> = ({ searchQuery, page, handleChangePage }) => {
     return <CustomError />;
   }
   const parsed_data: DRFPaginatedResponseProps = data;
-  const rows = parsed_data.results;
+  const rows: CompetitionObjectProps[] = parsed_data.results;
   const nextPage = parsed_data.next;
   const previousPage = parsed_data.previous;
-  const columns: CompetitionObjectPropsKeys[] = COLUMNS_TO_SHOW;
+  const columns: (keyof CompetitionObjectProps)[] = COLUMNS_TO_SHOW;
   const rowsPerPage = parsed_data.per_page;
   const count = parsed_data.count;
 
-  console.log("page", page);
+  if (rows.length === 0) {
+    return <Alert severity="info">No Results for "{searchQuery}"</Alert>;
+  }
 
   return (
-    <Box sx={{ mt: 6 }}>
-      <CompetitionListTable
-        page={page}
-        count={count}
-        nextPage={nextPage}
-        previousPage={previousPage}
-        rowsPerPage={rowsPerPage}
-        handleChangePage={handleChangePage}
-        rows={rows}
-        columns={columns}
-      />
-    </Box>
+    <CustomTable
+      page={page}
+      count={count}
+      nextPage={nextPage}
+      previousPage={previousPage}
+      rowsPerPage={rowsPerPage}
+      handleChangePage={handleChangePage}
+      rows={rows}
+      columns={columns}
+    />
   );
 };
 
@@ -87,21 +96,25 @@ const CompetitionListPage: React.FC = () => {
   return (
     <>
       <Box>
-        <h2>Competition</h2>
-        <h4>Browse competition results</h4>
+        <Typography variant="h4" gutterBottom>
+          Competition
+        </Typography>
+        <Typography variant="subtitle2">Browse competition results</Typography>
       </Box>
       <Box sx={{ mt: 6 }}>
-        <SearchInput
+        <CustomSearchInput
           beingSearched="competitions"
           searchTerm={searchQuery}
           handleOnChange={handleOnChange}
         />
       </Box>
-      <Foo
-        searchQuery={searchQuery}
-        handleChangePage={handleChangePage}
-        page={page}
-      />
+      <Box sx={{ mt: 6 }}>
+        <CompetitionDataLoader
+          searchQuery={searchQuery}
+          handleChangePage={handleChangePage}
+          page={page}
+        />
+      </Box>
     </>
   );
 };

@@ -19,8 +19,6 @@ import FirstPageIcon from "@mui/icons-material/FirstPage";
 import LastPageIcon from "@mui/icons-material/LastPage";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
-import { CompetitionObjectProps } from "../../interfaces";
-import { CompetitionObjectPropsKeys } from "./interfaces";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -35,7 +33,8 @@ interface TableRowLinkProps extends Record<string, any> {}
 
 const TableRowLink = (props: TableRowLinkProps) => {
   const theme = useTheme();
-  const { reference_id, columns } = props;
+  const { columns, row } = props;
+  const { reference_id } = row;
 
   const renderLink = useMemo(
     () =>
@@ -68,7 +67,7 @@ const TableRowLink = (props: TableRowLinkProps) => {
       component={renderLink}
     >
       {columns.map((column: string, idx: number) => (
-        <StyledTableCell key={idx}>{props[column]}</StyledTableCell>
+        <StyledTableCell key={idx}>{row[column]}</StyledTableCell>
       ))}
     </TableRow>
   );
@@ -95,20 +94,18 @@ function titleMaker(title: string) {
     .join(" ");
 }
 
-interface CompetitionListTableProps {
-  rows: CompetitionObjectProps[];
+interface CustomTableProps {
+  rows: any; // TODO: need to sort this type
   rowsPerPage: number;
   nextPage: string;
   previousPage: string;
   count: number;
-  columns: CompetitionObjectPropsKeys[];
+  columns: any; // TODO: need to sort this type
   page: number;
   handleChangePage: any; // TODO: what type is this?
 }
 
-const CompetitionListTable: React.FC<CompetitionListTableProps> = (
-  props: CompetitionListTableProps
-) => {
+const CustomTable: React.FC<CustomTableProps> = (props: CustomTableProps) => {
   const {
     columns,
     rows,
@@ -146,8 +143,6 @@ const CompetitionListTable: React.FC<CompetitionListTableProps> = (
     ) => {
       onPageChange(event, Math.max(0, Math.floor(count / rowsPerPage)));
     };
-    console.log("previousPage", previousPage);
-    console.log("nextPage", nextPage);
 
     return (
       <Box sx={{ flexShrink: 0, ml: 2.5 }}>
@@ -201,16 +196,12 @@ const CompetitionListTable: React.FC<CompetitionListTableProps> = (
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row, idx: number) => (
+          {/* TODO: fix row type */}
+          {rows.map((row: any, idx: number) => (
             <TableRowLink
               key={idx}
               /* TODO: find out a way to now have to declare each prop */
               row={row}
-              lifts_count={row.lifts_count}
-              reference_id={row.reference_id}
-              date_start={row.date_start}
-              location={row.location}
-              name={row.name}
               columns={columns}
             />
           ))}
@@ -238,4 +229,4 @@ const CompetitionListTable: React.FC<CompetitionListTableProps> = (
   );
 };
 
-export default CompetitionListTable;
+export default CustomTable;

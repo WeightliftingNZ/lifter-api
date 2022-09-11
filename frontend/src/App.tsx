@@ -36,11 +36,11 @@ const App = () => {
               <Route path="/competitions" element={<CompetitionListPage />} />
               <Route path="/athletes" element={<AthleteListPage />} />
               <Route
-                path="/competitions:competitionReferenceId"
+                path="/competitions/:competitionReferenceId"
                 element={<CompetitionDetailPage />}
               />
               <Route
-                path="/athletes:athleteReferenceId"
+                path="/athletes/:athleteReferenceId"
                 element={<AthleteDetailPage />}
               />
             </Routes>
