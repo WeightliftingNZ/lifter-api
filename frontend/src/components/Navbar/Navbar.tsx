@@ -17,7 +17,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import PeopleIcon from "@mui/icons-material/People";
-import CasinoIcon from "@mui/icons-material/Casino";
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { styled, useTheme, Theme, CSSObject } from "@mui/material/styles";
@@ -35,7 +35,7 @@ type ListItemLinkProps = {
 };
 
 const links: ListItemLinkProps[] = [
-  { primary: "Competition", to: "/competitions", icon: <CasinoIcon /> },
+  { primary: "Competition", to: "/competitions", icon: <EmojiEventsIcon /> },
   { primary: "Athlete", to: "/athletes", icon: <PeopleIcon /> },
 ];
 

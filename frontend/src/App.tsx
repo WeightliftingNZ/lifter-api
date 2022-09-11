@@ -8,6 +8,7 @@ import AthleteDetailPage from "./views/AthleteDetailPage";
 import Box from "@mui/material/Box";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { grey } from "@mui/material/colors";
+import { styled } from "@mui/material/styles";
 
 const theme = createTheme({
   palette: {
@@ -16,12 +17,20 @@ const theme = createTheme({
 });
 
 const App = () => {
+  const NavbarHeader = styled("div")(({ theme }) => ({
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    padding: theme.spacing(0, 1),
+    ...theme.mixins.toolbar,
+  }));
   return (
     <>
       <ThemeProvider theme={theme}>
         <Box sx={{ display: "flex" }}>
           <Navbar />
           <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+            <NavbarHeader />
             <Routes>
               <Route path="/" element={<CompetitionListPage />} />
               <Route path="/competitions" element={<CompetitionListPage />} />

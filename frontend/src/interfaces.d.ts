@@ -2,6 +2,7 @@ export interface DRFPaginatedResponseProps {
   count: number;
   next: string;
   previous: string;
+  per_page: number;
   results: any[];
 }
 
