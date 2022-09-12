@@ -2,6 +2,7 @@
 
 from hashid_field.rest import HashidSerializerCharField
 from rest_framework import permissions, serializers
+from rest_framework.validators import UniqueTogetherValidator
 from rest_framework_nested.relations import NestedHyperlinkedIdentityField
 
 from api.models import Athlete, Competition, Lift
@@ -91,3 +92,15 @@ class LiftSerializer(serializers.ModelSerializer):
             "session_number",
             "placing",
         )
+        validators = [
+            UniqueTogetherValidator(
+                queryset=Lift.objects.all(),
+                fields=["competition", "weight_category", "lottery_number"],
+                message="Only one lottery number per weight category",
+            ),
+            UniqueTogetherValidator(
+                queryset=Lift.objects.all(),
+                fields=["competition", "athlete"],
+                message="Athlete can only have one lift in a competition",
+            ),
+        ]

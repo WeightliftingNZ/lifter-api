@@ -27,7 +27,7 @@ repos:
         args: [--all]
 
   - repo: https://github.com/ambv/black
-    rev: 22.6.0
+    rev: 22.8.0
     hooks:
       - id: black
 
@@ -71,11 +71,6 @@ repos:
             "sentry-sdk",
           ]
 
-  - repo: https://github.com/asottile/seed-isort-config
-    rev: v2.2.0
-    hooks:
-      - id: seed-isort-config
-
   - repo: https://github.com/pycqa/isort
     rev: 5.10.1
     hooks:
@@ -101,7 +96,7 @@ repos:
       - id: hadolint
 
   - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v8.21.0
+    rev: v8.23.1
     hooks:
       - id: eslint
         files: \.[jt]sx?$
