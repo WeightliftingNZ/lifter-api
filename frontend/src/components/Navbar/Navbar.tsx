@@ -21,6 +21,7 @@ import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { styled, useTheme, Theme, CSSObject } from "@mui/material/styles";
+import Button from "@mui/material/Button";
 /* TODO: Get FontAwesome working */
 /* import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; */
 /* <FontAwesomeIcon icon="fa-solid fa-ranking-star" /> */
@@ -174,9 +175,16 @@ const Navbar = () => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            Weightlifting Results for New Zealand
-          </Typography>
+          <Button component={RouterLink} to="/">
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{ color: theme.palette.primary.light }}
+            >
+              Weightlifting Results for New Zealand
+            </Typography>
+          </Button>
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>
