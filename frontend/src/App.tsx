@@ -9,6 +9,7 @@ import Box from "@mui/material/Box";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { grey } from "@mui/material/colors";
 import { styled } from "@mui/material/styles";
+import Home from "./views/Home";
 
 const theme = createTheme({
   palette: {
@@ -32,7 +33,7 @@ const App = () => {
           <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
             <NavbarHeader />
             <Routes>
-              <Route path="/" element={<CompetitionListPage />} />
+              <Route path="/" element={<Home />} />
               <Route path="/competitions" element={<CompetitionListPage />} />
               <Route path="/athletes" element={<AthleteListPage />} />
               <Route

@@ -7,7 +7,6 @@ import CustomError from "../../components/Error";
 import CustomLoading from "../../components/Loading";
 import {
   AthleteObjectProps,
-  CompetitionObjectProps,
   DRFPaginatedResponseProps,
 } from "../../interfaces";
 import CustomTable from "../../components/CustomTable";
