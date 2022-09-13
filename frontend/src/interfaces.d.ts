@@ -6,7 +6,7 @@ export interface DRFPaginatedResponseProps {
   results: any[];
 }
 
-export interface CompetitionObjectProps {
+export interface CompetitionListObjectProps {
   date_end: string;
   date_start: string;
   lifts_count: number;
@@ -14,7 +14,11 @@ export interface CompetitionObjectProps {
   name: string;
   reference_id: string;
   url: string;
-  lift_set?: LiftObjectProps[];
+}
+
+export interface CompetitionDetailObjectProps
+  extends CompetitionListObjectProps {
+  lift_set: LiftObjectProps[];
 }
 
 interface ageCategoriesProps {
@@ -32,7 +36,10 @@ export interface AthleteObjectProps {
   last_name: string;
   yearborn: number;
   age_categories: ageCategories;
-  lift_set?: LiftObjectProps[];
+}
+
+export interface AthleteObjectDetailProps extends AthleteObjectProps {
+  lift_set: LiftObjectProps[];
 }
 
 type liftStatus = "LIFT" | "NOLIFT" | "DNA";
@@ -42,7 +49,7 @@ interface liftProps {
   weight: number;
 }
 
-interface liftsProps {
+export interface LiftsProps {
   "1st": liftProps;
   "2nd": liftProps;
   "3rd": liftProps;
@@ -66,12 +73,14 @@ export interface LiftObjectProps {
   snatch_second_weight: number;
   snatch_third: liftStatus;
   snatch_third_weight: number;
+  best_snatch_weight: [string, number];
   cnj_first: liftStatus;
   cnj_first_weight: number;
   cnj_second: liftStatus;
   cnj_second_weight: number;
   cnj_third: liftStatus;
   cnj_third_weight: number;
+  best_cnj_weight: [string, number];
   total_lifted: number;
   age_categories: ageCategoriesProps;
   bodyweight: number;

@@ -1,4 +1,4 @@
-import { CompetitionObjectProps } from "../../interfaces";
+import { CompetitionListObjectProps } from "../../interfaces";
 
 interface CompetitionListTableProps
-  extends Omit<CompetitionObjectProps, "date_end" | "url"> {}
+  extends Omit<CompetitionListObjectProps, "date_end" | "url"> {}
