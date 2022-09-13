@@ -14,6 +14,7 @@ import {
   LinkProps as RouterLinkProps,
 } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
+import Typography from "@mui/material/Typography";
 
 interface Column {
   id: keyof LiftObjectProps;
@@ -21,7 +22,7 @@ interface Column {
   minWidth?: number;
   align?: "right" | "left" | "center";
   format?: (value: number) => string;
-  stylefn?: any;
+  sx?: any;
 }
 
 const columns: Column[] = [
@@ -36,7 +37,7 @@ const columns: Column[] = [
   { id: "cnj_second_weight", label: "1", align: "center" },
   { id: "cnj_first_weight", label: "2", align: "center" },
   { id: "cnj_third_weight", label: "3", align: "center" },
-  { id: "total_lifted", label: "Total" },
+  { id: "total_lifted", label: "Total", sx: { fontWeight: "bold" } },
   { id: "placing", label: "Place" },
 ];
 
@@ -137,12 +138,8 @@ const TableRowLink: React.FC<TableRowLinkProps> = (
       component={renderLink}
     >
       {columns.map((column: any, idx: number) => (
-        <StyledTableCell
-          key={idx}
-          align={column.align}
-          sx={determineLift(row[column.id])}
-        >
-          {giveLift(column.id, row)}
+        <StyledTableCell key={idx} align={column.align}>
+          <Typography variant="body1">{giveLift(column.id, row)}</Typography>
         </StyledTableCell>
       ))}
     </TableRow>
