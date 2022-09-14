@@ -156,7 +156,7 @@ const TableRowLink: React.FC<TableRowLinkProps> = (
 ) => {
   const theme = useTheme();
   const { row, columns } = props;
-  const { athlete } = row;
+  const { competition } = row;
 
   const renderLink = useMemo(
     () =>
@@ -166,7 +166,7 @@ const TableRowLink: React.FC<TableRowLinkProps> = (
       ) {
         return (
           <RouterLink
-            to={`/athletes/${athlete}`}
+            to={`/competitions/${competition}`}
             ref={ref}
             {...itemProps}
             role={undefined}
@@ -174,7 +174,7 @@ const TableRowLink: React.FC<TableRowLinkProps> = (
           />
         );
       }),
-    [athlete]
+    [competition]
   );
 
   return (
@@ -207,16 +207,17 @@ interface CustomTableProps {
 const CustomTable: React.FC<CustomTableProps> = (props: CustomTableProps) => {
   const { rows, columns } = props;
 
-  const weightClasses: string[] = [];
-
-  function getWeightClasses(weightClass: string) {
-    if (weightClasses.includes(weightClass)) {
-      return false;
-    } else {
-      weightClasses.push(weightClass);
-      return true;
-    }
-  }
+  /* TODO groupByYear */
+  /* const yearsGroupBy: string[] = []; */
+  /**/
+  /* function getYear(year: string) { */
+  /*   if (yeary.includes(weightClass)) { */
+  /*     return false; */
+  /*   } else { */
+  /*     yearsGroupBy.push(weightClass); */
+  /*     return true; */
+  /*   } */
+  /* } */
 
   function printWeightClasses(weightClass: string) {
     return `${weightClass.replace("W", "Women's ").replace("M", "Men's ")} kg`;
@@ -248,17 +249,18 @@ const CustomTable: React.FC<CustomTableProps> = (props: CustomTableProps) => {
           {/* TODO: fix row type */}
           {rows.map((row: RowProps, idx: number) => (
             <>
-              {getWeightClasses(row.weight_category) ? (
-                <TableRow>
-                  <StyledTableCell colSpan={13}>
-                    <Typography variant="h6">
-                      {printWeightClasses(row.weight_category)}
-                    </Typography>
-                  </StyledTableCell>
-                </TableRow>
-              ) : (
-                ""
-              )}
+              {/* TODO groupbyYEAR */}
+              {/* {getWeightClasses(row.weight_category) ? ( */}
+              {/*   <TableRow> */}
+              {/*     <StyledTableCell colSpan={13}> */}
+              {/*       <Typography variant="h6"> */}
+              {/*         {printWeightClasses(row.weight_category)} */}
+              {/*       </Typography> */}
+              {/*     </StyledTableCell> */}
+              {/*   </TableRow> */}
+              {/* ) : ( */}
+              {/*   "" */}
+              {/* )} */}
               <TableRowLink key={idx} row={row} columns={columns} />
             </>
           ))}

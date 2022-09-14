@@ -12,11 +12,12 @@ import Box from "@mui/material/Box";
 import { Column } from "./interfaces";
 
 const columns: Column[] = [
-  { id: "placing", label: "Lott." },
+  { id: "placing", label: "Placing" },
   { id: "competition_name", label: "Competition" },
   { id: "competition_date_start", label: "Date" },
-  { id: "team", label: "Team" },
+  { id: "weight_category", label: "Cat." },
   { id: "bodyweight", label: "Weight" },
+  { id: "team", label: "Team" },
   { id: "snatch_first_weight", label: "1", align: "center" },
   { id: "snatch_second_weight", label: "2", align: "center" },
   { id: "snatch_third_weight", label: "3", align: "center" },
