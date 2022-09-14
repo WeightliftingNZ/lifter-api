@@ -7,10 +7,10 @@ from api.views.pagination import StandardSetPagination
 
 class CompetitionViewSet(viewsets.ModelViewSet):
     """
-    Competiition
-    ========
-    - List of Competitions on database.
-    - Paginated
+    # Competition
+
+    - List of Competitions.
+    - Paginated.
     """
 
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]

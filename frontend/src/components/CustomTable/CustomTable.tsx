@@ -23,14 +23,16 @@ interface CustomTableProps {
   columns: any; // TODO: need to sort this type
   page: number;
   handleChangePage: any; // TODO: what type is this?
+  uriBase: "competitions" | "athletes";
 }
 
 const CustomTable: React.FC<CustomTableProps> = (props: CustomTableProps) => {
-  const { columns, rows, page, handleChangePage, count, rowsPerPage } = props;
+  const { columns, rows, page, handleChangePage, count, rowsPerPage, uriBase } =
+    props;
 
   return (
     <TableContainer component={Paper}>
-      <Table stickyHeader sx={{ minWidth: 650 }} aria-label="Competition Table">
+      <Table stickyHeader sx={{ minWidth: 650 }} aria-label="Custom Table">
         <TableHead>
           <TableRow>
             {columns.map((column: string, idx: number) => (
@@ -41,7 +43,12 @@ const CustomTable: React.FC<CustomTableProps> = (props: CustomTableProps) => {
         <TableBody>
           {/* TODO: fix row type */}
           {rows.map((row: RowProps, idx: number) => (
-            <TableRowLink key={idx} row={row} columns={columns} />
+            <TableRowLink
+              key={idx}
+              row={row}
+              columns={columns}
+              uriBase={uriBase}
+            />
           ))}
         </TableBody>
       </Table>

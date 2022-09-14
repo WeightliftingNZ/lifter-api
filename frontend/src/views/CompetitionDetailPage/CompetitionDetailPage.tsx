@@ -52,7 +52,25 @@ const CompetitionDetailPage: React.FC = () => {
   const lifts_count: number = parsed_data.lifts_count;
 
   if (rows.length === 0) {
-    return <Alert severity="info">No Lifts Record for this Competition</Alert>;
+    return (
+      <Box>
+        <Typography variant="h4" gutterBottom>
+          {name}
+        </Typography>
+        <Typography variant="subtitle2">
+          {dateTimeConverter(date_start, false)}
+          {date_start !== date_end
+            ? ` - ${dateTimeConverter(date_end, false)}`
+            : ""}
+        </Typography>
+        <Typography variant="subtitle2">
+          Number of lifts: {lifts_count}
+        </Typography>
+        <Alert severity="info">
+          No lifts recorded for "{name}" competition
+        </Alert>
+      </Box>
+    );
   }
 
   return (
@@ -62,8 +80,10 @@ const CompetitionDetailPage: React.FC = () => {
           {name}
         </Typography>
         <Typography variant="subtitle2">
-          {dateTimeConverter(date_start, false)}{" "}
-          {dateTimeConverter(date_end, false)}
+          {dateTimeConverter(date_start, false)}
+          {date_start !== date_end
+            ? ` - ${dateTimeConverter(date_end, false)}`
+            : ""}
         </Typography>
         <Typography variant="subtitle2">
           Number of lifts: {lifts_count}

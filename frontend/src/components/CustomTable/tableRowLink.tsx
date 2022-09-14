@@ -15,7 +15,7 @@ const TableRowLink: React.FC<TableRowLinkProps> = (
   props: TableRowLinkProps
 ) => {
   const theme = useTheme();
-  const { columns, row } = props;
+  const { columns, row, uriBase } = props;
   const { reference_id } = row;
 
   const renderLink = useMemo(
@@ -27,14 +27,15 @@ const TableRowLink: React.FC<TableRowLinkProps> = (
         return (
           /* TODO: URL is competitions but does not respect athlete etc */
           <RouterLink
-            to={`/competitions/${reference_id}`}
+            to={`/${uriBase}/${reference_id}`}
             ref={ref}
             {...itemProps}
             role={undefined}
+            style={{ textDecoration: "none" }}
           />
         );
       }),
-    [reference_id]
+    [uriBase, reference_id]
   );
 
   return (

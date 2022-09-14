@@ -41,6 +41,7 @@ const CompetitionListPage: React.FC = () => {
           searchQuery={searchQuery}
           handleChangePage={handleChangePage}
           page={page}
+          uriBase="competitions"
         />
       </Box>
     </>

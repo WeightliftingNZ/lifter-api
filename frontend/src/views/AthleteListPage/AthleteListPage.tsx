@@ -24,20 +24,22 @@ interface DataLoaderProps {
   searchQuery?: string;
   page: number;
   handleChangePage: any; // TODO: Whatis this type?
+  uriBase: "athletes" | "competitions";
 }
 
 const AthleteDataLoader: React.FC<DataLoaderProps> = ({
   searchQuery,
   page,
   handleChangePage,
+  uriBase,
 }) => {
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
   const { data, isLoading, isError } = useQuery(
-    ["athletes", debouncedSearchQuery + page.toString()],
+    [uriBase, debouncedSearchQuery + page.toString()],
     async () => {
       const res = await apiClient.get(
-        `/athletes?page=${page + 1}&search=${searchQuery}`
+        `${uriBase}?page=${page + 1}&search=${searchQuery}`
       );
       return res.data;
     }
@@ -71,6 +73,7 @@ const AthleteDataLoader: React.FC<DataLoaderProps> = ({
       handleChangePage={handleChangePage}
       rows={rows}
       columns={columns}
+      uriBase={uriBase}
     />
   );
 };
@@ -112,6 +115,7 @@ const AthleteListPage: React.FC = () => {
           searchQuery={searchQuery}
           handleChangePage={handleChangePage}
           page={page}
+          uriBase="athletes"
         />
       </Box>
     </>

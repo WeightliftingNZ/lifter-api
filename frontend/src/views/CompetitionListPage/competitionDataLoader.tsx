@@ -16,20 +16,22 @@ interface CompetitionDataLoaderProps {
   searchQuery?: string;
   page: number;
   handleChangePage: any; // TODO: Whatis this type?
+  uriBase: "athletes" | "competitions";
 }
 
 const CompetitionDataLoader: React.FC<CompetitionDataLoaderProps> = ({
   searchQuery,
   page,
   handleChangePage,
+  uriBase,
 }) => {
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
   const { data, isLoading, isError } = useQuery(
-    ["competitions", debouncedSearchQuery + page.toString()],
+    [uriBase, debouncedSearchQuery + page.toString()],
     async () => {
       const res = await apiClient.get(
-        `/competitions?page=${page + 1}&search=${searchQuery}`
+        `/${uriBase}?page=${page + 1}&search=${searchQuery}`
       );
       return res.data;
     }
@@ -63,6 +65,7 @@ const CompetitionDataLoader: React.FC<CompetitionDataLoaderProps> = ({
       handleChangePage={handleChangePage}
       rows={rows}
       columns={columns}
+      uriBase={uriBase}
     />
   );
 };

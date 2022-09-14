@@ -15,6 +15,7 @@ import {
 } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
+import { red, green } from "@mui/material/colors";
 
 interface Column {
   id: keyof LiftObjectProps;
@@ -22,7 +23,6 @@ interface Column {
   minWidth?: number;
   align?: "right" | "left" | "center";
   format?: (value: number) => string;
-  sx?: any;
 }
 
 const columns: Column[] = [
@@ -37,9 +37,136 @@ const columns: Column[] = [
   { id: "cnj_second_weight", label: "1", align: "center" },
   { id: "cnj_first_weight", label: "2", align: "center" },
   { id: "cnj_third_weight", label: "3", align: "center" },
-  { id: "total_lifted", label: "Total", sx: { fontWeight: "bold" } },
-  { id: "placing", label: "Place" },
+  { id: "total_lifted", label: "Total", align: "center" },
+  { id: "placing", label: "Place", align: "center" },
 ];
+
+/* TODO refactor below code?  */
+const isBestLift = (idx: number, column: Column, currentRow: any) => {
+  let isBold = false; // if the lift is the best lift
+  let currentLiftStatus = "";
+  let value = currentRow[column.id];
+
+  const bestSnatch = currentRow.best_snatch_weight[0];
+  const bestCnj = currentRow.best_cnj_weight[0];
+
+  switch (column.id.replace("_weight", "")) {
+    case "snatch_first":
+      if (bestSnatch === "1st") {
+        isBold = true;
+      }
+      currentLiftStatus = currentRow.snatches["1st"].lift_status;
+      if (currentLiftStatus === "DNA") {
+        value = "-";
+      }
+      break;
+    case "snatch_second":
+      if (bestSnatch === "2nd") {
+        isBold = true;
+      }
+      currentLiftStatus = currentRow.snatches["2nd"].lift_status;
+      if (currentLiftStatus === "DNA") {
+        value = "-";
+      }
+      break;
+    case "snatch_third":
+      if (bestSnatch === "3rd") {
+        isBold = true;
+      }
+      currentLiftStatus = currentRow.snatches["3rd"].lift_status;
+      if (currentLiftStatus === "DNA") {
+        value = "-";
+      }
+      break;
+    case "cnj_first":
+      if (bestCnj === "1st") {
+        isBold = true;
+      }
+      currentLiftStatus = currentRow.cnjs["1st"].lift_status;
+      if (currentLiftStatus === "DNA") {
+        value = "-";
+      }
+      break;
+    case "cnj_second":
+      if (bestCnj === "2nd") {
+        isBold = true;
+      }
+      currentLiftStatus = currentRow.cnjs["2nd"].lift_status;
+      if (currentLiftStatus === "DNA") {
+        value = "-";
+      }
+      break;
+    case "cnj_third":
+      if (bestCnj === "3rd") {
+        isBold = true;
+      }
+      currentLiftStatus = currentRow.cnjs["3rd"].lift_status;
+      if (currentLiftStatus === "DNA") {
+        value = "-";
+        break;
+      }
+  }
+
+  switch (currentLiftStatus) {
+    case "LIFT":
+      return (
+        <StyledTableCell
+          key={idx}
+          align={column.align}
+          sx={
+            isBold
+              ? {
+                  backgroundColor: green[100],
+                  borderWidth: 3,
+                  borderColor: green[800],
+                }
+              : { backgroundColor: green[100], borderColor: green[800] }
+          }
+        >
+          <Typography
+            sx={
+              isBold
+                ? { fontWeight: "bold", color: green[900] }
+                : { color: green[800] }
+            }
+          >
+            {value}
+          </Typography>
+        </StyledTableCell>
+      );
+    case "NOLIFT":
+      return (
+        <StyledTableCell
+          key={idx}
+          align={column.align}
+          sx={{ backgroundColor: red[100], borderColor: red[800] }}
+        >
+          <Typography sx={{ textDecoration: "line-through", color: red[900] }}>
+            {value}
+          </Typography>
+        </StyledTableCell>
+      );
+    case "DNA":
+      return (
+        <StyledTableCell
+          key={idx}
+          align={column.align}
+          sx={{
+            backgroundColor: red[100],
+            borderColor: red[800],
+          }}
+        >
+          <Typography>{value}</Typography>
+        </StyledTableCell>
+      );
+    default:
+      return (
+        <StyledTableCell key={idx} align={column.align}>
+          <Typography>{value}</Typography>
+        </StyledTableCell>
+      );
+  }
+};
 
 /* TODO: figure out how to make props into a list of predetermined strings
  * instead of using Record<string, any>  */
@@ -64,84 +191,29 @@ const TableRowLink: React.FC<TableRowLinkProps> = (
             ref={ref}
             {...itemProps}
             role={undefined}
+            style={{ textDecoration: "none" }}
           />
         );
       }),
     [athlete]
   );
 
-  const determineLift = (liftStatus: string) => {
-    if (liftStatus === "NOLIFT") {
-      return { backgroundColor: "red" };
-    } else if (liftStatus === "LIFT") {
-      return { backgroundColor: "green" };
-    } else if (liftStatus === "NOLIFT") {
-      return { backgroundColor: "grey" };
-    }
-  };
-
-  const giveLift = (liftId: keyof LiftObjectProps, currentRow: any) => {
-    let isBold = false; // if the lift is the best lift
-    let strikeThrough = false; // if no lift, strike through
-
-    const bestSnatch = currentRow.best_snatch_weight[0];
-    const bestCnj = currentRow.best_cnj_weight[0];
-
-    switch (liftId.replace("_weight", "")) {
-      case "snatch_first":
-        if (bestSnatch === "1st") {
-          isBold = true;
-        }
-        break;
-      case "snatch_second":
-        if (bestSnatch === "2nd") {
-          isBold = true;
-        }
-        break;
-      case "snatch_third":
-        if (bestSnatch === "3rd") {
-          isBold = true;
-        }
-        break;
-      case "cnj_first":
-        if (bestCnj === "1st") {
-          isBold = true;
-        }
-        break;
-      case "cnj_second":
-        if (bestCnj === "2nd") {
-          isBold = true;
-        }
-        break;
-      case "cnj_third":
-        if (bestCnj === "3rd") {
-          isBold = true;
-        }
-        break;
-    }
-
-    return (
-      <>{isBold ? <b>{currentRow[liftId]}</b> : <>{currentRow[liftId]}</>}</>
-    );
-  };
-
   return (
     <TableRow
       sx={{
         "&:nth-of-type(odd)": {
-          backgroundColor: theme.palette.action.hover,
+          backgroundColor: theme.palette.primary.light,
         },
         "&:last-child td, &:last-child th": {
           border: 0,
         },
+        "&:hover td": {
+          backgroundColor: theme.palette.primary.dark,
+        },
       }}
       component={renderLink}
     >
-      {columns.map((column: any, idx: number) => (
-        <StyledTableCell key={idx} align={column.align}>
-          <Typography variant="body1">{giveLift(column.id, row)}</Typography>
-        </StyledTableCell>
-      ))}
+      {columns.map((column: any, idx: number) => isBestLift(idx, column, row))}
     </TableRow>
   );
 };
@@ -154,7 +226,23 @@ interface CustomTableProps {
 }
 
 const CustomTable: React.FC<CustomTableProps> = (props: CustomTableProps) => {
+  const theme = useTheme();
   const { rows } = props;
+
+  const weightClasses: string[] = [];
+
+  function getWeightClasses(weightClass: string) {
+    if (weightClasses.includes(weightClass)) {
+      return false;
+    } else {
+      weightClasses.push(weightClass);
+      return true;
+    }
+  }
+
+  function printWeightClasses(weightClass: string) {
+    return `${weightClass.replace("W", "Women's ").replace("M", "Men's ")} kg`;
+  }
 
   return (
     <TableContainer component={Paper}>
@@ -181,7 +269,20 @@ const CustomTable: React.FC<CustomTableProps> = (props: CustomTableProps) => {
         <TableBody>
           {/* TODO: fix row type */}
           {rows.map((row: RowProps, idx: number) => (
-            <TableRowLink key={idx} row={row} columns={columns} />
+            <>
+              {getWeightClasses(row.weight_category) ? (
+                <TableRow>
+                  <StyledTableCell colSpan={13}>
+                    <Typography variant="h6">
+                      {printWeightClasses(row.weight_category)}
+                    </Typography>
+                  </StyledTableCell>
+                </TableRow>
+              ) : (
+                ""
+              )}
+              <TableRowLink key={idx} row={row} columns={columns} />
+            </>
           ))}
         </TableBody>
       </Table>
