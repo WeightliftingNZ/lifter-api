@@ -55,7 +55,7 @@ CURRENT_MALE_WEIGHT_CATEGORIES = [
 ]
 
 # 1998-2018
-
+__W44 = "W44" # Youth
 __W48 = "W48"
 __W53 = "W53"
 __W58 = "W58"
@@ -67,6 +67,7 @@ __W90 = "W90"
 __W90p = "W90+"
 
 OLD_1998_2018_FEMALE_WEIGHT_CATEGORIES = [
+    (__W44, "W44"), # Youth
     (__W48, "W48"),
     (__W53, "W53"),
     (__W58, "W58"),
@@ -78,22 +79,26 @@ OLD_1998_2018_FEMALE_WEIGHT_CATEGORIES = [
     (__W90p, "W90+"),
 ]
 
+__M50 = "M50" # Youth
 __M56 = "M56"
 __M62 = "M62"
 __M69 = "M69"
 __M77 = "M77"
 __M85 = "M85"
 __M94 = "M94"
+__M94p = "M94+" # Youth
 __M105 = "M105"
 __M105p = "M105+"
 
 OLD_1998_2018_MALE_WEIGHT_CATEGORIES = [
+    (__M50, "M50"), # Youth
     (__M56, "M56"),
     (__M62, "M62"),
     (__M69, "M69"),
     (__M77, "M77"),
     (__M85, "M85"),
     (__M94, "M94"),
+    (__M94p, "M94+"), # Youth
     (__M105, "M105"),
     (__M105p, "M105+"),
 ]
