@@ -2,7 +2,15 @@ import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import CustomSearchInput from "../../components/CustomSearchInput";
 import Typography from "@mui/material/Typography";
-import CompetitionDataLoader from "./competitionDataLoader";
+import DataLoader from "../../components/DataLoader";
+import { CompetitionListObjectProps } from "../../interfaces";
+
+const COLUMNS_TO_SHOW: (keyof CompetitionListObjectProps)[] = [
+  "name",
+  "date_start",
+  "lifts_count",
+  "location",
+];
 
 const CompetitionListPage: React.FC = () => {
   const [page, setPage] = useState(0);
@@ -37,7 +45,8 @@ const CompetitionListPage: React.FC = () => {
         />
       </Box>
       <Box sx={{ mt: 6 }}>
-        <CompetitionDataLoader
+        <DataLoader
+          columnsToShow={COLUMNS_TO_SHOW}
           searchQuery={searchQuery}
           handleChangePage={handleChangePage}
           page={page}

@@ -1,25 +1,23 @@
 import React from "react";
-import { useQuery } from "react-query";
 import { useDebounce } from "usehooks-ts";
+import { useQuery } from "react-query";
 import apiClient from "../../utils/http-common";
-import CustomError from "../../components/Error";
-import CustomLoading from "../../components/Loading";
-import {
-  CompetitionListObjectProps,
-  DRFPaginatedResponseProps,
-} from "../../interfaces";
-import CustomTable from "../../components/CustomTable";
-import Alert from "@mui/material/Alert";
-import { COLUMNS_TO_SHOW } from "./constants";
+import CustomTable from "../CustomTable";
+import CustomError from "../Error";
+import CustomLoading from "../Loading";
+import { Alert } from "@mui/material";
+import { DRFPaginatedResponseProps } from "../../interfaces";
 
-interface CompetitionDataLoaderProps {
+interface DataLoaderProps {
+  columnsToShow: any;
   searchQuery?: string;
   page: number;
   handleChangePage: any; // TODO: Whatis this type?
   uriBase: "athletes" | "competitions";
 }
 
-const CompetitionDataLoader: React.FC<CompetitionDataLoaderProps> = ({
+const DataLoader: React.FC<DataLoaderProps> = ({
+  columnsToShow,
   searchQuery,
   page,
   handleChangePage,
@@ -31,7 +29,7 @@ const CompetitionDataLoader: React.FC<CompetitionDataLoaderProps> = ({
     [uriBase, debouncedSearchQuery + page.toString()],
     async () => {
       const res = await apiClient.get(
-        `/${uriBase}?page=${page + 1}&search=${searchQuery}`
+        `${uriBase}?page=${page + 1}&search=${searchQuery}`
       );
       return res.data;
     }
@@ -44,10 +42,10 @@ const CompetitionDataLoader: React.FC<CompetitionDataLoaderProps> = ({
     return <CustomError />;
   }
   const parsed_data: DRFPaginatedResponseProps = data;
-  const rows: CompetitionListObjectProps[] = parsed_data.results;
+  const rows: any = parsed_data.results;
   const nextPage = parsed_data.next;
   const previousPage = parsed_data.previous;
-  const columns: (keyof CompetitionListObjectProps)[] = COLUMNS_TO_SHOW;
+  const columns: any = columnsToShow;
   const rowsPerPage = parsed_data.per_page;
   const count = parsed_data.count;
 
@@ -70,4 +68,4 @@ const CompetitionDataLoader: React.FC<CompetitionDataLoaderProps> = ({
   );
 };
 
-export default CompetitionDataLoader;
+export default DataLoader;

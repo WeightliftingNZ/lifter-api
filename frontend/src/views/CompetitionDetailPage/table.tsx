@@ -23,6 +23,7 @@ interface Column {
   minWidth?: number;
   align?: "right" | "left" | "center";
   format?: (value: number) => string;
+  extra?: { [key: string]: string };
 }
 
 const columns: Column[] = [
@@ -37,7 +38,12 @@ const columns: Column[] = [
   { id: "cnj_second_weight", label: "1", align: "center" },
   { id: "cnj_first_weight", label: "2", align: "center" },
   { id: "cnj_third_weight", label: "3", align: "center" },
-  { id: "total_lifted", label: "Total", align: "center" },
+  {
+    id: "total_lifted",
+    label: "Total",
+    align: "center",
+    extra: { fontWeight: "bold" },
+  },
   { id: "placing", label: "Place", align: "center" },
 ];
 
@@ -160,8 +166,10 @@ const isBestLift = (idx: number, column: Column, currentRow: any) => {
         </StyledTableCell>
       );
     default:
+      console.log(column.extra);
       return (
-        <StyledTableCell key={idx} align={column.align}>
+        /* TODO: the styling is not working */
+        <StyledTableCell key={idx} align={column.align} sx={column.extra}>
           <Typography>{value}</Typography>
         </StyledTableCell>
       );
@@ -226,7 +234,6 @@ interface CustomTableProps {
 }
 
 const CustomTable: React.FC<CustomTableProps> = (props: CustomTableProps) => {
-  const theme = useTheme();
   const { rows } = props;
 
   const weightClasses: string[] = [];
