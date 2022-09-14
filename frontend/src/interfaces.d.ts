@@ -28,7 +28,7 @@ interface ageCategoriesProps {
   is_master: boolean;
 }
 
-export interface AthleteObjectProps {
+export interface AthleteListObjectProps {
   reference_id: string;
   url: string;
   full_name: string;
@@ -38,7 +38,7 @@ export interface AthleteObjectProps {
   age_categories: ageCategories;
 }
 
-export interface AthleteObjectDetailProps extends AthleteObjectProps {
+export interface AthleteDetailObjectProps extends AthleteListObjectProps {
   lift_set: LiftObjectProps[];
 }
 

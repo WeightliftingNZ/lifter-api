@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import Box from "@mui/material/Box";
-import { AthleteObjectProps } from "../../interfaces";
+import { AthleteListObjectProps } from "../../interfaces";
 import CustomSearchInput from "../../components/CustomSearchInput";
 import Typography from "@mui/material/Typography";
 import DataLoader from "../../components/DataLoader";
 
-const COLUMNS_TO_SHOW: (keyof AthleteObjectProps)[] = [
+const COLUMNS_TO_SHOW: (keyof AthleteListObjectProps)[] = [
   "first_name",
   "last_name",
   "yearborn",

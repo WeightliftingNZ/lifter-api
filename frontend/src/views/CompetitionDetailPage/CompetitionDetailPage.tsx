@@ -43,35 +43,13 @@ const CompetitionDetailPage: React.FC = () => {
     return <CustomError />;
   }
 
-  const parsed_data: CompetitionDetailObjectProps = data;
-  const rows: LiftObjectProps[] = parsed_data.lift_set;
+  const parsedData: CompetitionDetailObjectProps = data;
+  const rows: LiftObjectProps[] = parsedData.lift_set;
   const columns: (keyof LiftObjectProps)[] = COLUMNS_TO_SHOW;
-  const name: string = parsed_data.name;
-  const date_start: string = parsed_data.date_start;
-  const date_end: string = parsed_data.date_end;
-  const lifts_count: number = parsed_data.lifts_count;
-
-  if (rows.length === 0) {
-    return (
-      <Box>
-        <Typography variant="h4" gutterBottom>
-          {name}
-        </Typography>
-        <Typography variant="subtitle2">
-          {dateTimeConverter(date_start, false)}
-          {date_start !== date_end
-            ? ` - ${dateTimeConverter(date_end, false)}`
-            : ""}
-        </Typography>
-        <Typography variant="subtitle2">
-          Number of lifts: {lifts_count}
-        </Typography>
-        <Alert severity="info">
-          No lifts recorded for "{name}" competition
-        </Alert>
-      </Box>
-    );
-  }
+  const name: string = parsedData.name;
+  const dateStart: string = parsedData.date_start;
+  const dateEnd: string = parsedData.date_end;
+  const liftCounts: number = parsedData.lifts_count;
 
   return (
     <>
@@ -80,17 +58,23 @@ const CompetitionDetailPage: React.FC = () => {
           {name}
         </Typography>
         <Typography variant="subtitle2">
-          {dateTimeConverter(date_start, false)}
-          {date_start !== date_end
-            ? ` - ${dateTimeConverter(date_end, false)}`
+          {dateTimeConverter(dateStart, false)}
+          {dateStart !== dateEnd
+            ? ` - ${dateTimeConverter(dateEnd, false)}`
             : ""}
         </Typography>
         <Typography variant="subtitle2">
-          Number of lifts: {lifts_count}
+          Number of lifts: {liftCounts}
         </Typography>
       </Box>
       <Box sx={{ mt: 6 }}>
-        <CustomTable rows={rows} columns={columns} />
+        {rows.length === 0 ? (
+          <Alert severity="info">
+            No lifts recorded for "{name}" competition
+          </Alert>
+        ) : (
+          <CustomTable rows={rows} columns={columns} />
+        )}
       </Box>
     </>
   );
