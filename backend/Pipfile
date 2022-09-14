@@ -23,6 +23,7 @@ drf-spectacular = {extras = ["sidecar"], version = "*"}
 djangorestframework-simplejwt = "*"
 drf-nested-routers = "*"
 django-extensions = "*"
+django-crispy-forms = "*"
 
 [dev-packages]
 pytest = "*"
