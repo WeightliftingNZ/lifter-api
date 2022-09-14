@@ -61,6 +61,9 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt.token_blacklist",
     # django extensions
     "django_extensions",
+    # django filters / cripy forms
+    "django_filters",
+    "crispy_forms",
     #   custom
     "api",
     "users",
@@ -107,9 +110,12 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.BasicAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ),
-    "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.IsAuthenticatedOrReadOnly"
-    ],
+    "DEFAULT_PERMISSION_CLASSES": (
+        "rest_framework.permissions.IsAuthenticatedOrReadOnly",
+    ),
+    "DEFAULT_FILTER_BACKENDS": (
+        "django_filters.rest_framework.DjangoFilterBackend",
+    )
     # "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     # "PAGE_SIZE": 20,
     # "DEFAULT_THROTTLE_CLASSES": [

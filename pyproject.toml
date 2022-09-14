@@ -29,14 +29,7 @@ version = "0.1.0"
 # dynamic = ["readme", "license"]
 
 [project.optional-dependencies]
-test = [
-  "pytest",
-  "pytest-cov",
-  "pytest-django",
-  "tox",
-  "mypy",
-  "flake8",
-]
+test = ["pytest", "pytest-cov", "pytest-django", "tox", "mypy", "flake8"]
 
 # [tool.setuptools.dynamic]
 # readme = {file ="README.md"}
@@ -52,15 +45,26 @@ multi_line_output = 3
 line_length = 79
 default_section = "THIRDPARTY"
 known_first_party = ["api", "users", "config"]
-known_third_party = ["dj_rest_auth", "django", "drf_spectacular", "hashid_field", "pytest", "rest_framework", "rest_framework_nested", "rest_framework_simplejwt", "sentry_sdk", "setuptools"]
+known_third_party = [
+  "dj_rest_auth",
+  "django",
+  "drf_spectacular",
+  "hashid_field",
+  "pytest",
+  "rest_framework",
+  "rest_framework_nested",
+  "rest_framework_simplejwt",
+  "sentry_sdk",
+  "setuptools",
+]
 
 [tool.black]
 line-length = 79
 include = '\.pyi?%'
 
 [tool.pyright]
-include = ["backend"]
-exclude = ["backend/.venv"]
+include = ["./backend/"]
+exclude = ["./backend/.venv"]
 venvPath = "./backend"
 venv = ".venv"
 
@@ -82,7 +86,7 @@ log_format = "%(asctime)s %(levelname)s %(message)s"
 log_date_format = "%Y-%m-%d %H:%M:%S"
 
 [tool.coverage.run]
-omit = ["tests/*", "*/migrations/*"]
+omit = ["*/tests/*", "*/migrations/*"]
 
 [[tool.mypy.overrides]]
 module = "*.migrations.*"
