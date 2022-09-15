@@ -1,4 +1,4 @@
-"""Test competition endpoints.
+"""Test competition  endpoints.
 
 Competitions to retrieve, create, edit and delete.
 """
@@ -35,11 +35,53 @@ class TestCompetitionCase:
         result = response.json()
         assert mock_competition[0].name == result["name"]
 
-    @pytest.mark.skip("There is no find functionality!")
-    def test_find_competition(self):
-        """Find a competition."""
-        # TODO: this functionality does not exist yet
-        pass
+    def test_find_competition_by_date(self, client, mock_competition):
+        """Find a competition by date.
+
+        To consider: there are 2 mocked competitions (this is assumed), and if that is changed, it will likely result in the test failing.
+            - mocked competition different dates.
+            - one competition is set to today's date.
+            - the second competition is set to a date in 2019.
+        """
+        # competition one - today's date
+        one_response = client.get(
+            f"{self.url}?date_start_after={mock_competition[0].date_start}&date_start_before={mock_competition[0].date_start}&search=&ordering="
+        )
+        assert one_response.status_code == status.HTTP_200_OK
+        one_result = one_response.json()
+        assert one_result["count"] == 1
+
+        # all competitions - searching between date of earliest competition to today
+        all_response = client.get(
+            f"{self.url}?date_start_after={mock_competition[1].date_start}&date_start_before={mock_competition[0].date_start}&search=&ordering="
+        )
+        assert all_response.status_code == status.HTTP_200_OK
+        all_result = all_response.json()
+        assert all_result["count"] == len(mock_competition)
+
+    def test_find_competition_by_search(self, client, mock_competition):
+        """Find a competition by search.
+
+        To consider: there are 2 mocked competitions (this is assumed), and if that is changed, it will likely result in the test failing.
+            - mocked competition have unique names, but same location.
+            - `name` search for this test will return only 1 competition.
+            - `location` search will return 2 competitions.
+        """
+        # name
+        response = client.get(
+            f"{self.url}?date_start_after=&date_start_before=&search={mock_competition[0].name}&ordering="
+        )
+        assert response.status_code == status.HTTP_200_OK
+        result = response.json()
+        assert result["count"] == 1
+
+        # location
+        response = client.get(
+            f"{self.url}?date_start_after=&date_start_before=&search={mock_competition[0].location}&ordering="
+        )
+        assert response.status_code == status.HTTP_200_OK
+        result = response.json()
+        assert result["count"] == len(mock_competition)
 
     @pytest.mark.parametrize(
         "test_input,expected",
