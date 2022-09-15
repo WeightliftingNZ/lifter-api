@@ -35,8 +35,8 @@ const columns: Column[] = [
   { id: "snatch_first_weight", label: "1", align: "center" },
   { id: "snatch_second_weight", label: "2", align: "center" },
   { id: "snatch_third_weight", label: "3", align: "center" },
-  { id: "cnj_second_weight", label: "1", align: "center" },
-  { id: "cnj_first_weight", label: "2", align: "center" },
+  { id: "cnj_first_weight", label: "1", align: "center" },
+  { id: "cnj_second_weight", label: "2", align: "center" },
   { id: "cnj_third_weight", label: "3", align: "center" },
   {
     id: "total_lifted",
