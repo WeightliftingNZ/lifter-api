@@ -14,8 +14,17 @@ class AthleteFilter(filters.FilterSet):
     )
 
     def search_filter(self, queryset, name, value):
+        terms = value.split(" ")
+
+        # prevents overloading search
+
+        if len(terms) > 10:
+            terms = terms[:10]
         return queryset.filter(
-            Q(first_name__icontains=value) | Q(last_name__icontains=value)
+            *[
+                Q(first_name__icontains=term) | (Q(last_name__icontains=term))
+                for term in terms
+            ]
         )
 
     class Meta:

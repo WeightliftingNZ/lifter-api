@@ -34,10 +34,20 @@ class TestAthleteCase:
         result = response.json()
         assert result["last_name"] == mock_athlete[0].last_name
 
-    def test_find_athlete(self, client, mock_athlete):
+    @pytest.mark.parametrize(
+        "test_input,expected",
+        [
+            pytest.param(
+                "&search={}",
+                2,
+                id="2 match for name",
+            ),
+        ],
+    )
+    def test_find_athlete(self, client, mock_athlete, test_input, expected):
         """Find a athlete using the url search terms."""
         response = client.get(
-            f"{self.url}?search={mock_athlete[0].first_name}"
+            f"{self.url}?search={mock_athlete[0].first_name} {mock_athlete[0].last_name}"
         )
         assert response.status_code == status.HTTP_200_OK
         result = response.json()

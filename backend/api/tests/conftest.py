@@ -1,31 +1,51 @@
 """Set mock data and set up fixtures to be used for testing."""
 
+from datetime import datetime
+
 import pytest
+from faker import Faker
 
 from api.models.athletes import Athlete
 from api.models.competitions import Competition
 from api.models.lifts import Lift
 
 
+@pytest.fixture(scope="session", autouse=True)
+def faker():
+    """Faker instance."""
+    return Faker()
+
+
+@pytest.fixture(scope="session", autouse=True)
+def faker_session_locale():
+    """Set up local for faker."""
+    return ["en_NZ"]
+
+
+@pytest.fixture(scope="session", autouse=True)
+def faker_seed():
+    """Random seed to ensure faker information is consistent."""
+    return 42
+
+
 @pytest.fixture
-def mock_athlete(django_db_blocker) -> list[Athlete]:
+def mock_athlete(django_db_blocker, faker) -> list[Athlete]:
     """Provide edited athlete data.
 
     Returns:
         list[Athlete]: list of mocked Athlete models.
     """
-    athletes = [
-        {
-            "first_name": "One",
-            "last_name": "Athlete-One",
-            "yearborn": 2001,
-        },
-        {
-            "first_name": "Two",
-            "last_name": "Athlete-Two",
-            "yearborn": 2002,
-        },
-    ]
+    MOCK_ATHLETE_ONE = {
+        "first_name": faker.first_name(),
+        "last_name": faker.last_name(),
+        "yearborn": faker.date_of_birth().year,
+    }
+    MOCK_ATHLETE_TWO = {
+        "first_name": faker.first_name(),
+        "last_name": faker.last_name(),
+        "yearborn": faker.date_of_birth().year,
+    }
+    athletes = [MOCK_ATHLETE_ONE, MOCK_ATHLETE_TWO]
     created = []
     for athlete in athletes:
         with django_db_blocker.unblock():
@@ -34,26 +54,30 @@ def mock_athlete(django_db_blocker) -> list[Athlete]:
 
 
 @pytest.fixture
-def mock_competition(django_db_blocker) -> list[Competition]:
+def mock_competition(django_db_blocker, faker) -> list[Competition]:
     """Mock competition data.
 
     Returns:
         list[Competition]: list of mock competitions
     """
-    competitions = [
-        {
-            "date_start": "2022-01-01",
-            "date_end": "2022-01-01",
-            "location": "One",
-            "name": "Competition One",
-        },
-        {
-            "date_start": "2022-02-02",
-            "date_end": "2022-02-02",
-            "location": "Two",
-            "name": "Competition Two",
-        },
-    ]
+    MOCK_COMPETIION_ONE = {
+        "date_start": str(datetime.now())[:10],
+        "date_end": str(datetime.now())[:10],
+        "name": f"Competition {faker.color_name()}",
+        "location": faker.company(),
+    }
+
+    MOCK_COMPETIION_TWO = {
+        "date_start": faker.date_between(
+            start_date=datetime(2019, 1, 1), end_date=datetime(2019, 1, 3)
+        ),
+        "date_end": faker.date_between(
+            start_date=datetime(2019, 1, 4), end_date=datetime(2019, 1, 8)
+        ),
+        "name": f"Competition {faker.color_name()}",
+        "location": MOCK_COMPETIION_ONE["location"],
+    }
+    competitions = [MOCK_COMPETIION_ONE, MOCK_COMPETIION_TWO]
     created = []
     for competition in competitions:
         with django_db_blocker.unblock():

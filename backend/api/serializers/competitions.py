@@ -40,7 +40,9 @@ class CompetitionDetailSerializer(CompetitionSerializer):
     lift_set = serializers.SerializerMethodField(read_only=True)
 
     def get_lift_set(self, competition):
-        query = Lift.objects.ordered_filter(competition=competition)
+        query = Lift.objects.ordered_filter(  # type: ignore
+            competition=competition
+        )
         return LiftSerializer(
             query, many=True, read_only=True, context=self.context
         ).data
