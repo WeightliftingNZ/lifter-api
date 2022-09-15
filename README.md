@@ -18,4 +18,4 @@ Instead of using .pdf's and Excel files to display competition results, I wanted
 
 ## Contribution
 
-I will sort this out soon!
+[Please check out CONTRIBUTING](https://github.com/WeightliftingNZ/lifter-api/blob/main/CONTRIBUTING).
