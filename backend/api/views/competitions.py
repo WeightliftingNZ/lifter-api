@@ -11,10 +11,11 @@ from .filters import CompetitionFilter
 
 class CompetitionViewSet(viewsets.ModelViewSet):
     """
-    Competition
-    ========
-    - List of Competitions on database.
-    - Paginated
+    # Competition
+
+    - List of Competitions.
+    - Paginated.
+
     """
 
     filterset_class = CompetitionFilter

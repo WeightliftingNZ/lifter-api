@@ -1,54 +1,81 @@
-import React, { FunctionComponent } from "react";
+import React from "react";
 import { useQuery } from "react-query";
 import { useParams } from "react-router-dom";
 import apiClient from "../../utils/http-common";
-import Loading from "../../components/Loading";
-import Error from "../../components/Error";
-import LiftsTable from "../../components/LiftsTable";
+import CustomLoading from "../../components/Loading";
+import CustomError from "../../components/Error";
+import CustomTable from "./table";
+import {
+  CompetitionDetailObjectProps,
+  LiftObjectProps,
+} from "../../interfaces";
+import Alert from "@mui/material/Alert";
+import { dateTimeConverter } from "../../utils/customFunctions/customFunctions";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
 
-const CompetitionDetailPage: FunctionComponent = () => {
+const COLUMNS_TO_SHOW: (keyof LiftObjectProps)[] = [
+  "lottery_number",
+  "athlete_name",
+  "total_lifted",
+  "bodyweight",
+  "weight_category",
+  "team",
+  "placing",
+];
+
+const CompetitionDetailPage: React.FC = () => {
   const params = useParams();
   const competitionId = params.competitionReferenceId;
 
   const { data, isLoading, isError } = useQuery(
-    ["competition", competitionId],
+    ["competitions", competitionId],
     async () => {
-      return await apiClient.get(`/competitions/${competitionId}`);
+      const res = await apiClient.get(`/competitions/${competitionId}`);
+      return res.data;
     }
   );
-
   if (isLoading) {
-    return (
-      <>
-        <Loading />
-      </>
-    );
-  }
-  if (isError) {
-    return (
-      <>
-        <Error />
-      </>
-    );
+    return <CustomLoading />;
   }
 
-  const competition: any = data?.data;
-  const lifts = competition.lift_set;
+  if (isError) {
+    return <CustomError />;
+  }
+
+  const parsedData: CompetitionDetailObjectProps = data;
+  const rows: LiftObjectProps[] = parsedData.lift_set;
+  const columns: (keyof LiftObjectProps)[] = COLUMNS_TO_SHOW;
+  const name: string = parsedData.name;
+  const dateStart: string = parsedData.date_start;
+  const dateEnd: string = parsedData.date_end;
+  const liftCounts: number = parsedData.lifts_count;
 
   return (
     <>
-      <div className="card">
-        <h1>{competition.name}</h1>
-        <p>{competition.location}</p>
-        <p>{competition.date_start}</p>
-      </div>
-      <div className="flex flex-col gap-2">
-        {competition.lift_set.length === 0 ? (
-          <div className="error-msg">This competition has no lifts!</div>
+      <Box>
+        <Typography variant="h4" gutterBottom>
+          {name}
+        </Typography>
+        <Typography variant="subtitle2">
+          {dateTimeConverter(dateStart, false)}
+          {dateStart !== dateEnd
+            ? ` - ${dateTimeConverter(dateEnd, false)}`
+            : ""}
+        </Typography>
+        <Typography variant="subtitle2">
+          Number of lifts: {liftCounts}
+        </Typography>
+      </Box>
+      <Box sx={{ mt: 6 }}>
+        {rows.length === 0 ? (
+          <Alert severity="info">
+            No lifts recorded for "{name}" competition
+          </Alert>
         ) : (
-          <LiftsTable lifts={lifts} />
+          <CustomTable rows={rows} columns={columns} />
         )}
-      </div>
+      </Box>
     </>
   );
 };

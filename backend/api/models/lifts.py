@@ -8,6 +8,7 @@ from hashid_field import HashidAutoField
 
 from config.settings import HASHID_FIELD_SALT
 
+from .managers import LiftManager
 from .utils import (
     CURRENT_FEMALE_WEIGHT_CATEGORIES,
     CURRENT_MALE_WEIGHT_CATEGORIES,
@@ -34,6 +35,7 @@ OLD_WEIGHT_CATEGORIES = (
 ALL_WEIGHT_CATEGORIES = CURRENT_WEIGHT_CATEGORIES + OLD_WEIGHT_CATEGORIES
 
 
+# TODO: Not using this model
 class Session(models.Model):
     reference_id = HashidAutoField(
         primary_key=True, salt=f"sessionmodel_reference_id_{HASHID_FIELD_SALT}"
@@ -53,6 +55,7 @@ class Session(models.Model):
         ]
 
 
+# TODO: Not using this model
 class Team(models.Model):
     reference_id = HashidAutoField(
         primary_key=True, salt=f"teammodel_reference_id_{HASHID_FIELD_SALT}"
@@ -131,6 +134,8 @@ class Lift(models.Model):
         default=DEFAULT_LIFT_STATUS,
     )
     cnj_third_weight = models.IntegerField(blank=True, default=0)
+
+    objects = LiftManager()
 
     class Meta:
         ordering = ["weight_category", "lottery_number"]

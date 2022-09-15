@@ -1,213 +1,146 @@
-import React, { useState, FunctionComponent, useMemo } from "react";
+import React from "react";
 import { useQuery } from "react-query";
-import { useTable } from "react-table";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import apiClient from "../../utils/http-common";
-import Loading from "../../components/Loading";
-import Error from "../../components/Error";
+import CustomLoading from "../../components/Loading";
+import CustomError from "../../components/Error";
+import CustomTable from "./table";
+import { AthleteDetailObjectProps, LiftObjectProps } from "../../interfaces";
+import Alert from "@mui/material/Alert";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import { Column } from "./interfaces";
+import Paper from "@mui/material/Paper";
 
-const AthleteDetailPage: FunctionComponent = () => {
-  const [athlete, setAthlete] = useState({
-    first_name: "",
-    last_name: "",
-    full_name: "",
-    yearborn: 1900,
-    lift_set: [],
-  });
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+} from "recharts";
+
+interface LiftChartDataProps {
+  name: string;
+  snatch: number;
+  cnj: number;
+  total: number;
+  date: string;
+}
+
+interface LiftChartProps {
+  data: LiftChartDataProps[];
+}
+
+const LiftChart: React.FC<LiftChartProps> = (props: LiftChartProps) => {
+  const { data } = props;
+  return (
+    <Paper>
+      <Box sx={{ mx: 2 }}>
+        <Typography variant="h6" gutterBottom>
+          Lifts
+        </Typography>
+        <LineChart width={600} height={300} data={data}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="competition_date_start" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Line type="monotone" dataKey="snatch" stroke="#00AA00" />
+          <Line type="monotone" dataKey="cnj" stroke="#AA0000" />
+          <Line type="monotone" dataKey="total" stroke="#0000AA" />
+        </LineChart>
+      </Box>
+    </Paper>
+  );
+};
+
+const columns: Column[] = [
+  { id: "placing", label: "Placing" },
+  { id: "competition_name", label: "Competition" },
+  { id: "competition_date_start", label: "Date" },
+  { id: "weight_category", label: "Cat." },
+  { id: "bodyweight", label: "Weight" },
+  { id: "team", label: "Team" },
+  { id: "snatch_first_weight", label: "1", align: "center" },
+  { id: "snatch_second_weight", label: "2", align: "center" },
+  { id: "snatch_third_weight", label: "3", align: "center" },
+  { id: "cnj_second_weight", label: "1", align: "center" },
+  { id: "cnj_first_weight", label: "2", align: "center" },
+  { id: "cnj_third_weight", label: "3", align: "center" },
+  {
+    id: "total_lifted",
+    label: "Total",
+    align: "center",
+    extra: { fontWeight: "bold" },
+  },
+];
+
+const AthleteDetailPage: React.FC = () => {
   const params = useParams();
-  const athleteId = params.athleteReferenceId;
+  const AthleteId = params.athleteReferenceId;
 
-  const { isLoading, isError } = useQuery(
-    ["athlete", athleteId],
+  const { data, isLoading, isError } = useQuery(
+    ["athlete", AthleteId],
     async () => {
-      return await apiClient.get(`/athletes/${athleteId}`);
-    },
-    {
-      enabled: Boolean(athlete),
-      onSuccess: (res) => {
-        const result = {
-          status: res.status + "-" + res.statusText,
-          headers: res.headers,
-          data: res.data,
-        };
-        setAthlete(result.data);
-      },
-      onError: (err) => {
-        console.log(err);
-      },
+      const res = await apiClient.get(`/athletes/${AthleteId}`);
+      return res.data;
     }
   );
-
-  const displayWeightCell = ({ cell }: { cell: any }) => {
-    let bolded = false;
-    const arrayLiftType = cell.column.id.split(".");
-    let bestLift = "";
-    if (arrayLiftType[0] === "snatches") {
-      bestLift = cell.row.original.best_snatch_weight[0];
-    } else if (arrayLiftType[0] === "cnjs") {
-      bestLift = cell.row.original.best_cnj_weight[0];
-    }
-    if (arrayLiftType[1] === bestLift) {
-      bolded = true;
-    }
-    return (
-      <div className={bolded ? "font-bold" : ""}>
-        <div
-          className={cell.value.lift_status === "NOLIFT" ? "line-through" : ""}
-        >
-          {cell.value.lift_status === "DNA" ? "-" : cell.value.weight}
-        </div>
-      </div>
-    );
-  };
-
-  const lifts = athlete.lift_set;
-
-  const liftData = useMemo(() => [...lifts], [lifts]);
-
-  const liftColumns = useMemo(
-    () => [
-      {
-        Header: "Competition",
-        accessor: "competition_name",
-        Cell: ({ cell }: { cell: any }) => {
-          return (
-            <Link
-              to={`/competitions/${cell.row.original.competition}/sessions/${cell.row.original.session}`}
-            >
-              <div className="text-left text-blue-600 font-semibold underline">
-                {cell.value}
-              </div>
-            </Link>
-          );
-        },
-      },
-      {
-        Header: "Date",
-        accessor: "competition_date_start",
-      },
-      {
-        Header: "Cat.",
-        accessor: "weight_category",
-      },
-      {
-        Header: "Weight",
-        accessor: "bodyweight",
-      },
-      {
-        Header: "Snatch",
-        columns: [
-          {
-            Header: "1",
-            accessor: "snatches.1st",
-            Cell: displayWeightCell,
-          },
-          {
-            Header: "2",
-            accessor: "snatches.2nd",
-            Cell: displayWeightCell,
-          },
-          {
-            Header: "3",
-            accessor: "snatches.3rd",
-            Cell: displayWeightCell,
-          },
-        ],
-      },
-      {
-        Header: "Clean & Jerk",
-        columns: [
-          {
-            Header: "1",
-            accessor: "cnjs.1st",
-            Cell: displayWeightCell,
-          },
-          {
-            Header: "2",
-            accessor: "cnjs.2nd",
-            Cell: displayWeightCell,
-          },
-          {
-            Header: "3",
-            accessor: "cnjs.3rd",
-            Cell: displayWeightCell,
-          },
-        ],
-      },
-      {
-        Header: "Results",
-        columns: [
-          {
-            Header: "Sn",
-            accessor: "best_snatch_weight.1",
-          },
-          {
-            Header: "CJ",
-            accessor: "best_cnj_weight.1",
-          },
-          {
-            Header: "T",
-            accessor: "total_lifted",
-          },
-        ],
-      },
-      {
-        Header: "Placing",
-        accessor: "placing",
-      },
-    ],
-    []
-  );
-
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
-    useTable({ columns: liftColumns, data: liftData } as any);
-
   if (isLoading) {
-    return <Loading />;
+    return <CustomLoading />;
   }
+
   if (isError) {
-    return <Error />;
+    return <CustomError />;
   }
+
+  const parsedData: AthleteDetailObjectProps = data;
+  const rows: LiftObjectProps[] = parsedData.lift_set;
+  const fullName: string = parsedData.full_name;
+  const birthYear: number = parsedData.yearborn;
+  const liftsCount: number = parsedData.lift_set.length;
+
+  const chartData: LiftChartDataProps[] = [];
+
+  rows.map((row) => {
+    const chartDatum: LiftChartDataProps = {
+      name: row.competition_name,
+      snatch: row.best_snatch_weight[1],
+      cnj: row.best_cnj_weight[1],
+      total: row.total_lifted,
+      date: row.competition_date_start,
+    };
+    chartData.push(chartDatum);
+    return null;
+  });
 
   return (
     <>
-      <div className="card">
-        <h1>
-          {athlete.first_name} {athlete.last_name.toUpperCase()}
-        </h1>
-        {athlete.yearborn}
-      </div>
-      <div className="flex self-center">
-        <table {...getTableProps}>
-          <thead>
-            {headerGroups.map((headerGroup, idx) => (
-              <tr {...headerGroup.getHeaderGroupProps()} key={idx}>
-                {headerGroup.headers.map((column, idx) => (
-                  <th {...column.getHeaderProps()} key={idx}>
-                    {column.render("Header")}
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody {...getTableBodyProps()}>
-            {rows.map((row, idx) => {
-              prepareRow(row);
-              return (
-                <tr {...row.getRowProps()} key={idx}>
-                  {row.cells.map((cell, idx) => {
-                    return (
-                      <td {...cell.getCellProps()} key={idx}>
-                        {cell.render("Cell")}
-                      </td>
-                    );
-                  })}
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+      <Box>
+        <Typography variant="h4" gutterBottom>
+          {fullName}
+        </Typography>
+        <Typography variant="subtitle2">{birthYear}</Typography>
+      </Box>
+      <Box sx={{ mt: 6 }}>
+        {liftsCount === 0 ? (
+          <Alert severity="info">
+            No lifts recorded for "{fullName}" competition
+          </Alert>
+        ) : (
+          <>
+            <Box>
+              <LiftChart data={chartData} />
+            </Box>
+            <Box>
+              <CustomTable rows={rows} columns={columns} />
+            </Box>
+          </>
+        )}
+      </Box>
     </>
   );
 };

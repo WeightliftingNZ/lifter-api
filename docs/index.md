@@ -1,3 +1,9 @@
+[![Build](https://github.com/ChristchurchCityWeightlifting/lifter-api/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/ChristchurchCityWeightlifting/lifter-api/actions/workflows/main.yml)
+[![Docs](https://github.com/WeightliftingNZ/lifter-api/actions/workflows/docs.yml/badge.svg)](https://github.com/WeightliftingNZ/lifter-api/actions/workflows/docs.yml)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
+# Lifter API
+
 # Lifter API Documentation
 
 Did you mean [Lifter API Wrapper Documentation](https://weightliftingnz.github.io/lifter-api-wrapper)?

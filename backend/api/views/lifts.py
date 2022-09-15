@@ -8,9 +8,7 @@ from api.serializers import LiftSerializer
 
 class LiftViewSet(viewsets.ModelViewSet):
     """
-    Lift
-    ===
-
+    # Lift
 
     """
 

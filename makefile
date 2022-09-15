@@ -60,3 +60,8 @@ generate-key:
 	@echo '' && \
 	cd ./backend && \
 	pipenv -q run python manage.py shell -c 'from django.core.management import utils; print(utils.get_random_secret_key())'
+
+.PHONY: serve-docs
+serve-docs:
+	cd ./backenc && \
+		pipenv run mkdocs serve --config-file ../mkdocs.yml
