@@ -219,10 +219,6 @@ const CustomTable: React.FC<CustomTableProps> = (props: CustomTableProps) => {
   /*   } */
   /* } */
 
-  function printWeightClasses(weightClass: string) {
-    return `${weightClass.replace("W", "Women's ").replace("M", "Men's ")} kg`;
-  }
-
   return (
     <TableContainer component={Paper}>
       <Table stickyHeader sx={{ minWidth: 650 }} aria-label="Competition Table">
