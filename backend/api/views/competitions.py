@@ -1,8 +1,12 @@
-from rest_framework import filters, viewsets
+"""Viewset for competitions."""
+
+from rest_framework import viewsets
 
 from api.models import Competition
 from api.serializers import CompetitionDetailSerializer, CompetitionSerializer
 from api.views.pagination import StandardSetPagination
+
+from .filters import CompetitionFilter
 
 
 class CompetitionViewSet(viewsets.ModelViewSet):
@@ -11,11 +15,10 @@ class CompetitionViewSet(viewsets.ModelViewSet):
 
     - List of Competitions.
     - Paginated.
+
     """
 
-    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ["name", "location"]
-    ordering_fields = ["date_start"]
+    filterset_class = CompetitionFilter
     ordering = ["-date_start"]
     pagination_class = StandardSetPagination
 

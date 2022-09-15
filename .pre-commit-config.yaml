@@ -24,7 +24,14 @@ repos:
         id: pycln
     repo: https://github.com/hadialqattan/pycln
     rev: v2.1.1
-  - hooks:
+
+    hooks:
+      - id: pycln
+        args: [--all]
+
+  - repo: https://github.com/ambv/black
+    rev: 22.8.0
+    hooks:
       - id: black
     repo: https://github.com/ambv/black
     rev: 22.6.0
@@ -63,7 +70,30 @@ repos:
         id: mypy
     repo: https://github.com/pre-commit/mirrors-mypy
     rev: v0.971
-  - hooks:
+    hooks:
+      - id: mypy
+        additional_dependencies:
+          [
+            "djangorestframework-stubs",
+            "django-stubs",
+            "django-cors-headers",
+            "django-allauth",
+            "dj_rest_auth",
+            "drf_spectacular",
+            "drf_spectacular_sidecar",
+            "djangorestframework-simplejwt",
+            "psycopg2-binary",
+            "psycopg2",
+            "django-hashid-field",
+            "django_extensions",
+            "sentry-sdk",
+            "django-filter",
+            "django-crispy-forms",
+          ]
+
+  - repo: https://github.com/pycqa/isort
+    rev: 5.10.1
+    hooks:
       - id: isort
     repo: https://github.com/pycqa/isort
     rev: 5.10.1
@@ -86,6 +116,7 @@ repos:
       - additional_dependencies:
           - eslint@latest
           - eslint-config-standard@latest
+
         files: \.[jt]sx?$
         id: eslint
         types:

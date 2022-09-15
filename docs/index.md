@@ -6,6 +6,8 @@
 
 # Lifter API Documentation
 
+Did you mean [Lifter API Wrapper Documentation](https://weightliftingnz.github.io/lifter-api-wrapper)?
+
 ## Hosting
 
 This is hosted on [Digital Ocean's App Platform](https://www.digitalocean.com/products/app-platform). Code changes to this repository on the main branch will automatically trigger changes to the live web application.

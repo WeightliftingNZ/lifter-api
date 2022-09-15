@@ -4,11 +4,13 @@ from drf_spectacular.utils import (
     extend_schema_view,
 )
 from hashid_field import Hashid
-from rest_framework import filters, permissions, viewsets
+from rest_framework import permissions, viewsets
 
 from api.models import Athlete
 from api.serializers import AthleteDetailSerializer, AthleteSerializer
 from api.views.pagination import StandardSetPagination
+
+from .filters import AthleteFilter
 
 
 @extend_schema_view(
@@ -206,14 +208,12 @@ class AthleteViewSet(viewsets.ModelViewSet):
     Authorization required:
 
     - Create
-    - Update (all updates are PATCH requests)
+    - Update (PATCH requests preferred)
     - Delete
 
     """
 
-    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ["first_name", "last_name"]
-    ordering_fields = ["first_name", "last_name"]
+    filterset_class = AthleteFilter
     ordering = ["last_name"]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     pagination_class = StandardSetPagination

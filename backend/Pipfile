@@ -23,6 +23,7 @@ drf-spectacular = {extras = ["sidecar"], version = "*"}
 djangorestframework-simplejwt = "*"
 drf-nested-routers = "*"
 django-extensions = "*"
+django-crispy-forms = "*"
 
 [dev-packages]
 pytest = "*"
@@ -33,6 +34,8 @@ django-stubs = {extras = ["compatible-mypy"], version = "*"}
 types-setuptools = "*"
 flake8 = "*"
 mypy = "*"
+mkdocs = "*"
+mkdocs-material = "*"
 
 [requires]
 python_version = "3.10"

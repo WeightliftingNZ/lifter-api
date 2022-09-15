@@ -7,6 +7,7 @@ name = "lifter_api"
 version = "0.1.0"
 
 [project.optional-dependencies]
+
 test = [
   "pytest",
   "pytest-xdist",
@@ -45,8 +46,8 @@ line-length = 79
 include = '\.pyi?%'
 
 [tool.pyright]
-include = ["backend"]
-exclude = ["backend/.venv"]
+include = ["./backend/"]
+exclude = ["./backend/.venv"]
 venvPath = "./backend"
 venv = ".venv"
 
@@ -68,7 +69,7 @@ log_format = "%(asctime)s %(levelname)s %(message)s"
 log_date_format = "%Y-%m-%d %H:%M:%S"
 
 [tool.coverage.run]
-omit = ["tests/*", "*/migrations/*"]
+omit = ["*/tests/*", "*/migrations/*"]
 
 [[tool.mypy.overrides]]
 module = "*.migrations.*"

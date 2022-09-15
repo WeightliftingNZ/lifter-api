@@ -238,7 +238,7 @@ class TestLiftCase:
             assert response is not None
 
     @pytest.mark.parametrize(
-        "test_input_lift_1,test_input_lift_2,expected",
+        "test_input_lift_1,test_input_lift_2,status_code,error_message",
         [
             pytest.param(
                 {
@@ -283,7 +283,8 @@ class TestLiftCase:
                     "session_number": 0,
                     "lottery_number": 2,
                 },
-                does_not_raise(),
+                status.HTTP_201_CREATED,
+                None,
                 id="Normal input",
             ),
             pytest.param(
@@ -329,11 +330,56 @@ class TestLiftCase:
                     "session_number": 0,
                     "lottery_number": 1,
                 },
-                pytest.raises(
-                    ValidationError,
-                    match="Lift with this Competition, Lottery number and Weight category already exists.",
-                ),
+                status.HTTP_400_BAD_REQUEST,
+                {"Only one lottery number per weight category"},
                 id="Same lottery number in same competition",
+            ),
+            pytest.param(
+                {
+                    "competition": 0,
+                    "athlete": 0,
+                    "snatch_first": "LIFT",
+                    "snatch_first_weight": 100,
+                    "snatch_second": "LIFT",
+                    "snatch_second_weight": 101,
+                    "snatch_third": "LIFT",
+                    "snatch_third_weight": 102,
+                    "cnj_first": "LIFT",
+                    "cnj_first_weight": 100,
+                    "cnj_second": "LIFT",
+                    "cnj_second_weight": 101,
+                    "cnj_third": "LIFT",
+                    "cnj_third_weight": 102,
+                    "bodyweight": 102.00,
+                    "weight_category": "M102+",
+                    "team": "TEST",
+                    "session_number": 0,
+                    "lottery_number": 1,
+                },
+                {
+                    "competition": 0,
+                    "athlete": 1,
+                    "snatch_first": "LIFT",
+                    "snatch_first_weight": 100,
+                    "snatch_second": "LIFT",
+                    "snatch_second_weight": 101,
+                    "snatch_third": "LIFT",
+                    "snatch_third_weight": 102,
+                    "cnj_first": "LIFT",
+                    "cnj_first_weight": 100,
+                    "cnj_second": "LIFT",
+                    "cnj_second_weight": 101,
+                    "cnj_third": "LIFT",
+                    "cnj_third_weight": 102,
+                    "bodyweight": 102.00,
+                    "weight_category": "M102+",
+                    "team": "TEST",
+                    "session_number": 0,
+                    "lottery_number": 1,
+                },
+                status.HTTP_400_BAD_REQUEST,
+                {"Only one lottery number per weight category"},
+                id="Same lottery number for a weight category",
             ),
             pytest.param(
                 {
@@ -378,7 +424,55 @@ class TestLiftCase:
                     "session_number": 0,
                     "lottery_number": 1,
                 },
-                does_not_raise(),
+                status.HTTP_201_CREATED,
+                None,
+                id="Same lottery number in different competitions",
+            ),
+            pytest.param(
+                {
+                    "competition": 0,
+                    "athlete": 0,
+                    "snatch_first": "LIFT",
+                    "snatch_first_weight": 100,
+                    "snatch_second": "LIFT",
+                    "snatch_second_weight": 101,
+                    "snatch_third": "LIFT",
+                    "snatch_third_weight": 102,
+                    "cnj_first": "LIFT",
+                    "cnj_first_weight": 100,
+                    "cnj_second": "LIFT",
+                    "cnj_second_weight": 101,
+                    "cnj_third": "LIFT",
+                    "cnj_third_weight": 102,
+                    "bodyweight": 102.00,
+                    "weight_category": "M102+",
+                    "team": "TEST",
+                    "session_number": 0,
+                    "lottery_number": 1,
+                },
+                {
+                    "competition": 1,
+                    "athlete": 0,
+                    "snatch_first": "LIFT",
+                    "snatch_first_weight": 100,
+                    "snatch_second": "LIFT",
+                    "snatch_second_weight": 101,
+                    "snatch_third": "LIFT",
+                    "snatch_third_weight": 102,
+                    "cnj_first": "LIFT",
+                    "cnj_first_weight": 100,
+                    "cnj_second": "LIFT",
+                    "cnj_second_weight": 101,
+                    "cnj_third": "LIFT",
+                    "cnj_third_weight": 102,
+                    "bodyweight": 102.00,
+                    "weight_category": "M102+",
+                    "team": "TEST",
+                    "session_number": 0,
+                    "lottery_number": 1,
+                },
+                status.HTTP_201_CREATED,
+                None,
                 id="Same lottery number in different competitions",
             ),
             pytest.param(
@@ -424,10 +518,11 @@ class TestLiftCase:
                     "session_number": 1,
                     "lottery_number": 1,
                 },
-                pytest.raises(
-                    ValidationError,
-                    match="Lift with this Competition and Athlete already exists.",
-                ),
+                status.HTTP_400_BAD_REQUEST,
+                {
+                    "Athlete can only have one lift in a competition",
+                    "Only one lottery number per weight category",
+                },
                 id="Athlete twice in same competition.",
             ),
         ],
@@ -439,40 +534,43 @@ class TestLiftCase:
         mock_competition,
         test_input_lift_1,
         test_input_lift_2,
-        expected,
+        status_code,
+        error_message,
     ):
         """Test builtin constraints on Lift model.
 
-        1. `lottery_number` and `session_numbers` must be unique for every
+        1. `lottery_number` and `weight_category` must be unique for every
         competition (i.e. a no two lifts can have the same `lottery_number`
-        and `session_number`.
+        and `weight_category`.
         2. An athlete cannot be entered more than once into a competition.
         """
-        with expected:
-            test_input_lift_1["competition"] = str(
-                mock_competition[test_input_lift_1["competition"]].reference_id
-            )
-            test_input_lift_1["athlete"] = str(
-                mock_athlete[test_input_lift_1["athlete"]].reference_id
-            )
-            test_input_lift_2["competition"] = str(
-                mock_competition[test_input_lift_2["competition"]].reference_id
-            )
-            test_input_lift_2["athlete"] = str(
-                mock_athlete[test_input_lift_2["athlete"]].reference_id
-            )
-            response_1 = admin_client.post(
-                f"{self.url}/{str(mock_competition[0].reference_id)}/lifts",
-                data=test_input_lift_1,
-                content_type="application/json",
-            )
-            response_2 = admin_client.post(
-                f"{self.url}/{str(mock_competition[0].reference_id)}/lifts",
-                data=test_input_lift_2,
-                content_type="application/json",
-            )
-            assert response_1 is not None
-            assert response_2 is not None
+        test_input_lift_1["competition"] = str(
+            mock_competition[test_input_lift_1["competition"]].reference_id
+        )
+        test_input_lift_1["athlete"] = str(
+            mock_athlete[test_input_lift_1["athlete"]].reference_id
+        )
+        test_input_lift_2["competition"] = str(
+            mock_competition[test_input_lift_2["competition"]].reference_id
+        )
+        test_input_lift_2["athlete"] = str(
+            mock_athlete[test_input_lift_2["athlete"]].reference_id
+        )
+        response_1 = admin_client.post(
+            f"{self.url}/{str(mock_competition[0].reference_id)}/lifts",
+            data=test_input_lift_1,
+            content_type="application/json",
+        )
+        response_2 = admin_client.post(
+            f"{self.url}/{str(mock_competition[0].reference_id)}/lifts",
+            data=test_input_lift_2,
+            content_type="application/json",
+        )
+        assert response_1.status_code == status.HTTP_201_CREATED
+        assert response_2.status_code == status_code
+
+        if response_2.status_code == status.HTTP_400_BAD_REQUEST:
+            assert error_message == set(response_2.json()["non_field_errors"])
 
     def test_anon_create_lift(
         self,
@@ -524,14 +622,15 @@ class TestLiftCase:
         assert response.status_code == expected
 
     @pytest.mark.parametrize(
-        "test_input,expected",
+        "test_input,status_code,error_message",
         [
             pytest.param(
                 {
                     "reference_id": 0,
                     "lottery_number": 4,
                 },
-                does_not_raise(),
+                status.HTTP_200_OK,
+                None,
                 id="Normal edit",
             ),
             pytest.param(
@@ -539,10 +638,8 @@ class TestLiftCase:
                     "reference_id": 0,
                     "lottery_number": 2,
                 },
-                pytest.raises(
-                    ValidationError,
-                    match="Lift with this Competition, Lottery number and Weight category already exists.",
-                ),
+                status.HTTP_400_BAD_REQUEST,
+                {"Only one lottery number per weight category"},
                 id="Edit same lottery number in same competition",
             ),
             pytest.param(
@@ -550,7 +647,8 @@ class TestLiftCase:
                     "reference_id": 2,
                     "lottery_number": 2,
                 },
-                does_not_raise(),
+                status.HTTP_200_OK,
+                None,
                 id="Edit same lottery number but different competitions",
             ),
             pytest.param(
@@ -559,10 +657,8 @@ class TestLiftCase:
                     "lottery_number": 3,
                     "athlete": 0,
                 },
-                pytest.raises(
-                    ValidationError,
-                    match="Lift with this Competition and Athlete already exists.",
-                ),
+                status.HTTP_400_BAD_REQUEST,
+                {"Athlete can only have one lift in a competition"},
                 id="Edit athlete duplicated competition.",
             ),
             pytest.param(
@@ -570,10 +666,11 @@ class TestLiftCase:
                     "reference_id": 2,
                     "competition": 0,
                 },
-                pytest.raises(
-                    ValidationError,
-                    match="['Lift with this Competition, Lottery number and Session number already exists.', 'Lift with this Competition and Athlete already exists.']",
-                ),
+                status.HTTP_400_BAD_REQUEST,
+                {
+                    "Only one lottery number per weight category",
+                    "Athlete can only have one lift in a competition",
+                },
                 id="Edit athlete already exists.",
             ),
         ],
@@ -585,31 +682,34 @@ class TestLiftCase:
         mock_athlete,
         mock_competition,
         test_input,
-        expected,
+        status_code,
+        error_message,
     ):
         """Test builtin constraints on edit.
 
-        1. `lottery_number` and `session_number` must remain unique for each
+        1. `lottery_number` and `weight_category` must remain unique for each
         competition.
         2. An athlete can not have more than one lift per competition.
         """
-        with expected:
-            if test_input.get("competition") is not None:
-                test_input["competition"] = str(
-                    mock_competition[test_input["competition"]].reference_id
-                )
-            if test_input.get("athlete") is not None:
-                test_input["athlete"] = str(
-                    mock_athlete[test_input["athlete"]].reference_id
-                )
-            idx = test_input["reference_id"]
-            test_input.pop("reference_id")
-            response = admin_client.patch(
-                f"{self.url}/{str(mock_lift[idx].competition.reference_id)}/lifts/{str(mock_lift[idx].reference_id)}",
-                data=test_input,
-                content_type="application/json",
+        if test_input.get("competition") is not None:
+            test_input["competition"] = str(
+                mock_competition[test_input["competition"]].reference_id
             )
-            assert response is not None
+        if test_input.get("athlete") is not None:
+            test_input["athlete"] = str(
+                mock_athlete[test_input["athlete"]].reference_id
+            )
+        idx = test_input["reference_id"]
+        test_input.pop("reference_id")
+        response = admin_client.patch(
+            f"{self.url}/{str(mock_lift[idx].competition.reference_id)}/lifts/{str(mock_lift[idx].reference_id)}",
+            data=test_input,
+            content_type="application/json",
+        )
+        assert response.status_code == status_code
+
+        if response.status_code == status.HTTP_400_BAD_REQUEST:
+            assert error_message == set(response.json()["non_field_errors"])
 
     def test_anon_edit_lift(self, client, mock_lift):
         """Anonymous users cannot edit lifts."""
