@@ -13,6 +13,7 @@ class LiftManager(models.Manager):
         2. Super-heavies
         3. Female before male
         """
+        kwargs.get("competition")
         query = super().filter(*args, **kwargs)
 
         # order on int values for weight classes (i.e. not string)

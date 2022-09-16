@@ -5,26 +5,33 @@ import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
 
 interface CustomSearchInputProps {
-  beingSearched?: "competitions" | "athletes";
+  error?: boolean;
+  label?: string;
+  placeholder?: string;
+  helperText?: string;
   searchTerm?: string;
-  handleOnChange: any; // TODO: what type is this?
+  handleOnChange: React.ChangeEventHandler<HTMLInputElement>;
 }
 
 const CustomSearchInput: React.FC<CustomSearchInputProps> = (
   props: CustomSearchInputProps
 ) => {
-  const { searchTerm, handleOnChange, beingSearched } = props;
+  const { searchTerm, handleOnChange, label, placeholder, helperText, error } =
+    props;
   return (
     <Stack direction="row" alignItems="center" spacing={2}>
       <TextField
         autoFocus
         sx={{ minWidth: 450, maxWidth: 750 }}
         id="search-box"
-        label={`Search ${beingSearched}`}
+        label={label}
+        error={error}
+        placeholder={placeholder}
+        helperText={helperText}
         onChange={handleOnChange}
         value={searchTerm}
       />
-      <IconButton>
+      <IconButton color={error ? "error" : "default"}>
         <SearchIcon />
       </IconButton>
     </Stack>
