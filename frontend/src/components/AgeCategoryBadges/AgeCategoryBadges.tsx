@@ -1,21 +1,38 @@
 import React from "react";
 import { Chip, Stack } from "@mui/material";
 import { AgeCategoriesProps } from "../../interfaces";
+import { Tooltip } from "@mui/material";
 
 const YouthBadge: React.FC = () => {
-  return <Chip label="Youth" size="small" />;
+  return (
+    <Tooltip title={<>Youth: Under 15</>}>
+      <Chip label="Youth" size="small" />
+    </Tooltip>
+  );
 };
 
 const JuniorBadge: React.FC = () => {
-  return <Chip label="Junior" size="small" />;
+  return (
+    <Tooltip title={<>Junior: Under 20</>}>
+      <Chip label="Junior" size="small" />
+    </Tooltip>
+  );
 };
 
 const SeniorBadge: React.FC = () => {
-  return <Chip label="Senior" size="small" />;
+  return (
+    <Tooltip title={<>Senior</>}>
+      <Chip label="Senior" size="small" />
+    </Tooltip>
+  );
 };
 
 const MasterBadge: React.FC = () => {
-  return <Chip label="Masters" size="small" />;
+  return (
+    <Tooltip title={<>Masters: 35 and over</>}>
+      <Chip label="Masters" size="small" />
+    </Tooltip>
+  );
 };
 
 interface AgeCategoryBadgesProps {
