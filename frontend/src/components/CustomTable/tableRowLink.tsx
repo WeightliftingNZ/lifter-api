@@ -6,6 +6,8 @@ import {
 import { useTheme } from "@mui/material/styles";
 import TableRow from "@mui/material/TableRow";
 import { StyledTableCell } from "./customStyles";
+import { grey } from "@mui/material/colors";
+import { Typography } from "@mui/material";
 
 /* TODO: figure out how to make props into a list of predetermined strings
  * instead of using Record<string, any>  */
@@ -25,7 +27,6 @@ const TableRowLink: React.FC<TableRowLinkProps> = (
         ref
       ) {
         return (
-          /* TODO: URL is competitions but does not respect athlete etc */
           <RouterLink
             to={`/${uriBase}/${reference_id}`}
             ref={ref}
@@ -42,16 +43,21 @@ const TableRowLink: React.FC<TableRowLinkProps> = (
     <TableRow
       sx={{
         "&:nth-of-type(odd)": {
-          backgroundColor: theme.palette.action.hover,
+          backgroundColor: grey[200],
         },
         "&:last-child td, &:last-child th": {
           border: 0,
+        },
+        "&:hover td": {
+          backgroundColor: theme.palette.secondary.light,
         },
       }}
       component={renderLink}
     >
       {columns.map((column: string, idx: number) => (
-        <StyledTableCell key={idx}>{row[column]}</StyledTableCell>
+        <StyledTableCell key={idx}>
+          <Typography variant="h6">{row[column]}</Typography>
+        </StyledTableCell>
       ))}
     </TableRow>
   );
