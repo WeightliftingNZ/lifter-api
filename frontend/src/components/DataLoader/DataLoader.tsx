@@ -6,7 +6,6 @@ import CustomTable from "../CustomTable";
 import CustomError from "../Error";
 import CustomLoading from "../Loading";
 import { DRFPaginatedResponseProps } from "../../interfaces";
-import { basename } from "path";
 
 interface DataLoaderProps {
   columnsToShow: any;
