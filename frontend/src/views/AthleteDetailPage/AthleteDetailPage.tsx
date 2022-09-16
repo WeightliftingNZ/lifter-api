@@ -5,12 +5,19 @@ import apiClient from "../../utils/http-common";
 import CustomLoading from "../../components/Loading";
 import CustomError from "../../components/Error";
 import CustomTable from "./table";
-import { AthleteDetailObjectProps, LiftObjectProps } from "../../interfaces";
+import {
+  AgeCategoriesProps,
+  AthleteDetailObjectProps,
+  LiftObjectProps,
+} from "../../interfaces";
 import Alert from "@mui/material/Alert";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { Column } from "./interfaces";
 import Paper from "@mui/material/Paper";
+import Title from "../../components/Title";
+import SubTitle from "../../components/SubTitle";
+import AgeCategoryBadges from "../../components/AgeCategoryBadges";
 
 import {
   LineChart,
@@ -102,6 +109,7 @@ const AthleteDetailPage: React.FC = () => {
   const fullName: string = parsedData.full_name;
   const birthYear: number = parsedData.yearborn;
   const liftsCount: number = parsedData.lift_set.length;
+  const ageCategories: AgeCategoriesProps = parsedData.age_categories;
 
   const chartData: LiftChartDataProps[] = [];
 
@@ -120,16 +128,13 @@ const AthleteDetailPage: React.FC = () => {
   return (
     <>
       <Box>
-        <Typography variant="h4" gutterBottom>
-          {fullName}
-        </Typography>
-        <Typography variant="subtitle2">{birthYear}</Typography>
+        <Title>{fullName}</Title>
+        <SubTitle>Birth Year: {birthYear}</SubTitle>
+        <AgeCategoryBadges ageCategories={ageCategories} />
       </Box>
       <Box sx={{ mt: 6 }}>
         {liftsCount === 0 ? (
-          <Alert severity="info">
-            No lifts recorded for "{fullName}" competition
-          </Alert>
+          <Alert severity="info">No lifts recorded for "{fullName}"</Alert>
         ) : (
           <>
             <Box>

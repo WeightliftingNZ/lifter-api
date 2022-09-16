@@ -7,17 +7,27 @@ import AthleteListPage from "./views/AthleteListPage";
 import AthleteDetailPage from "./views/AthleteDetailPage";
 import Box from "@mui/material/Box";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { grey } from "@mui/material/colors";
 import { styled } from "@mui/material/styles";
 import Home from "./views/Home";
 
 const theme = createTheme({
   palette: {
-    primary: grey,
+    primary: {
+      main: "#212121",
+      light: "#484848",
+      dark: "#000000",
+      contrastText: "#FFFFFF",
+    },
+    secondary: {
+      main: "#78909c",
+      light: "#a7c0cd",
+      dark: "#4b636e",
+      contrastText: "#000000",
+    },
   },
 });
 
-const App = () => {
+const App: React.FC = () => {
   const NavbarHeader = styled("div")(({ theme }) => ({
     display: "flex",
     alignItems: "center",

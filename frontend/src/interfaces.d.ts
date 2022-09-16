@@ -21,7 +21,7 @@ export interface CompetitionDetailObjectProps
   lift_set: LiftObjectProps[];
 }
 
-interface ageCategoriesProps {
+interface AgeCategoriesProps {
   is_youth: boolean;
   is_junior: boolean;
   is_senior: boolean;
@@ -82,7 +82,7 @@ export interface LiftObjectProps {
   cnj_third_weight: number;
   best_cnj_weight: [string, number];
   total_lifted: number;
-  age_categories: ageCategoriesProps;
+  age_categories: AgeCategoriesProps;
   bodyweight: number;
   weight_category: string;
   team: string;

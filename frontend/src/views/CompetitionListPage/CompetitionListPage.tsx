@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import CustomSearchInput from "../../components/CustomSearchInput";
-import Typography from "@mui/material/Typography";
 import DataLoader from "../../components/DataLoader";
 import { CompetitionListObjectProps } from "../../interfaces";
+import Title from "../../components/Title";
+import SubTitle from "../../components/SubTitle";
 
 const COLUMNS_TO_SHOW: (keyof CompetitionListObjectProps)[] = [
   "name",
@@ -13,8 +14,9 @@ const COLUMNS_TO_SHOW: (keyof CompetitionListObjectProps)[] = [
 ];
 
 const CompetitionListPage: React.FC = () => {
-  const [page, setPage] = useState(0);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [page, setPage] = useState<number>(0);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [noResults, setNoResults] = useState<boolean | undefined>();
 
   /* TODO: event type? */
   const handleOnChange = (event: any) => {
@@ -22,6 +24,7 @@ const CompetitionListPage: React.FC = () => {
     setPage(0);
   };
 
+  /* TODO: event type? */
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number
@@ -32,20 +35,22 @@ const CompetitionListPage: React.FC = () => {
   return (
     <>
       <Box>
-        <Typography variant="h4" gutterBottom>
-          Competition
-        </Typography>
-        <Typography variant="subtitle2">Browse competition results</Typography>
+        <Title>Competition</Title>
+        <SubTitle>Browse competition results</SubTitle>
       </Box>
       <Box sx={{ mt: 6 }}>
         <CustomSearchInput
-          beingSearched="competitions"
+          error={noResults}
+          label="Search competitions"
+          helperText={noResults ? "No results found" : ""}
+          placeholder="By name and/or location"
           searchTerm={searchQuery}
           handleOnChange={handleOnChange}
         />
       </Box>
       <Box sx={{ mt: 6 }}>
         <DataLoader
+          setNoResults={setNoResults}
           columnsToShow={COLUMNS_TO_SHOW}
           searchQuery={searchQuery}
           handleChangePage={handleChangePage}

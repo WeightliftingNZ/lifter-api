@@ -5,14 +5,17 @@ import apiClient from "../../utils/http-common";
 import CustomTable from "../CustomTable";
 import CustomError from "../Error";
 import CustomLoading from "../Loading";
-import { Alert } from "@mui/material";
 import { DRFPaginatedResponseProps } from "../../interfaces";
+import { basename } from "path";
 
 interface DataLoaderProps {
   columnsToShow: any;
+  setNoResults: React.Dispatch<React.SetStateAction<boolean | undefined>>;
   searchQuery?: string;
   page: number;
-  handleChangePage: any; // TODO: Whatis this type?
+  handleChangePage: any; // TODO: type?
+  dateAfter?: string;
+  dateBefore?: string;
   uriBase: "athletes" | "competitions";
 }
 
@@ -21,16 +24,33 @@ const DataLoader: React.FC<DataLoaderProps> = ({
   searchQuery,
   page,
   handleChangePage,
+  setNoResults,
   uriBase,
+  dateAfter,
+  dateBefore,
 }) => {
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
+
+  const requestParams = [];
+
+  const baseRequest = `${uriBase}?page=${page + 1}`;
+
+  if (searchQuery) {
+    requestParams.push(`&search=${searchQuery}`);
+  }
+
+  if (dateAfter || dateBefore) {
+    requestParams.push(
+      `&date_start_after=${dateAfter}&date_start_after=${dateBefore}`
+    );
+  }
+
+  const request = baseRequest.concat(...requestParams);
 
   const { data, isLoading, isError } = useQuery(
     [uriBase, debouncedSearchQuery + page.toString()],
     async () => {
-      const res = await apiClient.get(
-        `${uriBase}?page=${page + 1}&search=${searchQuery}`
-      );
+      const res = await apiClient.get(request);
       return res.data;
     }
   );
@@ -50,8 +70,11 @@ const DataLoader: React.FC<DataLoaderProps> = ({
   const count = parsed_data.count;
 
   if (rows.length === 0) {
-    return <Alert severity="info">No Results for "{searchQuery}"</Alert>;
+    setNoResults(true);
+    return <></>;
   }
+
+  setNoResults(false);
 
   return (
     <CustomTable

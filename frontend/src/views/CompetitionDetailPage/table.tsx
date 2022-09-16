@@ -15,7 +15,7 @@ import {
 } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
-import { red, green } from "@mui/material/colors";
+import { red, green, grey } from "@mui/material/colors";
 
 interface Column {
   id: keyof LiftObjectProps;
@@ -210,13 +210,13 @@ const TableRowLink: React.FC<TableRowLinkProps> = (
     <TableRow
       sx={{
         "&:nth-of-type(odd)": {
-          backgroundColor: theme.palette.primary.light,
+          backgroundColor: grey[200],
         },
         "&:last-child td, &:last-child th": {
           border: 0,
         },
         "&:hover td": {
-          backgroundColor: theme.palette.primary.dark,
+          backgroundColor: theme.palette.secondary.light,
         },
       }}
       component={renderLink}

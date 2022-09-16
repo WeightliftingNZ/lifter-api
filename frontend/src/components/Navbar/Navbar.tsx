@@ -180,7 +180,7 @@ const Navbar = () => {
               variant="h6"
               noWrap
               component="div"
-              sx={{ color: theme.palette.primary.light }}
+              sx={{ color: theme.palette.primary.contrastText }}
             >
               Weightlifting Results for New Zealand
             </Typography>
