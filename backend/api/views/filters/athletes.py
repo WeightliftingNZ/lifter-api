@@ -1,5 +1,10 @@
 """Athlete custom filtering."""
 
+from django.contrib.postgres.search import (
+    SearchQuery,
+    SearchRank,
+    SearchVector,
+)
 from django.db.models import Q
 from django_filters import rest_framework as filters
 
@@ -14,17 +19,18 @@ class AthleteFilter(filters.FilterSet):
     )
 
     def search_filter(self, queryset, name, value):
-        terms = value.split(" ")
+        vector = SearchVector("first_name", "last_name")
+        query = SearchQuery(value)
+        rank = SearchRank(vector, query)
 
-        # prevents overloading search
-
-        if len(terms) > 10:
-            terms = terms[:10]
-        return queryset.filter(
-            *[
-                Q(first_name__icontains=term) | (Q(last_name__icontains=term))
-                for term in terms
-            ]
+        return (
+            queryset.annotate(search=vector, rank=rank)
+            .filter(
+                Q(search=query)
+                | Q(first_name__trigram_similar=value)
+                | Q(last_name__trigram_similar=value)
+            )
+            .order_by("-rank")
         )
 
     class Meta:
