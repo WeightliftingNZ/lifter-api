@@ -79,10 +79,11 @@ CURRENT_MALE_WEIGHT_CATEGORIES = (
     + CURRENT_SENIOR_JUNIOR_ONLY_MALE_WEIGHT_CATEGORIES
 )
 
-# TODO: seperate Youth/Senior/Junior classes.
+# TODO: separate Youth/Senior/Junior classes.
 
 # 1998-2018
 
+__W44 = "W44"  # Youth
 __W48 = "W48"
 __W53 = "W53"
 __W58 = "W58"
@@ -94,6 +95,7 @@ __W90 = "W90"  # Senior/Junior
 __W90p = "W90+"  # Senior/Junior
 
 OLD_1998_2018_FEMALE_WEIGHT_CATEGORIES = [
+    (__W44, "W44"),  # Youth
     (__W48, "W48"),
     (__W53, "W53"),
     (__W58, "W58"),
