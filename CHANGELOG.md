@@ -1,3 +1,9 @@
+## 0.2.1 (2022-09-17)
+
+### Fix
+
+- **backend+frontend**: fixed lift order for athlete detail page view
+
 ## 0.2.0 (2022-09-17)
 
 ### Fix
