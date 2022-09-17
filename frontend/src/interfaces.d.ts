@@ -64,7 +64,7 @@ export interface LiftObjectProps {
   athlete_yearborn: number;
   competition: string;
   competition_name: string;
-  competition_date_start: string;
+  competition_date_start: string; // YYYY-MM-DD
   snatches: liftProps;
   cnjs: liftProps;
   snatch_first: liftStatus;

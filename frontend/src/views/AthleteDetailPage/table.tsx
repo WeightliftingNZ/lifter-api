@@ -137,7 +137,6 @@ const isBestLift = (idx: number, column: Column, currentRow: any) => {
         </StyledTableCell>
       );
     default:
-      console.log(column.extra);
       return (
         /* TODO: the styling is not working */
         <StyledTableCell key={idx} align={column.align} sx={column.extra}>
