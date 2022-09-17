@@ -1,3 +1,9 @@
+## 0.2.0 (2022-09-17)
+
+### Fix
+
+- fixing youth weight classes (legacy)
+
 ## v0.1.0 (2022-09-17)
 
 ### Feat
