@@ -86,5 +86,49 @@ ignore = "D100,D101,D102,D103,D104,D105,D106,D107"
 
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "0.1.0"
-tag_format = "v$version"
+version_files = ["pyproject.toml"]
+version = "v0.1.0"
+tag_format = "$version"
+
+style = [
+  [
+    "qmark",
+    "fg:#ff9d00 bold",
+  ],
+  [
+    "question",
+    "bold",
+  ],
+  [
+    "answer",
+    "fg:#ff9d00 bold",
+  ],
+  [
+    "pointer",
+    "fg:#ff9d00 bold",
+  ],
+  [
+    "highlighted",
+    "fg:#ff9d00 bold",
+  ],
+  [
+    "selected",
+    "fg:#cc5454",
+  ],
+  [
+    "separator",
+    "fg:#cc5454",
+  ],
+  [
+    "instruction",
+    "",
+  ],
+  [
+    "text",
+    "",
+  ],
+  [
+    "disabled",
+    "fg:#858585 italic",
+  ],
+]
