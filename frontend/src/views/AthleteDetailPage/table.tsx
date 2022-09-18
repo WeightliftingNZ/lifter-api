@@ -223,7 +223,7 @@ const CustomTable: React.FC<CustomTableProps> = (props: CustomTableProps) => {
       <Table stickyHeader sx={{ minWidth: 650 }} aria-label="Competition Table">
         <TableHead>
           <TableRow>
-            <StyledTableCell colSpan={5}></StyledTableCell>
+            <StyledTableCell colSpan={6}></StyledTableCell>
             <StyledTableCell colSpan={3} align="center">
               Snatches
             </StyledTableCell>

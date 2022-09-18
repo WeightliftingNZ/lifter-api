@@ -146,6 +146,12 @@ const columns: Column[] = [
     align: "center",
     extra: { fontWeight: "bold" },
   },
+  {
+    id: "sinclair",
+    label: "Sinclair",
+    align: "center",
+    extra: { fontWeight: "bold" },
+  },
 ];
 
 const AthleteDetailPage: React.FC = () => {

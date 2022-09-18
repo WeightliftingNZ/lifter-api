@@ -782,11 +782,20 @@ class TestLiftCase:
                     },
                     "best_cnj_weight": ["3rd", 145],
                     "total_lifted": 245,
+                    "sinclair": 270.688,
                     "age_categories": {
                         "is_youth": False,
                         "is_junior": False,
                         "is_senior": True,
                         "is_master": False,
+                        "is_master_35_39": False,
+                        "is_master_40_44": False,
+                        "is_master_45_49": False,
+                        "is_master_50_54": False,
+                        "is_master_55_59": False,
+                        "is_master_60_64": False,
+                        "is_master_65_69": False,
+                        "is_master_70": False,
                     },
                 },
                 id="Normal Senior",
@@ -832,11 +841,20 @@ class TestLiftCase:
                     },
                     "best_cnj_weight": ["3rd", 145],
                     "total_lifted": 245,
+                    "sinclair": 270.688,
                     "age_categories": {
                         "is_youth": True,
                         "is_junior": True,
                         "is_senior": True,
                         "is_master": False,
+                        "is_master_35_39": False,
+                        "is_master_40_44": False,
+                        "is_master_45_49": False,
+                        "is_master_50_54": False,
+                        "is_master_55_59": False,
+                        "is_master_60_64": False,
+                        "is_master_65_69": False,
+                        "is_master_70": False,
                     },
                 },
                 id="Youth, Junior, Senior",
@@ -869,4 +887,5 @@ class TestLiftCase:
         assert result["cnjs"] == expected["cnjs"]
         assert result["best_cnj_weight"] == expected["best_cnj_weight"]
         assert result["total_lifted"] == expected["total_lifted"]
+        assert result["sinclair"] == expected["sinclair"]
         assert result["age_categories"] == expected["age_categories"]

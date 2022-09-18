@@ -46,9 +46,9 @@ class Athlete(models.Model):
     def full_name(self) -> str:
         """Give full name.
 
-        Format: LASTNAME, firstname.
+        Format: first_name + last_name
         """
-        return f"{self.last_name.upper()}, {self.first_name.title()}"
+        return f"{self.first_name.title()} {self.last_name.title()}"
 
     @property
     def age_categories(self) -> AgeCategories:

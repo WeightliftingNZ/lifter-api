@@ -13,3 +13,7 @@ The API is able to determine if a athlete at the time of the competition date st
 ### Female before Male ordering
 
 Generally, competitions lift with female first following by males.
+
+### Data Protection
+
+The only data available is the athlete's name, birth year (to determine age grading) and their competitions lifts.

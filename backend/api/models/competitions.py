@@ -15,6 +15,7 @@ class Competition(models.Model):
     )
     name = models.CharField(max_length=128, blank=True)
     location = models.CharField(max_length=128, blank=True)
+    # TODO more fields
     # city = models.CharField(max_length=128, blank=True)
     # organiser = models.CharField(
     #     max_length=128,
@@ -22,6 +23,8 @@ class Competition(models.Model):
     # )
     date_start = models.DateField(blank=True)
     date_end = models.DateField(blank=True)
+    # TODO
+    # classify status of the competition e.g club, record breaking
 
     class Meta:
         ordering = ["-date_start", "name"]

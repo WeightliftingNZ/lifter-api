@@ -1,8 +1,14 @@
 from datetime import datetime
+from decimal import Decimal as D
 
 import pytest
 
-from api.models.utils import age_category, best_lift, ranking_suffixer
+from api.models.utils import (
+    age_category,
+    best_lift,
+    calculate_sinclair,
+    ranking_suffixer,
+)
 
 
 @pytest.mark.parametrize(
@@ -78,6 +84,14 @@ def test_best_lift(test_input, expected):
                 "is_junior": True,
                 "is_senior": True,
                 "is_master": False,
+                "is_master_35_39": False,
+                "is_master_40_44": False,
+                "is_master_45_49": False,
+                "is_master_50_54": False,
+                "is_master_55_59": False,
+                "is_master_60_64": False,
+                "is_master_65_69": False,
+                "is_master_70": False,
             },
             id="15 is Youth, Junior, Senior",
         ),
@@ -89,6 +103,14 @@ def test_best_lift(test_input, expected):
                 "is_junior": False,
                 "is_senior": False,
                 "is_master": False,
+                "is_master_35_39": False,
+                "is_master_40_44": False,
+                "is_master_45_49": False,
+                "is_master_50_54": False,
+                "is_master_55_59": False,
+                "is_master_60_64": False,
+                "is_master_65_69": False,
+                "is_master_70": False,
             },
             id="13 is Youth",
         ),
@@ -100,8 +122,35 @@ def test_best_lift(test_input, expected):
                 "is_junior": False,
                 "is_senior": True,
                 "is_master": True,
+                "is_master_35_39": True,
+                "is_master_40_44": False,
+                "is_master_45_49": False,
+                "is_master_50_54": False,
+                "is_master_55_59": False,
+                "is_master_60_64": False,
+                "is_master_65_69": False,
+                "is_master_70": False,
             },
             id="35 is Senior, Master",
+        ),
+        pytest.param(
+            (2022 - 70),
+            2022,
+            {
+                "is_youth": False,
+                "is_junior": False,
+                "is_senior": True,
+                "is_master": True,
+                "is_master_35_39": False,
+                "is_master_40_44": False,
+                "is_master_45_49": False,
+                "is_master_50_54": False,
+                "is_master_55_59": False,
+                "is_master_60_64": False,
+                "is_master_65_69": False,
+                "is_master_70": True,
+            },
+            id="70 is Senior, Master",
         ),
     ],
 )
@@ -119,3 +168,45 @@ def test_age_category(
             )
             == expected
         )
+
+
+@pytest.mark.parametrize(
+    "test_input,expected",
+    [
+        pytest.param(
+            {
+                "bodyweight": 90.9,
+                "total_lifted": 303,
+                "weight_category": "W87+",
+                "yearborn": 1990,
+                "lift_year": 2020,
+            },
+            332.787,
+            id="W87+",
+        ),
+        pytest.param(
+            {
+                "bodyweight": 56,
+                "total_lifted": 307,
+                "weight_category": "M61",
+                "yearborn": 1990,
+                "lift_year": 2020,
+            },
+            470.122,
+            id="M61",
+        ),
+        pytest.param(
+            {
+                "bodyweight": 48,
+                "total_lifted": 217,
+                "weight_category": "W49",
+                "yearborn": 1990,
+                "lift_year": 2020,
+            },
+            343.964,
+            id="W49",
+        ),
+    ],
+)
+def test_calculate_sinclair(test_input, expected):
+    assert calculate_sinclair(**test_input) == round(D(expected), 3)

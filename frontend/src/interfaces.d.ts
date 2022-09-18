@@ -82,6 +82,7 @@ export interface LiftObjectProps {
   cnj_third_weight: number;
   best_cnj_weight: [string, number];
   total_lifted: number;
+  sinclair: number;
   age_categories: AgeCategoriesProps;
   bodyweight: number;
   weight_category: string;
