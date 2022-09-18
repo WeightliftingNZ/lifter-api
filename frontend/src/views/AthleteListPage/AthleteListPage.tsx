@@ -15,7 +15,7 @@ export interface Column {
   extra?: { [key: string]: string };
 }
 
-const columns: Column[] = [{ id: "full_name", label: "First Name" }];
+const columns: Column[] = [{ id: "full_name", label: "Name" }];
 
 const AthleteListPage: React.FC = () => {
   const [page, setPage] = useState<number>(0);

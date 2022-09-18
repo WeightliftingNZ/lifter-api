@@ -34,7 +34,6 @@ const CompetitionListPage: React.FC = () => {
     setPage(0);
   };
 
-  /* TODO: event type? */
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number
