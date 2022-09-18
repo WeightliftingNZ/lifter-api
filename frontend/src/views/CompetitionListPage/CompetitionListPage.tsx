@@ -6,11 +6,21 @@ import { CompetitionListObjectProps } from "../../interfaces";
 import Title from "../../components/Title";
 import SubTitle from "../../components/SubTitle";
 
-const COLUMNS_TO_SHOW: (keyof CompetitionListObjectProps)[] = [
-  "name",
-  "date_start",
-  "lifts_count",
-  "location",
+export interface Column {
+  id: keyof CompetitionListObjectProps;
+  label: string;
+  minWidth?: number;
+  maxWidth?: number;
+  align?: "right" | "left" | "center";
+  format?: (value: number) => string;
+  extra?: { [key: string]: string };
+}
+
+const columns: Column[] = [
+  { id: "name", label: "Name" },
+  { id: "location", label: "Location" },
+  { id: "date_start", label: "Date" },
+  { id: "lifts_count", label: "Athletes" },
 ];
 
 const CompetitionListPage: React.FC = () => {
@@ -51,7 +61,7 @@ const CompetitionListPage: React.FC = () => {
       <Box sx={{ mt: 6 }}>
         <DataLoader
           setNoResults={setNoResults}
-          columnsToShow={COLUMNS_TO_SHOW}
+          columns={columns}
           searchQuery={searchQuery}
           handleChangePage={handleChangePage}
           page={page}

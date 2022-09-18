@@ -6,27 +6,16 @@ import DataLoader from "../../components/DataLoader";
 import Title from "../../components/Title";
 import SubTitle from "../../components/SubTitle";
 
-const COLUMNS_TO_SHOW: (keyof AthleteListObjectProps)[] = [
-  "first_name",
-  "last_name",
-  "yearborn",
-];
+export interface Column {
+  id: keyof AthleteListObjectProps;
+  label: string;
+  minWidth?: number;
+  maxWidth?: number;
+  align?: "right" | "left" | "center";
+  extra?: { [key: string]: string };
+}
 
-/* TODO: refactor list tables */
-/* export interface Column { */
-/*   id: keyof AthleteListObjectProps; */
-/*   label: string; */
-/*   minWidth?: number; */
-/*   maxWidth?: number; */
-/*   align?: "right" | "left" | "center"; */
-/*   format?: (value: number) => string; */
-/*   extra?: { [key: string]: string }; */
-/* } */
-/**/
-/* const columns: Column[] = [ */
-/*   { id: "first_name", label: "First Name", maxWidth: 100 }, */
-/*   { id: "last_name", label: "Last Name" }, */
-/* ]; */
+const columns: Column[] = [{ id: "full_name", label: "First Name" }];
 
 const AthleteListPage: React.FC = () => {
   const [page, setPage] = useState<number>(0);
@@ -65,7 +54,7 @@ const AthleteListPage: React.FC = () => {
       <Box sx={{ mt: 6 }}>
         <DataLoader
           setNoResults={setNoResults}
-          columnsToShow={COLUMNS_TO_SHOW}
+          columns={columns}
           searchQuery={searchQuery}
           handleChangePage={handleChangePage}
           page={page}
