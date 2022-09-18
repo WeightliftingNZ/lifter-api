@@ -63,5 +63,5 @@ generate-key:
 
 .PHONY: serve-docs
 serve-docs:
-	cd ./backenc && \
+	cd ./backend && \
 		pipenv run mkdocs serve --config-file ../mkdocs.yml
