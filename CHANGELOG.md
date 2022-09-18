@@ -1,3 +1,9 @@
+## 0.3.0 (2022-09-18)
+
+### Feat
+
+- **backend+frontend**: added sinclair
+
 ## 0.2.1 (2022-09-17)
 
 ### Fix
