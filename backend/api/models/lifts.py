@@ -1,11 +1,14 @@
 """Lift model."""
 
+from decimal import Decimal
+
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from hashid_field import HashidAutoField
 
+from api.models.utils.helpers import calculate_sinclair
 from config.settings import HASHID_FIELD_SALT
 
 from .managers import LiftManager
@@ -21,7 +24,7 @@ from .utils import (
     ranking_suffixer,
     validate_attempts,
 )
-from .utils.types import LiftT
+from .utils.types import AgeCategories, LiftT
 
 CURRENT_WEIGHT_CATEGORIES = (
     CURRENT_FEMALE_WEIGHT_CATEGORIES + CURRENT_MALE_WEIGHT_CATEGORIES
@@ -222,15 +225,23 @@ class Lift(models.Model):
             total_lifted = self.best_snatch_weight[1] + self.best_cnj_weight[1]
         return total_lifted
 
-    #
-    # age
-    #
     @property
-    def age_categories(self):
+    def age_categories(self) -> AgeCategories:
         """Age category of the athlete at the time of the lift."""
         return age_category(
             yearborn=self.athlete.yearborn,
             competition_year=self.competition.date_start.year,
+        )
+
+    @property
+    def sinclair(self) -> Decimal:
+        """Calculate sinclair for a lift."""
+        return calculate_sinclair(
+            bodyweight=self.bodyweight,
+            total_lifted=self.total_lifted,
+            weight_category=self.weight_category,
+            yearborn=self.athlete.yearborn,
+            lift_year=self.competition.date_start.year,
         )
 
     @cached_property
@@ -314,6 +325,7 @@ class Lift(models.Model):
         super().clean(*args, **kwargs)
 
     def save(self, *args, **kwargs):
+        """Necessary to enact custom validation in `clean()` method."""
         self.full_clean()
         super().save(*args, **kwargs)
 

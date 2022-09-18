@@ -17,6 +17,7 @@ import Box from "@mui/material/Box";
 const COLUMNS_TO_SHOW: (keyof LiftObjectProps)[] = [
   "lottery_number",
   "athlete_name",
+  "sinclair",
   "total_lifted",
   "bodyweight",
   "weight_category",

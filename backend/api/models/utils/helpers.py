@@ -1,5 +1,10 @@
 """Contains helper functions for the models."""
+import math
 from datetime import datetime
+from decimal import Decimal as D
+
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 
 from .types import AgeCategories, LiftT
 
@@ -103,7 +108,7 @@ def validate_attempts(attempts: dict[str, LiftT], lift_type: str):
         return errors
 
 
-def age_category(yearborn, competition_year=None) -> AgeCategories:
+def age_category(yearborn: int, competition_year: int = None) -> AgeCategories:
     """Give age category.
 
     From: https://iwf.sport/weightlifting_/participants/
@@ -111,6 +116,16 @@ def age_category(yearborn, competition_year=None) -> AgeCategories:
         - JUNIOR: 15 – 20 years of age
         - SENIOR: ≥15 years of age
         - MASTERS: ≥35 years of age
+
+        Further categories for masters:
+            - 35 - 39
+            - 40 - 44
+            - 44 - 49
+            - 50 - 54
+            - 55 - 59
+            - 60 - 64
+            - 65 - 69
+            - 70+
 
     Args:
         yearborn: The year the athlete was born.
@@ -126,12 +141,67 @@ def age_category(yearborn, competition_year=None) -> AgeCategories:
     years_from_birth = competition_year - yearborn
 
     if years_from_birth < 0:
-        # TODO: what to do if this happens?
-        pass
+        raise ValidationError(
+            _(
+                "Age of athlete is negative: %(years_from_birth), yearborn: is %(yearborn)"
+            ),
+            code="yearborn error",
+            params={
+                "years_from_birth": years_from_birth,
+                "yearborn": yearborn,
+            },
+        )
 
     return {
         "is_youth": years_from_birth >= 13 and years_from_birth <= 17,
         "is_junior": years_from_birth >= 15 and years_from_birth <= 20,
         "is_senior": years_from_birth >= 15,
         "is_master": years_from_birth >= 35,
+        "is_master_35_39": years_from_birth >= 35 and years_from_birth <= 39,
+        "is_master_40_44": years_from_birth >= 40 and years_from_birth <= 44,
+        "is_master_45_49": years_from_birth >= 45 and years_from_birth <= 49,
+        "is_master_50_54": years_from_birth >= 50 and years_from_birth <= 54,
+        "is_master_55_59": years_from_birth >= 55 and years_from_birth <= 59,
+        "is_master_60_64": years_from_birth >= 60 and years_from_birth <= 64,
+        "is_master_65_69": years_from_birth >= 65 and years_from_birth <= 39,
+        "is_master_70": years_from_birth >= 70,
     }
+
+
+def calculate_sinclair(
+    bodyweight: D,
+    total_lifted: int,
+    weight_category: str,
+    yearborn: int,
+    lift_year: int,
+) -> D:
+
+    SINCLAIR_CONSTANTS = {
+        "M": {"a": D(0.751945030), "b": D(175.508)},
+        "W": {"a": D(0.783497476), "b": D(153.655)},
+    }
+
+    AGE_CORRECTION = D(1)
+
+    # TODO:
+    # sinclair change at every olympic cycle
+    # also age adjusted?
+    if yearborn:
+        pass
+
+    if lift_year:
+        pass
+
+    sex = weight_category[0]
+    a = SINCLAIR_CONSTANTS[sex]["a"]
+    b = SINCLAIR_CONSTANTS[sex]["b"]
+
+    if bodyweight <= b:
+        x = D(math.log10(D(bodyweight) / b))
+        ax2 = x**2 * a
+        sinclair_coefficient = D(10) ** ax2
+    else:
+        sinclair_coefficient = D(1)
+
+    sinclair_total = total_lifted * sinclair_coefficient * AGE_CORRECTION
+    return round(sinclair_total, 3)

@@ -1,5 +1,7 @@
 """Contains current and old weightclasses."""
 
+from django.utils.translation import gettext_lazy as _
+
 # 2018-Present
 
 __W40 = "W40"  # Youth only class
@@ -150,4 +152,28 @@ LIFT_STATUS = [
     (__LIFT, "Good Lift"),
     (__NOLIFT, "No Lift"),
     (__NOATTEMPT, "Did not attempt"),
+]
+
+__YOUTH = "YTH"
+__JUNIOR = "JNR"
+__SENIOR = "SNR"
+__MASTERS_35_39 = "MS35"
+__MASTERS_40_49 = "MS40"
+__MASTERS_50_54 = "MS50"
+__MASTERS_55_59 = "MS55"
+__MASTERS_60_64 = "MS60"
+__MASTERS_65_69 = "MS65"
+__MASTERS_70p = "MS70"
+
+AGE_CATEGORIES = [
+    (__YOUTH, _("Youth")),
+    (__JUNIOR, _("Junior")),
+    (__SENIOR, _("Senior")),
+    (__MASTERS_35_39, _("Master 35-39")),
+    (__MASTERS_40_49, _("Master 40-49")),
+    (__MASTERS_50_54, _("Master 50-54")),
+    (__MASTERS_55_59, _("Master 55-59")),
+    (__MASTERS_60_64, _("Master 60-64")),
+    (__MASTERS_65_69, _("Master 65-69")),
+    (__MASTERS_70p, _("Master 70+")),
 ]

@@ -26,6 +26,7 @@ const CustomSearchInput: React.FC<CustomSearchInputProps> = (
         id="search-box"
         label={label}
         error={error}
+        color="secondary"
         placeholder={placeholder}
         helperText={helperText}
         onChange={handleOnChange}
