@@ -5,7 +5,6 @@ from decimal import Decimal
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.functional import cached_property
-from django.utils.translation import gettext_lazy as _
 from hashid_field import HashidAutoField
 
 from api.models.utils.helpers import calculate_sinclair
@@ -315,7 +314,7 @@ class Lift(models.Model):
         if len(errors) > 0:
             error_msg = "\n".join(errors)
             raise ValidationError(
-                _("%(error_msg)s"),
+                "%(error_msg)s",
                 code="Invalid Attempt",
                 params={
                     "error_msg": error_msg,
