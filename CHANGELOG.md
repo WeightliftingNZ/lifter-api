@@ -1,3 +1,9 @@
+## 0.4.1 (2022-09-19)
+
+### Fix
+
+- fixing validation errors
+
 ## 0.4.0 (2022-09-18)
 
 ### Feat
