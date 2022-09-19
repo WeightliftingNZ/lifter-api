@@ -8,7 +8,6 @@ Grades are usually released as a group.
 
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.utils.translation import gettext_lazy as _
 from hashid_field import HashidAutoField
 
 from config.settings import HASHID_FIELD_SALT
@@ -43,9 +42,7 @@ class BaseModelEra(models.Model):
         # 1. error if start date before end date
         if self.date_start > self.date_end:
             raise ValidationError(
-                _(
-                    "%(date_start)s is invalid. Start date must be before the end date, %(date_end)s."
-                ),
+                "%(date_start)s is invalid. Start date must be before the end date, %(date_end)s.",
                 code="date error",
                 params={
                     "date_start": self.date_start,

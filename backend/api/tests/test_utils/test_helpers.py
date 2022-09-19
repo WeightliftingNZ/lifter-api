@@ -1,7 +1,9 @@
+from contextlib import nullcontext as does_not_raise
 from datetime import datetime
 from decimal import Decimal as D
 
 import pytest
+from django.core.exceptions import ValidationError
 
 from api.models.utils import (
     age_category,
@@ -168,6 +170,26 @@ def test_age_category(
             )
             == expected
         )
+
+
+@pytest.mark.parametrize(
+    "test_input,exception",
+    [
+        pytest.param((1990, 2000), does_not_raise(), id="Normal Input"),
+        pytest.param(
+            (2000, 1990),
+            pytest.raises(
+                ValidationError,
+                match=f"Age of athlete is negative: {1990-2000}",
+            ),
+            id="Exception",
+        ),
+    ],
+)
+def test_age_category_error(test_input, exception):
+    """Testing exception."""
+    with exception:
+        age_category(yearborn=test_input[0], competition_year=test_input[1])
 
 
 @pytest.mark.parametrize(

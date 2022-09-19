@@ -8,7 +8,6 @@ from typing import Any
 
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.utils.translation import gettext_lazy as _
 from hashid_field import HashidAutoField
 
 from config.settings import HASHID_FIELD_SALT
@@ -25,7 +24,7 @@ def check_yearborn(yearborn: Any) -> None:
     years_from_birth = datetime.now().year - yearborn
     if years_from_birth < MINIMUM_YEAR_FROM_BIRTH:
         raise ValidationError(
-            _("Years after %(year)s not accepted."),
+            "Years after %(year)s not accepted.",
             code="invalid year",
             params={"year": datetime.now().year - MINIMUM_YEAR_FROM_BIRTH},
         )
