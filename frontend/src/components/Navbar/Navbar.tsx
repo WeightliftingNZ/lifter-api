@@ -22,9 +22,6 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { styled, useTheme, Theme, CSSObject } from "@mui/material/styles";
 import Button from "@mui/material/Button";
-/* TODO: Get FontAwesome working */
-/* import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; */
-/* <FontAwesomeIcon icon="fa-solid fa-ranking-star" /> */
 
 const drawerWidth = 240;
 

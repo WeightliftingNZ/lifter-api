@@ -8,7 +8,6 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TablePagination from "@mui/material/TablePagination";
 import TableRowLink from "./tableRowLink";
-import { titleMaker } from "../../utils/customFunctions/customFunctions";
 import { StyledTableCell } from "./customStyles";
 import TablePaginationActions from "./tablePaginationActions";
 
@@ -31,46 +30,54 @@ const CustomTable: React.FC<CustomTableProps> = (props: CustomTableProps) => {
     props;
 
   return (
-    <TableContainer component={Paper}>
-      <Table stickyHeader sx={{ minWidth: 650 }} aria-label="Custom Table">
-        <TableHead>
-          <TableRow>
-            {columns.map((column: string, idx: number) => (
-              <StyledTableCell key={idx}>{titleMaker(column)}</StyledTableCell>
+    <>
+      <TableContainer
+        component={Paper}
+        sx={{
+          marginLeft: "auto",
+          marginRight: "auto",
+        }}
+      >
+        <Table stickyHeader aria-label="Custom Table">
+          <TableHead>
+            <TableRow>
+              {columns.map((column: any) => (
+                <StyledTableCell key={column.id}>
+                  {column.label}
+                </StyledTableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {/* TODO: fix row type */}
+            {rows.map((row: RowProps, idx: number) => (
+              <TableRowLink
+                key={idx}
+                row={row}
+                columns={columns}
+                uriBase={uriBase}
+              />
             ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {/* TODO: fix row type */}
-          {rows.map((row: RowProps, idx: number) => (
-            <TableRowLink
-              key={idx}
-              row={row}
-              columns={columns}
-              uriBase={uriBase}
+          </TableBody>
+          <TableFooter>
+            <TablePagination
+              rowsPerPageOptions={[]}
+              count={count}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              SelectProps={{
+                inputProps: {
+                  "aria-label": "rows per page",
+                },
+                native: true,
+              }}
+              onPageChange={handleChangePage}
+              ActionsComponent={TablePaginationActions}
             />
-          ))}
-        </TableBody>
-      </Table>
-      <TableFooter>
-        <TableRow>
-          <TablePagination
-            rowsPerPageOptions={[]}
-            count={count}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            SelectProps={{
-              inputProps: {
-                "aria-label": "rows per page",
-              },
-              native: true,
-            }}
-            onPageChange={handleChangePage}
-            ActionsComponent={TablePaginationActions}
-          />
-        </TableRow>
-      </TableFooter>
-    </TableContainer>
+          </TableFooter>
+        </Table>
+      </TableContainer>
+    </>
   );
 };
 

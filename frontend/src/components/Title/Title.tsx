@@ -9,7 +9,13 @@ const Title: React.FC<React.PropsWithChildren<TitleProps>> = (
   props: TitleProps
 ) => {
   return (
-    <Typography component="h2" color="primary" variant="h4" gutterBottom>
+    <Typography
+      component="h2"
+      color="primary"
+      variant="h4"
+      gutterBottom
+      {...props}
+    >
       {props.children}
     </Typography>
   );

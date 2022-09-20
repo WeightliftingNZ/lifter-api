@@ -54,11 +54,13 @@ const TableRowLink: React.FC<TableRowLinkProps> = (
       }}
       component={renderLink}
     >
-      {columns.map((column: string, idx: number) => (
-        <StyledTableCell key={idx}>
-          <Typography variant="h6">{row[column]}</Typography>
-        </StyledTableCell>
-      ))}
+      {columns.map((column: any) => {
+        return (
+          <StyledTableCell key={column.id}>
+            <Typography variant="h6">{row[column.id]}</Typography>
+          </StyledTableCell>
+        );
+      })}
     </TableRow>
   );
 };

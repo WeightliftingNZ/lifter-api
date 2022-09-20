@@ -4,7 +4,6 @@ from datetime import datetime
 from decimal import Decimal
 
 from django.core.exceptions import ValidationError
-from django.utils.translation import gettext_lazy as _
 
 from .types import AgeCategories, LiftT
 
@@ -142,13 +141,10 @@ def age_category(yearborn: int, competition_year: int = None) -> AgeCategories:
 
     if years_from_birth < 0:
         raise ValidationError(
-            _(
-                "Age of athlete is negative: %(years_from_birth), yearborn: is %(yearborn)"
-            ),
+            "Age of athlete is negative: %(years_from_birth)s",
             code="yearborn error",
             params={
                 "years_from_birth": years_from_birth,
-                "yearborn": yearborn,
             },
         )
 

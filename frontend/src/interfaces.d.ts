@@ -26,6 +26,15 @@ interface AgeCategoriesProps {
   is_junior: boolean;
   is_senior: boolean;
   is_master: boolean;
+  is_master_35_39: boolean;
+  is_master_35_39: boolean;
+  is_master_40_44: boolean;
+  is_master_45_49: boolean;
+  is_master_50_54: boolean;
+  is_master_55_59: boolean;
+  is_master_60_64: boolean;
+  is_master_65_69: boolean;
+  is_master_70: boolean;
 }
 
 export interface AthleteListObjectProps {

@@ -8,7 +8,7 @@ import CustomLoading from "../Loading";
 import { DRFPaginatedResponseProps } from "../../interfaces";
 
 interface DataLoaderProps {
-  columnsToShow: any;
+  columns: any;
   setNoResults: React.Dispatch<React.SetStateAction<boolean | undefined>>;
   searchQuery?: string;
   page: number;
@@ -19,7 +19,7 @@ interface DataLoaderProps {
 }
 
 const DataLoader: React.FC<DataLoaderProps> = ({
-  columnsToShow,
+  columns,
   searchQuery,
   page,
   handleChangePage,
@@ -64,7 +64,6 @@ const DataLoader: React.FC<DataLoaderProps> = ({
   const rows: any = parsed_data.results;
   const nextPage = parsed_data.next;
   const previousPage = parsed_data.previous;
-  const columns: any = columnsToShow;
   const rowsPerPage = parsed_data.per_page;
   const count = parsed_data.count;
 
