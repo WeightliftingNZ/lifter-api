@@ -190,6 +190,7 @@ class TestAthleteCase:
                 },
                 {
                     "full_name": "First Last",
+                    "current_grade": None,
                     "age_categories": {
                         "is_youth": False,
                         "is_junior": False,
@@ -220,3 +221,4 @@ class TestAthleteCase:
         result = response.json()
         assert result["full_name"] == expected["full_name"]
         assert result["age_categories"] == expected["age_categories"]
+        assert result["current_grade"] == expected["current_grade"]

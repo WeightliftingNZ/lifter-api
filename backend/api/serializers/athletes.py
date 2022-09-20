@@ -1,5 +1,9 @@
 """Athete Serializers."""
 
+from datetime import datetime
+
+from django.db.models import F
+from django.db.models.functions import ExtractYear
 from hashid_field.rest import HashidSerializerCharField
 from rest_framework import serializers
 
@@ -20,6 +24,23 @@ class AthleteSerializer(serializers.ModelSerializer):
         read_only=True,
     )
 
+    current_grade = serializers.SerializerMethodField()
+
+    def get_current_grade(self, athlete):
+        query = (
+            Lift.objects.annotate(
+                competition_year=ExtractYear(F("competition__date_start"))
+            )
+            .filter(athlete=athlete)
+            .filter(competition_year=datetime.now().year)
+        )
+        if len(query) == 0:
+            return None
+        SORT = ("Elite", "International", "A", "B", "C", "D", "E", None)
+        grades = [(lift.grade, SORT.index(lift.grade)) for lift in query]
+        best_grade = sorted(grades, key=lambda x: x[1])
+        return best_grade[0][0]
+
     class Meta:
         model = Athlete
         fields = [
@@ -29,6 +50,7 @@ class AthleteSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "yearborn",
+            "current_grade",
             "age_categories",
         ]
 

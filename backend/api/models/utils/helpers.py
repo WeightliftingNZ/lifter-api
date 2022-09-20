@@ -1,7 +1,7 @@
 """Contains helper functions for the models."""
 import math
 from datetime import datetime
-from decimal import Decimal as D
+from decimal import Decimal
 
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
@@ -169,19 +169,30 @@ def age_category(yearborn: int, competition_year: int = None) -> AgeCategories:
 
 
 def calculate_sinclair(
-    bodyweight: D,
+    bodyweight: Decimal,
     total_lifted: int,
     weight_category: str,
     yearborn: int,
     lift_year: int,
-) -> D:
+) -> Decimal:
+    """Calculate the sinclair for a lift.
 
+    Args:
+        bodyweight (Decimal):  Bodyweight of athlete for particular lift.
+        total_lifted (int): Total lifted for lift.
+        weight_category (str): Athlete's weight category for particular lift.
+        yearborn (int): Athlete's birth year.
+        lift_year (int): The year the lift took place (competition).
+
+    Returns:
+        Decimal: Sinclair rounded to 3 decimal places.
+    """
     SINCLAIR_CONSTANTS = {
-        "M": {"a": D(0.751945030), "b": D(175.508)},
-        "W": {"a": D(0.783497476), "b": D(153.655)},
+        "M": {"a": Decimal(0.751945030), "b": Decimal(175.508)},
+        "W": {"a": Decimal(0.783497476), "b": Decimal(153.655)},
     }
 
-    AGE_CORRECTION = D(1)
+    AGE_CORRECTION = Decimal(1)
 
     # TODO:
     # sinclair change at every olympic cycle
@@ -197,11 +208,11 @@ def calculate_sinclair(
     b = SINCLAIR_CONSTANTS[sex]["b"]
 
     if bodyweight <= b:
-        x = D(math.log10(D(bodyweight) / b))
+        x = Decimal(math.log10(Decimal(bodyweight) / b))
         ax2 = x**2 * a
-        sinclair_coefficient = D(10) ** ax2
+        sinclair_coefficient = Decimal(10) ** ax2
     else:
-        sinclair_coefficient = D(1)
+        sinclair_coefficient = Decimal(1)
 
     sinclair_total = total_lifted * sinclair_coefficient * AGE_CORRECTION
     return round(sinclair_total, 3)

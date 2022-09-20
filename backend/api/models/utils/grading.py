@@ -1,0 +1,233 @@
+"""Determine grade for a lift."""
+STANDARDS = {
+    "M49": {
+        "international": None,
+        "elite": None,
+        "a": 188,
+        "b": 171,
+        "c": 152,
+        "d": 135,
+        "e": 124,
+    },
+    "M55": {
+        "elite": 245,
+        "international": 226,
+        "a": 206,
+        "b": 187,
+        "c": 168,
+        "d": 148,
+        "e": 136,
+    },
+    "M62": {
+        "elite": 264,
+        "international": 243,
+        "a": 222,
+        "b": 202,
+        "c": 181,
+        "d": 160,
+        "e": 146,
+    },
+    "M67": {
+        "elite": 281,
+        "international": 259,
+        "a": 237,
+        "b": 214,
+        "c": 192,
+        "d": 170,
+        "e": 156,
+    },
+    "M73": {
+        "elite": 296,
+        "international": 273,
+        "a": 249,
+        "b": 226,
+        "c": 203,
+        "d": 179,
+        "e": 164,
+    },
+    "M81": {
+        "elite": 313,
+        "international": 288,
+        "a": 264,
+        "b": 239,
+        "c": 214,
+        "d": 190,
+        "e": 173,
+    },
+    "M89": {
+        "elite": 327,
+        "international": 301,
+        "a": 276,
+        "b": 250,
+        "c": 224,
+        "d": 198,
+        "e": 181,
+    },
+    "M96": {
+        "elite": 338,
+        "international": 311,
+        "a": 285,
+        "b": 258,
+        "c": 231,
+        "d": 205,
+        "e": 187,
+    },
+    "M102": {
+        "elite": 346,
+        "international": 318,
+        "a": 291,
+        "b": 264,
+        "c": 237,
+        "d": 209,
+        "e": 191,
+    },
+    "M102+": {
+        "elite": None,
+        "international": None,
+        "a": 298,
+        "b": 270,
+        "c": 242,
+        "d": 214,
+        "e": 195,
+    },
+    "M109": {
+        "elite": 353,
+        "international": 325,
+        "a": 298,
+        "b": 270,
+        "c": 242,
+        "d": 214,
+    },
+    "M109+": {
+        "elite": 374,
+        "international": 345,
+        "a": 315,
+        "b": 286,
+        "c": 256,
+        "d": 227,
+    },
+    "W40": {
+        "elite": None,
+        "international": None,
+        "a": 114,
+        "b": 103,
+        "c": 92,
+        "d": 81,
+        "e": 70,
+    },
+    "W45": {
+        "elite": 150,
+        "international": 138,
+        "a": 126,
+        "b": 114,
+        "c": 102,
+        "d": 90,
+        "e": 78,
+    },
+    "W49": {
+        "elite": 161,
+        "international": 148,
+        "a": 135,
+        "b": 122,
+        "c": 109,
+        "d": 97,
+        "e": 84,
+    },
+    "W55": {
+        "elite": 175,
+        "international": 161,
+        "a": 147,
+        "b": 133,
+        "c": 119,
+        "d": 105,
+        "e": 91,
+    },
+    "W59": {
+        "elite": 183,
+        "international": 169,
+        "a": 154,
+        "b": 139,
+        "c": 125,
+        "d": 110,
+        "e": 96,
+    },
+    "W64": {
+        "elite": 193,
+        "international": 178,
+        "a": 162,
+        "b": 147,
+        "c": 131,
+        "d": 116,
+        "e": 101,
+    },
+    "W71": {
+        "elite": 205,
+        "international": 188,
+        "a": 172,
+        "b": 155,
+        "c": 139,
+        "d": 123,
+        "e": 107,
+    },
+    "W76": {
+        "elite": 212,
+        "international": 195,
+        "a": 178,
+        "b": 161,
+        "c": 144,
+        "d": 127,
+        "e": 110,
+    },
+    "W81": {
+        "elite": 218,
+        "international": 201,
+        "a": 183,
+        "b": 166,
+        "c": 148,
+        "d": 131,
+        "e": 114,
+    },
+    "W81+": {
+        "elite": None,
+        "international": None,
+        "a": 189,
+        "b": 171,
+        "c": 153,
+        "d": 135,
+        "e": 117,
+    },
+    "W87": {
+        "elite": 224,
+        "international": 207,
+        "a": 189,
+        "b": 171,
+        "c": 153,
+        "d": 135,
+    },
+    "W87+": {
+        "elite": 235,
+        "international": 216,
+        "a": 198,
+        "b": 179,
+        "c": 160,
+        "d": 141,
+    },
+}
+
+
+def determine_grade(total_lifted: int, weight_category: str) -> str:
+    """Provide the grade for a particular lift.
+
+    Args:
+        total_lifted (int): The total lifted.
+        weight_category (str): The weight class for the athlete.
+
+    Returns:
+        (str): The grade.
+    """
+    grades = STANDARDS.get(weight_category)
+    if grades is not None:
+        for k, v in grades.items():
+            if v is not None and total_lifted >= v:
+                return k.title()
+    return None
