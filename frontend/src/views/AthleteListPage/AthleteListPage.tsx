@@ -76,6 +76,8 @@ const AthleteListPage: React.FC = () => {
     setSearchQuery(event.target.value);
   };
 
+  console.dir(data?.pages[0].count);
+
   return (
     <>
       <Box>
@@ -85,7 +87,7 @@ const AthleteListPage: React.FC = () => {
       <Box sx={{ mt: 6 }}>
         <CustomSearchInput
           label="Search athletes"
-          error={data?.pages[0].results.count === 0 ? true : false}
+          error={data?.pages[0].count === 0 ? true : false}
           placeholder="By first or last name"
           searchTerm={searchQuery}
           handleOnChange={handleOnChange}
