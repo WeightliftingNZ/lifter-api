@@ -46,7 +46,15 @@ const ListItemLink = (props: ListItemLinkProps) => {
         itemProps,
         ref
       ) {
-        return <RouterLink to={to} ref={ref} {...itemProps} role={undefined} />;
+        return (
+          <RouterLink
+            to={to}
+            ref={ref}
+            {...itemProps}
+            role={undefined}
+            style={{ textDecoration: "none" }}
+          />
+        );
       }),
     [to]
   );

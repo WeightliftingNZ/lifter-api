@@ -16,14 +16,13 @@ class AthleteSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(
         view_name="athletes-detail", read_only=True
     )
-
     reference_id = serializers.PrimaryKeyRelatedField(  # type: ignore
         pk_field=HashidSerializerCharField(
             source_field="api.Athlete.reference_id",
         ),
         read_only=True,
     )
-
+    recent_lift = serializers.SerializerMethodField()
     current_grade = serializers.SerializerMethodField()
 
     def get_current_grade(self, athlete):
@@ -41,6 +40,14 @@ class AthleteSerializer(serializers.ModelSerializer):
         best_grade = sorted(grades, key=lambda x: x[1])
         return best_grade[0][0]
 
+    def get_recent_lift(self, athlete):
+        query = Lift.objects.filter(athlete=athlete).order_by(
+            "-competition__date_start"
+        )[:1]
+        return LiftSerializer(
+            query, many=True, read_only=True, context=self.context
+        ).data
+
     class Meta:
         model = Athlete
         fields = [
@@ -52,6 +59,7 @@ class AthleteSerializer(serializers.ModelSerializer):
             "yearborn",
             "current_grade",
             "age_categories",
+            "recent_lift",
         ]
 
 

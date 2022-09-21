@@ -37,6 +37,16 @@ interface AgeCategoriesProps {
   is_master_70: boolean;
 }
 
+export type GradeT =
+  | "Elite"
+  | "International"
+  | "A"
+  | "B"
+  | "C"
+  | "D"
+  | "E"
+  | null;
+
 export interface AthleteListObjectProps {
   reference_id: string;
   url: string;
@@ -45,6 +55,8 @@ export interface AthleteListObjectProps {
   last_name: string;
   yearborn: number;
   age_categories: ageCategories;
+  current_grade: GradeT;
+  recent_lift: LiftObjectProps[];
 }
 
 export interface AthleteDetailObjectProps extends AthleteListObjectProps {
@@ -93,6 +105,7 @@ export interface LiftObjectProps {
   total_lifted: number;
   sinclair: number;
   age_categories: AgeCategoriesProps;
+  grade: GradeT;
   bodyweight: number;
   weight_category: string;
   team: string;

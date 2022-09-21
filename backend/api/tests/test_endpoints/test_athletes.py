@@ -205,6 +205,7 @@ class TestAthleteCase:
                         "is_master_65_69": False,
                         "is_master_70": False,
                     },
+                    "recent_lift": [],
                 },
                 id="Normal",
             )
@@ -222,3 +223,4 @@ class TestAthleteCase:
         assert result["full_name"] == expected["full_name"]
         assert result["age_categories"] == expected["age_categories"]
         assert result["current_grade"] == expected["current_grade"]
+        assert result["recent_lift"] == expected["recent_lift"]

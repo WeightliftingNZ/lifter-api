@@ -1,13 +1,60 @@
 import React from "react";
-import LinearProgress from "@mui/material/LinearProgress";
-import Box from "@mui/material/Box";
-import Skeleton from "@mui/material/Skeleton";
+import {
+  Stack,
+  Card,
+  Box,
+  Skeleton,
+  CardContent,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  Typography,
+} from "@mui/material";
+import Heading from "../Heading";
 
 const Loading: React.FC = () => {
   return (
-    <Box sx={{ width: "100%", height: "20%" }}>
-      <Skeleton />
-      <LinearProgress />
+    <Box sx={{ width: "50%" }}>
+      <Card variant="outlined" elevation={2}>
+        <CardContent>
+          <Box>
+            <Heading>
+              <Skeleton sx={{ width: "40%" }} />
+            </Heading>
+            <Stack direction="row" spacing={1}>
+              <Skeleton sx={{ width: "8%" }} />
+              <Skeleton sx={{ width: "8%" }} />
+            </Stack>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>
+                    <Skeleton />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton />
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <Skeleton />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton />
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+            </Table>
+          </Box>
+        </CardContent>
+      </Card>
     </Box>
   );
 };
