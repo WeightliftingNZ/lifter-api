@@ -1,65 +1,122 @@
-import React, { useState } from "react";
-import Box from "@mui/material/Box";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { AthleteListObjectProps } from "../../interfaces";
 import CustomSearchInput from "../../components/CustomSearchInput";
-import DataLoader from "../../components/DataLoader";
+import { useDebounce } from "usehooks-ts";
+import { useInfiniteQuery } from "react-query";
+import AthleteCard from "./AthleteCard";
+import { Stack, Box } from "@mui/material";
+import apiClient from "../../utils/http-common";
 import Title from "../../components/Title";
 import SubTitle from "../../components/SubTitle";
+import CustomError from "../../components/Error";
+import CustomLoading from "../../components/Loading";
 
-export interface Column {
-  id: keyof AthleteListObjectProps;
-  label: string;
-  minWidth?: number;
-  maxWidth?: number;
-  align?: "right" | "left" | "center";
-  extra?: { [key: string]: string };
-}
-
-const columns: Column[] = [{ id: "full_name", label: "Name" }];
+const PAGE_LIMIT = 10;
 
 const AthleteListPage: React.FC = () => {
-  const [page, setPage] = useState<number>(0);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [noResults, setNoResults] = useState<boolean | undefined>();
+  const debouncedSearchQuery = useDebounce(searchQuery, 500);
+  const observerElem = useRef(null);
 
-  /* TODO: event type? */
-  const handleOnChange = (event: any) => {
-    setSearchQuery(event.target.value);
-    setPage(0);
+  const fetchAthletes = async (page: number) => {
+    const res = await apiClient.get(
+      `/athletes?search=${debouncedSearchQuery}&page=${page}&page_size=${PAGE_LIMIT}`
+    );
+    return res.data;
   };
 
-  const handleChangePage = (
-    event: React.MouseEvent<HTMLButtonElement> | null,
-    newPage: number
+  const {
+    data,
+    error,
+    isLoading,
+    isError,
+    isSuccess,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery(
+    ["athletes", debouncedSearchQuery],
+    ({ pageParam = 1 }) => fetchAthletes(pageParam),
+    {
+      getNextPageParam: (lastPage, pages) => {
+        if (lastPage.next == null) {
+          return undefined;
+        }
+        return pages.length + 1;
+      },
+    }
+  );
+
+  const handleObserver: IntersectionObserverCallback = useCallback(
+    (entries) => {
+      const [target] = entries;
+      if (target.isIntersecting && hasNextPage) {
+        fetchNextPage();
+      }
+    },
+    [fetchNextPage, hasNextPage]
+  );
+
+  useEffect(() => {
+    const element = observerElem.current;
+    const option = { threshold: 0 };
+
+    const observer = new IntersectionObserver(handleObserver, option);
+    observer.observe(element!);
+    return () => observer.unobserve(element!);
+  }, [fetchNextPage, hasNextPage, handleObserver]);
+
+  if (isError) {
+    console.log(error);
+  }
+
+  const handleOnChange: React.ChangeEventHandler = (
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setPage(newPage);
+    setSearchQuery(event.target.value);
   };
 
   return (
     <>
       <Box>
-        <Title>Athlete</Title>
+        <Title>Athletes</Title>
         <SubTitle>Browse athletes</SubTitle>
       </Box>
       <Box sx={{ mt: 6 }}>
         <CustomSearchInput
-          error={noResults}
           label="Search athletes"
+          error={data?.pages[0].results.count === 0 ? true : false}
           placeholder="By first or last name"
-          helperText={noResults ? "No results found" : ""}
           searchTerm={searchQuery}
           handleOnChange={handleOnChange}
         />
       </Box>
       <Box sx={{ mt: 6 }}>
-        <DataLoader
-          setNoResults={setNoResults}
-          columns={columns}
-          searchQuery={searchQuery}
-          handleChangePage={handleChangePage}
-          page={page}
-          uriBase="athletes"
-        />
+        {isLoading && <CustomLoading />}
+        {isError && <CustomError />}
+        {isSuccess && (
+          <>
+            <Stack sx={{ maxWidth: "max-content" }} spacing={1}>
+              {data?.pages.map((page) => (
+                <>
+                  {page.results.map((athlete: AthleteListObjectProps) => (
+                    <AthleteCard
+                      key={athlete.reference_id}
+                      referenceId={athlete.reference_id}
+                      fullName={athlete.full_name}
+                      ageCategories={athlete.age_categories}
+                      currentGrade={athlete.current_grade}
+                      recentLift={athlete.recent_lift}
+                    />
+                  ))}
+                </>
+              ))}
+            </Stack>
+          </>
+        )}
+        <Box ref={observerElem}>
+          {isFetchingNextPage && hasNextPage ? <CustomLoading /> : null}
+        </Box>
       </Box>
     </>
   );

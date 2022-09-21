@@ -7,7 +7,7 @@ from django.db import models
 from django.utils.functional import cached_property
 from hashid_field import HashidAutoField
 
-from api.models.utils.helpers import calculate_sinclair
+from api.models.utils import calculate_sinclair, determine_grade
 from config.settings import HASHID_FIELD_SALT
 
 from .managers import LiftManager
@@ -175,6 +175,15 @@ class Lift(models.Model):
             },
         }
 
+    # @property
+    # def new_snatch_first(self) -> int | None:
+    #     if self.snatch_first == "DNA":
+    #         return None
+    #     elif self.snatch_first == "NOLIFT":
+    #         return -1 * abs(self.snatch_first_weight)
+    #     elif self.snatch_first == "LIFT":
+    #         return abs(self.snatch_first_weight)
+
     @property
     def cnjs(self) -> dict[str, LiftT]:
         """Clean and Jerk custom field."""
@@ -243,9 +252,17 @@ class Lift(models.Model):
             lift_year=self.competition.date_start.year,
         )
 
+    @property
+    def grade(self) -> str:
+        """Determine the grade of the lift."""
+        return determine_grade(
+            total_lifted=self.total_lifted,
+            weight_category=self.weight_category,
+        )
+
     @cached_property
     # TODO: placings for junior, senior etc
-    def placing(self):
+    def placing(self) -> str:
         """Determine placing of the athlete from weightclass.
 
         How placing is determined in weightlifting:

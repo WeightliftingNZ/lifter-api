@@ -86,6 +86,7 @@ class LiftSerializer(serializers.ModelSerializer):
             "best_cnj_weight",
             "total_lifted",
             "sinclair",
+            "grade",
             "age_categories",
             "bodyweight",
             "weight_category",

@@ -7,6 +7,7 @@ from .choices import (
     OLD_1998_2018_FEMALE_WEIGHT_CATEGORIES,
     OLD_1998_2018_MALE_WEIGHT_CATEGORIES,
 )
+from .grading import determine_grade
 from .helpers import (
     age_category,
     best_lift,
@@ -28,4 +29,5 @@ __all__ = [
     "ranking_suffixer",
     "validate_attempts",
     "calculate_sinclair",
+    "determine_grade",
 ]

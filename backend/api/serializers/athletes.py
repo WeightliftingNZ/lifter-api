@@ -1,5 +1,9 @@
 """Athete Serializers."""
 
+from datetime import datetime
+
+from django.db.models import F
+from django.db.models.functions import ExtractYear
 from hashid_field.rest import HashidSerializerCharField
 from rest_framework import serializers
 
@@ -12,13 +16,37 @@ class AthleteSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(
         view_name="athletes-detail", read_only=True
     )
-
     reference_id = serializers.PrimaryKeyRelatedField(  # type: ignore
         pk_field=HashidSerializerCharField(
             source_field="api.Athlete.reference_id",
         ),
         read_only=True,
     )
+    recent_lift = serializers.SerializerMethodField()
+    current_grade = serializers.SerializerMethodField()
+
+    def get_current_grade(self, athlete):
+        query = (
+            Lift.objects.annotate(
+                competition_year=ExtractYear(F("competition__date_start"))
+            )
+            .filter(athlete=athlete)
+            .filter(competition_year=datetime.now().year)
+        )
+        if len(query) == 0:
+            return None
+        SORT = ("Elite", "International", "A", "B", "C", "D", "E", None)
+        grades = [(lift.grade, SORT.index(lift.grade)) for lift in query]
+        best_grade = sorted(grades, key=lambda x: x[1])
+        return best_grade[0][0]
+
+    def get_recent_lift(self, athlete):
+        query = Lift.objects.filter(athlete=athlete).order_by(
+            "-competition__date_start"
+        )[:1]
+        return LiftSerializer(
+            query, many=True, read_only=True, context=self.context
+        ).data
 
     class Meta:
         model = Athlete
@@ -29,7 +57,9 @@ class AthleteSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "yearborn",
+            "current_grade",
             "age_categories",
+            "recent_lift",
         ]
 
 

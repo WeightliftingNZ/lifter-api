@@ -231,4 +231,5 @@ def test_age_category_error(test_input, exception):
     ],
 )
 def test_calculate_sinclair(test_input, expected):
+    """Calculate sinclair."""
     assert calculate_sinclair(**test_input) == round(D(expected), 3)

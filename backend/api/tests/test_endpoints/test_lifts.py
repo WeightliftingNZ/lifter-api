@@ -783,6 +783,7 @@ class TestLiftCase:
                     "best_cnj_weight": ["3rd", 145],
                     "total_lifted": 245,
                     "sinclair": 270.688,
+                    "grade": "C",
                     "age_categories": {
                         "is_youth": False,
                         "is_junior": False,
@@ -842,6 +843,7 @@ class TestLiftCase:
                     "best_cnj_weight": ["3rd", 145],
                     "total_lifted": 245,
                     "sinclair": 270.688,
+                    "grade": "C",
                     "age_categories": {
                         "is_youth": True,
                         "is_junior": True,
@@ -888,4 +890,5 @@ class TestLiftCase:
         assert result["best_cnj_weight"] == expected["best_cnj_weight"]
         assert result["total_lifted"] == expected["total_lifted"]
         assert result["sinclair"] == expected["sinclair"]
+        assert result["grade"] == expected["grade"]
         assert result["age_categories"] == expected["age_categories"]
