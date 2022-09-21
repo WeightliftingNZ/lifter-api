@@ -9,7 +9,6 @@ import {
   TableHead,
   TableRow,
   TableCell,
-  Typography,
 } from "@mui/material";
 import Heading from "../Heading";
 
