@@ -1,3 +1,14 @@
+## 0.5.0 (2022-09-21)
+
+### Feat
+
+- **frontend/-backend/**: adding grading and updating athlete search
+- added grading
+
+### Fix
+
+- fixing frontend
+
 ## 0.4.1 (2022-09-19)
 
 ### Fix
