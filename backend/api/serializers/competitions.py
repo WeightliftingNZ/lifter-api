@@ -1,5 +1,7 @@
 """Competition Serializer."""
 
+import random
+
 from hashid_field.rest import HashidSerializerCharField
 from rest_framework import serializers
 
@@ -18,9 +20,24 @@ class CompetitionSerializer(serializers.ModelSerializer):
         read_only=True,
     )
     lifts_count = serializers.SerializerMethodField(read_only=True)
+    random_lifts = serializers.SerializerMethodField(read_only=True)
 
     def get_lifts_count(self, competition) -> int:
         return Lift.objects.filter(competition=competition).count()
+
+    def get_random_lifts(self, competition) -> list:
+        lifts = list(Lift.objects.filter(competition=competition))
+        if len(lifts) == 0:
+            return []
+        sample = 3
+        if len(lifts) < 3:
+            sample = len(lifts)
+        return LiftSerializer(
+            random.sample(lifts, k=sample),
+            many=True,
+            read_only=True,
+            context=self.context,
+        ).data
 
     class Meta:
         model = Competition
@@ -32,6 +49,7 @@ class CompetitionSerializer(serializers.ModelSerializer):
             "location",
             "name",
             "lifts_count",
+            "random_lifts",
         ]
 
 

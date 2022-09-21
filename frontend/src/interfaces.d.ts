@@ -10,6 +10,7 @@ export interface CompetitionListObjectProps {
   date_end: string;
   date_start: string;
   lifts_count: number;
+  random_lifts: LiftObjectProps[];
   location: string;
   name: string;
   reference_id: string;

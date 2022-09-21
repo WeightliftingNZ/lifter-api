@@ -76,8 +76,6 @@ const AthleteListPage: React.FC = () => {
     setSearchQuery(event.target.value);
   };
 
-  console.dir(data?.pages[0].count);
-
   return (
     <>
       <Box>

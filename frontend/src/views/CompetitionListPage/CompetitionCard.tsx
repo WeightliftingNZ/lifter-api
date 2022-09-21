@@ -1,5 +1,5 @@
 import React from "react";
-import { AgeCategoriesProps, LiftObjectProps, GradeT } from "../../interfaces";
+import { LiftObjectProps } from "../../interfaces";
 import { useTheme } from "@mui/material/styles";
 import {
   Card,
@@ -9,27 +9,32 @@ import {
   TableRow,
   TableBody,
   TableCell,
+  Box,
 } from "@mui/material";
-import GradeBadges from "../../components/GradeBadges";
 import Heading from "../../components/Heading";
 import { Stack } from "@mui/system";
-import AgeCategoryBadges from "../../components/AgeCategoryBadges";
 import CardActionAreaLink from "../../components/CardActionAreaLink";
+import CompetitionBadges from "../../components/CompetitionBadges";
+import SubTitle from "../../components/SubTitle";
+import Body from "../../components/Body";
+import moment from "moment";
 
-interface AthleteCardProps {
+interface CompetitionCardProps {
   referenceId: string;
-  fullName: string;
-  ageCategories: AgeCategoriesProps;
-  recentLift: LiftObjectProps[];
-  currentGrade: GradeT;
+  name: string;
+  dateStart: string;
+  dateEnd: string;
+  liftCount: number;
+  randomLifts: LiftObjectProps[];
 }
 
-const AthleteCard: React.FC<AthleteCardProps> = ({
-  fullName,
-  ageCategories,
-  currentGrade,
-  recentLift,
+const CompetitionCard: React.FC<CompetitionCardProps> = ({
   referenceId,
+  name,
+  dateStart,
+  dateEnd,
+  liftCount,
+  randomLifts,
 }) => {
   const theme = useTheme();
   return (
@@ -44,20 +49,27 @@ const AthleteCard: React.FC<AthleteCardProps> = ({
           },
         }}
       >
-        <CardActionAreaLink to={`/athletes/${referenceId}`}>
+        <CardActionAreaLink to={`/competitions/${referenceId}`}>
           <CardContent>
             <Stack direction="column" spacing={1}>
-              <Heading>{fullName}</Heading>
+              <Heading>{name}</Heading>
               <Stack direction="row" spacing={2}>
-                <GradeBadges grade={currentGrade} />
-                <AgeCategoryBadges ageCategories={ageCategories} />
+                <CompetitionBadges name={name} />
               </Stack>
-              {recentLift.length > 0 && (
+              <Box>
+                <Body>
+                  {moment(dateStart).format("dddd, Do MMM YYYY")}{" "}
+                  {dateStart !== dateEnd &&
+                    `- ${moment(dateEnd).format("dddd, Do MMM YYYY")}`}
+                </Body>
+                <SubTitle>Number of Athletes: {liftCount}</SubTitle>
+              </Box>
+              {randomLifts.length > 0 && (
                 <Stack direction="column" spacing={1}>
                   <Table>
                     <TableHead>
                       <TableRow>
-                        <TableCell colSpan={3}>Recent Competition</TableCell>
+                        <TableCell colSpan={2}>Lifts</TableCell>
                         <TableCell>Sn</TableCell>
                         <TableCell>CJ</TableCell>
                         <TableCell>Total</TableCell>
@@ -66,12 +78,11 @@ const AthleteCard: React.FC<AthleteCardProps> = ({
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {recentLift.map((lift: LiftObjectProps) => {
+                      {randomLifts.map((lift: LiftObjectProps) => {
                         return (
                           <TableRow>
-                            <TableCell>{lift.competition_date_start}</TableCell>
                             <TableCell sx={{ maxWidth: 200 }}>
-                              {lift.competition_name}
+                              {lift.athlete_name}
                             </TableCell>
                             <TableCell>{lift.weight_category}</TableCell>
                             <TableCell>{lift.best_snatch_weight[1]}</TableCell>
@@ -94,4 +105,4 @@ const AthleteCard: React.FC<AthleteCardProps> = ({
   );
 };
 
-export default AthleteCard;
+export default CompetitionCard;
