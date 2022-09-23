@@ -40,7 +40,7 @@ jobs:
         name: Build site
         run: |
           cd ./backend
-          pipenv run mkdocs serve --config-file ../mkdocs.yml
+          pipenv run mkdocs build --config-file ../mkdocs.yml
 
       - id: deploy-docs
         name: Deploy Docs
