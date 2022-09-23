@@ -1,3 +1,9 @@
+## 0.6.1 (2022-09-23)
+
+### Fix
+
+- static files not serving, fixing this
+
 ## 0.6.0 (2022-09-23)
 
 ### Feat
