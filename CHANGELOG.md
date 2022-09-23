@@ -1,3 +1,15 @@
+## 0.6.0 (2022-09-23)
+
+### Feat
+
+- **frontend/backend**: removed validation for weight categories
+- adding recent competition to the homescreen
+
+### Fix
+
+- fixing front end again
+- fixing front end imports
+
 ## 0.5.0 (2022-09-21)
 
 ### Feat
