@@ -29,7 +29,7 @@ const CompetitionFiveRecent: React.FC = () => {
 
   return (
     <>
-      <Box sx={{ mt: 6 }}>
+      <Box sx={{ mt: 2 }}>
         {isLoading && <CustomLoading />}
         {isError && <CustomError />}
         {isSuccess && (
@@ -49,7 +49,6 @@ const CompetitionFiveRecent: React.FC = () => {
                   {console.dir(competition)}
                 </>
               ))}
-              )
             </Stack>
           </>
         )}

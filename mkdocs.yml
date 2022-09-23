@@ -5,6 +5,9 @@ nav:
   - Home: index.md
   - About: about.md
   - How it works: how.md
+  - Grading: grading.md
+  - Placing: placing.md
+  - Weight Categories: weight_categories.md
 theme:
   name: material
   palette:
@@ -26,3 +29,4 @@ watch:
   - backend
 plugins:
   - search
+  - mkdocstrings

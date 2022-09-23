@@ -9,7 +9,6 @@ gunicorn = "*"
 django-hashid-field = "*"
 psycopg2-binary = "*"
 sentry-sdk = "*"
-whitenoise = "*"
 django-rest-framework = "*"
 markdown = "*"
 django-filter = "*"
@@ -25,6 +24,7 @@ drf-nested-routers = "*"
 django-extensions = "*"
 django-crispy-forms = "*"
 pytest-xdist = "*"
+faker = "*"
 
 [dev-packages]
 pytest = "*"
@@ -38,6 +38,8 @@ mypy = "*"
 mkdocs = "*"
 mkdocs-material = "*"
 faker = "*"
+coverage = {extras = ["toml"], version = "*"}
+mkdocstrings = {extras = ["python"], version = "*"}
 
 [requires]
 python_version = "3.10"

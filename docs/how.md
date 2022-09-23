@@ -14,6 +14,8 @@ The API is able to determine if a athlete at the time of the competition date st
 
 Generally, competitions lift with female first following by males.
 
+The subject of gender can be particularly sensitive. So a choice was made to detach gender from athletes, and instead
+
 ### Data Protection
 
 The only data available is the athlete's name, birth year (to determine age grading) and their competitions lifts.
@@ -21,3 +23,8 @@ The only data available is the athlete's name, birth year (to determine age grad
 ### Grading
 
 Grading is determined by looking at the lifts for the current year and determining the best grade from these lifts.
+
+
+## Roadmap
+
+- Include volunteers on the competition results

@@ -25,15 +25,27 @@ class CompetitionSerializer(serializers.ModelSerializer):
     def get_lifts_count(self, competition) -> int:
         return Lift.objects.filter(competition=competition).count()
 
-    def get_random_lifts(self, competition) -> list:
-        lifts = list(Lift.objects.filter(competition=competition))
-        if len(lifts) == 0:
-            return []
-        sample = 3
-        if len(lifts) < 3:
-            sample = len(lifts)
+    def get_random_lifts(self, competition):
+        """Provide random lifts within the competition."""
+
+        def _randomize(sex):
+            lifts = list(
+                Lift.objects.filter(competition=competition).filter(
+                    weight_category__startswith=sex
+                )
+            )
+            if len(lifts) == 0:
+                return []
+            k_sample = 2
+            if len(lifts) < k_sample:
+                k_sample = len(lifts)
+            return random.sample(lifts, k=k_sample)
+
+        w_lifts = _randomize(sex="W")
+        m_lifts = _randomize(sex="M")
+
         return LiftSerializer(
-            random.sample(lifts, k=sample),
+            w_lifts + m_lifts,
             many=True,
             read_only=True,
             context=self.context,

@@ -1,6 +1,14 @@
 from django.contrib import admin
 
-from .models import Athlete, Competition, Lift
+from .models import (
+    AgeCategory,
+    AgeCategoryEra,
+    Athlete,
+    Competition,
+    Lift,
+    WeightCategory,
+    WeightCategoryEra,
+)
 
 
 class AthleteAdmin(admin.ModelAdmin):
@@ -59,6 +67,74 @@ class LiftAdmin(admin.ModelAdmin):
     )
 
 
+class AgeCategoryEraAdmin(admin.ModelAdmin):
+    """Admin view for AgeCategoryEra model.
+
+    `date_end` and `is_current` are readonly because they are determined by \
+            `date_start`, which is editable.
+    """
+
+    readonly_fields = ("reference_id", "date_end", "is_current")
+    fieldsets = (
+        (
+            None,
+            {"fields": ("date_start", "description")},
+        ),
+    )
+
+
+class AgeCategoryAdmin(admin.ModelAdmin):
+    """Admin view for AgeCategory model."""
+
+    readonly_fields = ("reference_id",)
+    fieldsets = (
+        (
+            "Relationships",
+            {"fields": ("era",)},
+        ),
+        (
+            "Age Category",
+            {"fields": ("name", "lower_age_bound", "upper_age_bound")},
+        ),
+    )
+
+
+class WeightCategoryEraAdmin(admin.ModelAdmin):
+    """Admin view for WeightCategoryEra model.
+
+    `date_end` and `is_current` are readonly because they are determined by \
+            `date_start`, which is editable.
+    """
+
+    readonly_fields = ("reference_id", "date_end", "is_current")
+    fieldsets = (
+        (
+            None,
+            {"fields": ("date_start", "description")},
+        ),
+    )
+
+
+class WeightCategoryAdmin(admin.ModelAdmin):
+    """Admin view for AgeCategory model."""
+
+    readonly_fields = ("reference_id",)
+    fieldsets = (
+        (
+            "Relationships",
+            {"fields": ("era", "age_categories")},
+        ),
+        (
+            "Weight Category",
+            {"fields": ("sex", "weight", "is_plus")},
+        ),
+    )
+
+
 admin.site.register(Athlete, AthleteAdmin)
 admin.site.register(Competition, CompetitionAdmin)
 admin.site.register(Lift, LiftAdmin)
+admin.site.register(AgeCategoryEra, AgeCategoryEraAdmin)
+admin.site.register(AgeCategory, AgeCategoryAdmin)
+admin.site.register(WeightCategoryEra, WeightCategoryEraAdmin)
+admin.site.register(WeightCategory, WeightCategoryAdmin)

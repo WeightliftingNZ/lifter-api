@@ -12,8 +12,18 @@ run-frontend:
 .PHONY: migrate
 migrate:
 	cd ./backend && \
-	pipenv run python manage.py makemigrations && \
 	pipenv run python manage.py migrate
+
+.PHONY: makemigrations-test
+makemigrations-test:
+	cd ./backend && \
+	pipenv run python manage.py makemigrations --dry-run
+
+
+.PHONY: makemigrations
+makemigrations:
+	cd ./backend && \
+	pipenv run python manage.py makemigrations
 
 ARGPATH=.
 
@@ -22,7 +32,7 @@ test:
 	clear
 	docker-compose up --build db -d && \
 	cd ./backend && \
-	pipenv run pytest -vv -k $(ARGPATH)
+	pipenv run pytest
 
 .PHONY: mypy
 mypy:
