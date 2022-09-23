@@ -36,11 +36,11 @@ const AthleteCard: React.FC<AthleteCardProps> = ({
     <>
       <Card
         variant="outlined"
-        elevation={2}
+        elevation={0}
         sx={{
           "&:hover": {
             borderColor: theme.palette.secondary.light,
-            boxShadow: 2,
+            boxShadow: 4,
           },
         }}
       >
@@ -68,7 +68,7 @@ const AthleteCard: React.FC<AthleteCardProps> = ({
                     <TableBody>
                       {recentLift.map((lift: LiftObjectProps) => {
                         return (
-                          <TableRow>
+                          <TableRow key={lift.reference_id}>
                             <TableCell>{lift.competition_date_start}</TableCell>
                             <TableCell sx={{ maxWidth: 200 }}>
                               {lift.competition_name}

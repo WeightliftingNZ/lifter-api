@@ -29,30 +29,34 @@ const CompetitionFiveRecent: React.FC = () => {
 
   return (
     <>
-      <Box sx={{ mt: 2 }}>
-        {isLoading && <CustomLoading />}
-        {isError && <CustomError />}
-        {isSuccess && (
-          <>
-            <Stack sx={{ maxWidth: "max-content" }} spacing={1}>
-              {data?.results.map((competition: CompetitionListObjectProps) => (
-                <>
-                  <CompetitionCard
-                    key={competition.reference_id}
-                    referenceId={competition.reference_id}
-                    name={competition.name}
-                    liftCount={competition.lifts_count}
-                    dateStart={competition.date_start}
-                    dateEnd={competition.date_end}
-                    randomLifts={competition.random_lifts}
-                  />
-                  {console.dir(competition)}
-                </>
-              ))}
-            </Stack>
-          </>
-        )}
-      </Box>
+      {isLoading && <CustomLoading />}
+      {isError && <CustomError />}
+      {isSuccess && (
+        <Box
+          sx={{
+            display: "flex",
+            flex: 1,
+            gap: 2,
+            justifyContent: "flex-start",
+            flexWrap: "wrap",
+            alignItems: "stretch",
+          }}
+        >
+          {data?.results.map((competition: CompetitionListObjectProps) => (
+            <Box sx={{ flexGrow: 0, flexShrink: 0, flexBasis: "31%" }}>
+              <CompetitionCard
+                key={competition.reference_id}
+                referenceId={competition.reference_id}
+                name={competition.name}
+                liftCount={competition.lifts_count}
+                dateStart={competition.date_start}
+                dateEnd={competition.date_end}
+                randomLifts={competition.random_lifts}
+              />
+            </Box>
+          ))}
+        </Box>
+      )}
     </>
   );
 };

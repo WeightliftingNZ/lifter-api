@@ -13,24 +13,22 @@ const Home: React.FC = () => {
         This is a database contain competitions for weightlifting results in New
         Zealand. We are in the process of adding results.
       </Body>
+      <Heading>Recent Competitions</Heading>
       <Box
         sx={{
           display: "flex",
           flex: 1,
           gap: 2,
-          alignItems: "left",
+          flexDirection: "row",
           justifyContent: "flex-start",
           flexWrap: "wrap",
         }}
       >
-        <Box>
-          <Heading>Recent Competitions</Heading>
-          <CompetitionFiveRecent />
-        </Box>
-        <Box>
-          <Heading>Top Lifters</Heading>
-          <Body>Coming soon ...</Body>
-        </Box>
+        <CompetitionFiveRecent />
+        {/* <Box> */}
+        {/*   <Heading>Top Lifters</Heading> */}
+        {/*   <Body>Coming soon ...</Body> */}
+        {/* </Box> */}
       </Box>
     </>
   );
