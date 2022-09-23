@@ -82,40 +82,53 @@ const AthleteListPage: React.FC = () => {
         <Title>Athletes</Title>
         <SubTitle>Browse athletes</SubTitle>
       </Box>
-      <Box sx={{ mt: 6 }}>
-        <CustomSearchInput
-          label="Search athletes"
-          error={data?.pages[0].results.count === 0 ? true : false}
-          placeholder="By first or last name"
-          searchTerm={searchQuery}
-          handleOnChange={handleOnChange}
-        />
-      </Box>
-      <Box sx={{ mt: 6 }}>
-        {isLoading && <CustomLoading />}
-        {isError && <CustomError />}
-        {isSuccess && (
-          <>
-            <Stack sx={{ maxWidth: "max-content" }} spacing={1}>
-              {data?.pages.map((page) => (
-                <>
-                  {page.results.map((athlete: AthleteListObjectProps) => (
-                    <AthleteCard
-                      key={athlete.reference_id}
-                      referenceId={athlete.reference_id}
-                      fullName={athlete.full_name}
-                      ageCategories={athlete.age_categories}
-                      currentGrade={athlete.current_grade}
-                      recentLift={athlete.recent_lift}
-                    />
-                  ))}
-                </>
-              ))}
-            </Stack>
-          </>
-        )}
-        <Box ref={observerElem}>
-          {isFetchingNextPage && hasNextPage ? <CustomLoading /> : null}
+      <Box
+        sx={{
+          display: "flex",
+          flex: 1,
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <Box sx={{ mt: 6 }}>
+          <CustomSearchInput
+            label="Search athletes"
+            error={data?.pages[0].count === 0 ? true : false}
+            placeholder="By first or last name"
+            searchTerm={searchQuery}
+            handleOnChange={handleOnChange}
+          />
+        </Box>
+        <Box
+          sx={{
+            mt: 6,
+          }}
+        >
+          {isLoading && <CustomLoading />}
+          {isError && <CustomError />}
+          {isSuccess && (
+            <>
+              <Stack sx={{ maxWidth: "max-content" }} spacing={1}>
+                {data?.pages.map((page) => (
+                  <>
+                    {page.results.map((athlete: AthleteListObjectProps) => (
+                      <AthleteCard
+                        key={athlete.reference_id}
+                        referenceId={athlete.reference_id}
+                        fullName={athlete.full_name}
+                        ageCategories={athlete.age_categories}
+                        currentGrade={athlete.current_grade}
+                        recentLift={athlete.recent_lift}
+                      />
+                    ))}
+                  </>
+                ))}
+              </Stack>
+            </>
+          )}
+          <Box ref={observerElem}>
+            {isFetchingNextPage && hasNextPage ? <CustomLoading /> : null}
+          </Box>
         </Box>
       </Box>
     </>

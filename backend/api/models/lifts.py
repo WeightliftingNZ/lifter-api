@@ -318,16 +318,16 @@ class Lift(models.Model):
 
         # 1. Weightclass validation
         # CATEGORY is list of tuples e.g. `[..., ('M102+', 'M102+'), ...]`
-        if (
-            self.competition.date_start.year >= 2018
-            and self.weight_category
-            not in (w[0] for w in CURRENT_WEIGHT_CATEGORIES)
-        ) or (
-            self.competition.date_start.year <= 2018
-            and self.weight_category
-            not in (w[0] for w in OLD_WEIGHT_CATEGORIES)
-        ):
-            errors.append("Weightclass from wrong era.")
+        # if (
+        #     self.competition.date_start.year >= 2018
+        #     and self.weight_category
+        #     not in (w[0] for w in CURRENT_WEIGHT_CATEGORIES)
+        # ) or (
+        #     self.competition.date_start.year <= 2018
+        #     and self.weight_category
+        #     not in (w[0] for w in OLD_WEIGHT_CATEGORIES)
+        # ):
+        #     errors.append("Weightclass from wrong era.")
         if len(errors) > 0:
             error_msg = "\n".join(errors)
             raise ValidationError(

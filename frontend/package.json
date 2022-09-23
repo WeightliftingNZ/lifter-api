@@ -30,7 +30,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "jest",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "prepare": "cd .. && husky install frontend/.husky"
   },
   "eslintConfig": {
     "extends": [
@@ -53,6 +54,7 @@
   "devDependencies": {
     "@babel/preset-typescript": "^7.18.6",
     "@types/jest": "^29.0.1",
+    "husky": "^8.0.1",
     "jest": "^27.5.1",
     "ts-node": "^10.9.1"
   }

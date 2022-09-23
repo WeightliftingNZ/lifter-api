@@ -34,11 +34,13 @@ jobs:
         name: Install dependencies
         run: |
           cd ./backend
-          pipenv install --system --dev --python '3.10' --skip-lock
+          pipenv install --dev --python '3.10' --skip-lock
 
       - id: build-site
         name: Build site
-        run: mkdocs build
+        run: |
+          cd ./backend
+          pipenv run mkdocs build --config-file ../mkdocs.yml
 
       - id: deploy-docs
         name: Deploy Docs
