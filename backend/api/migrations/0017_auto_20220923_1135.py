@@ -69,6 +69,7 @@ def create_age_categories(apps, schema_editor):
     for age_category in age_categories:
         AgeCategory.objects.create(
             name=age_category.name,
+            era=age_category.era,
             lower_age_bound=age_category.lower_age_bound,
             upper_age_bound=age_category.upper_age_bound,
         )

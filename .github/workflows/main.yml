@@ -32,6 +32,30 @@ jobs:
         name: Checkout
         uses: actions/checkout@v3
 
+      - id: slack
+        uses: slackapi/slack-github-action@v1.22.0
+        with:
+          channel-id: "#releases"
+          payload: |
+            {
+              "text": "Deployment started (In Progress)",
+              "attachments": [
+                {
+                  "pretext": "Deployment started",
+                  "color": "dbab09",
+                  "fields": [
+                    {
+                      "title": "Status",
+                      "short": true,
+                      "value": "In Progress"
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN}}
+
       - id: install-python
         name: Install Python
         uses: actions/setup-python@v4
@@ -72,3 +96,27 @@ jobs:
           npm ci
           npm run build --if-present
           npm test
+
+      - uses: slackapi/slack-github-action@v1.22.0
+        with:
+          channel-id: "#releases"
+          update-ts: ${{ steps.slack.outputs.ts }}
+          payload: |
+            {
+              "text": "Deployment finished (Completed)",
+              "attachments": [
+                {
+                  "pretext": "Deployment finished",
+                  "color": "28a745",
+                  "fields": [
+                    {
+                      "title": "Status",
+                      "short": true,
+                      "value": "Completed"
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN}}
