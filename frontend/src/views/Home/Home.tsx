@@ -4,7 +4,6 @@ import Body from "../../components/Body";
 import Heading from "../../components/Heading";
 import CompetitionFiveRecent from "../CompetitionListPage/CompetitionFiveRecent";
 import { Box } from "@mui/system";
-import { useTheme } from "@mui/material/styles";
 
 const Home: React.FC = () => {
   return (
