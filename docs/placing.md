@@ -9,11 +9,10 @@ Essentially it is a sort of different values for athletes in a competition, filt
 2. Lowest clean and jerk
 3. Lowest lottery number.
 
-<!-- FIXME - because of strange structure of this project :( -->
-<!-- ::: api.models.Lift -->
-<!--     options: -->
-<!--       members: -->
-<!--         - placing -->
+::: api.models.Lift
+    options:
+      members:
+        - placing
 
 ## Future
 

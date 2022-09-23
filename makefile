@@ -45,6 +45,7 @@ oops:
 	rm -rf Pipfile Pipfile.lock ./venv
 
 $PACKAGE = .
+
 .PHONY: install
 install:
 	cd ./backend && \

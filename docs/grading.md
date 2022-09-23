@@ -8,7 +8,7 @@ The grade is applied to a lift. The athlete is awarded if they have achieved the
 
 This is represented as a badge.
 
-<!-- ::: api.models.utils.grading -->
+::: api.models.utils.grading
 
 ## Future
 
