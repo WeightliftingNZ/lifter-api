@@ -297,6 +297,20 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#api.models.utils.grading" class="md-nav__link">
+    api.models.utils.grading
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api.models.utils.grading.determine_grade" class="md-nav__link">
+    determine_grade()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#future" class="md-nav__link">
     Future
   </a>
@@ -375,6 +389,20 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#api.models.utils.grading" class="md-nav__link">
+    api.models.utils.grading
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api.models.utils.grading.determine_grade" class="md-nav__link">
+    determine_grade()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#future" class="md-nav__link">
     Future
   </a>
@@ -401,9 +429,140 @@
 <p>Grading is determined based on looking at a dictionary.</p>
 <p>The grade is applied to a lift. The athlete is awarded if they have achieved the total for the current year.</p>
 <p>This is represented as a badge.</p>
-<!-- ::: api.models.utils.grading -->
 
-<h2 id="future">Future</h2>
+
+<div class="doc doc-object doc-module">
+
+
+<a id="api.models.utils.grading"></a>
+  <div class="doc doc-contents first">
+  
+      <p>Determine grade for a lift.</p>
+
+  
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+
+<h2 id="api.models.utils.grading.determine_grade" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">determine_grade</span><span class="p">(</span><span class="n">total_lifted</span><span class="p">,</span> <span class="n">weight_category</span><span class="p">)</span></code>
+
+</h2>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Provide the grade for a particular lift.</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>total_lifted</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td><p>The total lifted.</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>weight_category</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td><p>The weight class for the athlete.</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code>str</code>
+          </td>
+          <td><p>The grade.</p></td>
+        </tr>
+    </tbody>
+  </table>
+
+      <details class="quote">
+        <summary>Source code in <code>api/models/utils/grading.py</code></summary>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">determine_grade</span><span class="p">(</span><span class="n">total_lifted</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">weight_category</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Provide the grade for a particular lift.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        total_lifted (int): The total lifted.</span>
+<span class="sd">        weight_category (str): The weight class for the athlete.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        (str): The grade.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">grades</span> <span class="o">=</span> <span class="n">STANDARDS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">weight_category</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">grades</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">grades</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">total_lifted</span> <span class="o">&gt;=</span> <span class="n">v</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">k</span><span class="o">.</span><span class="n">title</span><span class="p">()</span>
+    <span class="k">return</span> <span class="kc">None</span>
+</code></pre></div></td></tr></table></div>
+      </details>
+  </div>
+
+</div>
+
+
+
+  </div>
+
+  </div>
+
+</div><h2 id="future">Future</h2>
 <p>The plan is to store the grades on a database, linking to weight catetory and setting a <em>era</em> in case they change from year to year.</p>
 
 
