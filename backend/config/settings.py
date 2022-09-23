@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
-    "django.contrib.staticfiles",
+    # "django.contrib.staticfiles",
     "django.contrib.postgres",
     # third-party
     "corsheaders",
@@ -62,9 +62,12 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt.token_blacklist",
     # django extensions
     "django_extensions",
-    # django filters / cripy forms
+    # django filters / cripsy forms
     "django_filters",
     "crispy_forms",
+    # whitenoise for development
+    "whitenoise.runserver_nostatic",
+    "django.contrib.staticfiles",
     #   custom
     "api",
     "users",
@@ -74,6 +77,7 @@ AUTH_USER_MODEL = "users.CustomUser"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -232,6 +236,8 @@ GRAPH_MODELS = {
 # Static files (CSS, JavaScript, Images)
 
 STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 LOGGING = {
     "version": 1,

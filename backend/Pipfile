@@ -25,6 +25,7 @@ django-extensions = "*"
 django-crispy-forms = "*"
 pytest-xdist = "*"
 faker = "*"
+whitenoise = {extras = ["brotli"], version = "*"}
 
 [dev-packages]
 pytest = "*"
