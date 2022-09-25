@@ -1,3 +1,5 @@
+/** @format */
+
 import React from "react";
 import { useDebounce } from "usehooks-ts";
 import { useQuery } from "react-query";

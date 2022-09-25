@@ -67,6 +67,8 @@ repos:
           - django-filter
           - django-crispy-forms
           - whitenoise
+          - django-debug-toolbar
+          - django-auditlog
         id: mypy
     repo: https://github.com/pre-commit/mirrors-mypy
     rev: v0.971
@@ -100,6 +102,24 @@ repos:
           - file
     repo: https://github.com/pre-commit/mirrors-eslint
     rev: v8.21.0
+  - hooks:
+      - id: prettier
+        types_or:
+          [
+            css,
+            javascript,
+            jsx,
+            tsx,
+            ts,
+            html,
+            markdown,
+            scss,
+            yaml,
+            gitignore,
+            toml,
+          ]
+    repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v2.7.1
   - hooks:
       - id: commitizen
     repo: https://github.com/commitizen-tools/commitizen

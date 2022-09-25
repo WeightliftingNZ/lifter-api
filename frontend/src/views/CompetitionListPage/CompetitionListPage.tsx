@@ -1,3 +1,5 @@
+/** @format */
+
 import React, { useRef, useState, useCallback, useEffect } from "react";
 import CustomSearchInput from "../../components/CustomSearchInput";
 import apiClient from "../../utils/http-common/http-common";
@@ -6,21 +8,24 @@ import Title from "../../components/Title";
 import SubTitle from "../../components/SubTitle";
 import { useDebounce } from "usehooks-ts";
 import CompetitionCard from "./CompetitionCard";
-import { Stack, Box } from "@mui/material";
+import { Stack, Box, TextField } from "@mui/material";
 import { useInfiniteQuery } from "react-query";
 import CustomError from "../../components/Error";
 import CustomLoading from "../../components/Loading";
-
-const PAGE_LIMIT = 10;
+import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
+import moment from "moment";
 
 const CompetitionListPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [dateBefore, setDateBefore] = useState("");
-  const [dateAfter, setDateAfter] = useState("");
-  const debouncedSearchQuery = useDebounce(searchQuery, 500);
+  const [dateAfter, setDateAfter] = useState<string | null>(null);
+  const [dateBefore, setDateBefore] = useState<string | null>(
+    moment().format()
+  );
+  const debouncedSearchQuery = useDebounce<string>(searchQuery, 500);
   const observerElem = useRef(null);
 
   const fetchCompetitions = async (page: number) => {
+    const PAGE_LIMIT = 10;
     const res = await apiClient.get(
       `/competitions?search=${debouncedSearchQuery}&date_start_after=${dateAfter}&date_start_before=${dateBefore}&page=${page}&page_size=${PAGE_LIMIT}`
     );
@@ -73,10 +78,18 @@ const CompetitionListPage: React.FC = () => {
     console.log(error);
   }
 
-  const handleOnChange: React.ChangeEventHandler = (
+  const handleOnChangeSearchInput: React.ChangeEventHandler = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setSearchQuery(event.target.value);
+  };
+
+  const handleOnChangeDateAfterInput = (newValue: string | null) => {
+    setDateAfter(newValue);
+  };
+
+  const handleOnChangeDateBeforeInput = (newValue: string | null) => {
+    setDateBefore(newValue);
   };
 
   return (
@@ -94,15 +107,31 @@ const CompetitionListPage: React.FC = () => {
           <Title>Competition</Title>
           <SubTitle>Browse competition results</SubTitle>
         </Box>
-        <Box>
+        <Stack spacing={2}>
           <CustomSearchInput
             label="Search competitions"
             error={data?.pages[0].count === 0 ? true : false}
             placeholder="By name and/or location"
             searchTerm={searchQuery}
-            handleOnChange={handleOnChange}
+            handleOnChange={handleOnChangeSearchInput}
           />
-        </Box>
+          <Stack direction="row" spacing={2}>
+            <MobileDatePicker
+              label="Date After"
+              value={dateAfter}
+              maxDate={moment().format()}
+              onChange={handleOnChangeDateAfterInput}
+              renderInput={(params) => <TextField {...params} />}
+            />
+            <MobileDatePicker
+              label="Date Before"
+              value={dateBefore}
+              maxDate={moment().format()}
+              onChange={handleOnChangeDateBeforeInput}
+              renderInput={(params) => <TextField {...params} />}
+            />
+          </Stack>
+        </Stack>
       </Box>
       <Box
         sx={{

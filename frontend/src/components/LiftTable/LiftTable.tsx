@@ -1,5 +1,6 @@
+/** @format */
+
 import React from "react";
-import { LiftObjectProps } from "../../interfaces";
 
 const LiftTable = () => {
   return <></>;

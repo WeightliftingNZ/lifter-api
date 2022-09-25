@@ -1,3 +1,5 @@
+/** @format */
+
 import React from "react";
 import { Chip, Stack } from "@mui/material";
 import { AgeCategoriesProps } from "../../interfaces";

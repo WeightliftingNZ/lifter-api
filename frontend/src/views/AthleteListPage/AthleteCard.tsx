@@ -1,3 +1,5 @@
+/** @format */
+
 import React from "react";
 import { AgeCategoriesProps, LiftObjectProps, GradeT } from "../../interfaces";
 import { useTheme } from "@mui/material/styles";

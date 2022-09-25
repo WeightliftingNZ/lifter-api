@@ -1,3 +1,5 @@
+/** @format */
+
 import { LiftObjectProps } from "../../interfaces";
 
 export interface Column {

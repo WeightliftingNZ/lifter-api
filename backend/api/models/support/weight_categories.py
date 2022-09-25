@@ -1,5 +1,6 @@
 """Weight Categories"""
 
+from auditlog.registry import auditlog
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -83,3 +84,7 @@ class WeightCategory(models.Model):
     def __str__(self) -> str:
         """Give string representation."""
         return self.name
+
+
+auditlog.register(WeightCategory)
+auditlog.register(WeightCategoryEra)

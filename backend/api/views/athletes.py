@@ -191,14 +191,10 @@ from .filters import AthleteFilter
     ),
 )
 class AthleteViewSet(viewsets.ModelViewSet):
-    """
-    Athletes
-    ========
-    This is the Athlete views.
+    """`Athlete` view is paginated to `20`.
 
-    Pagination has been set to 20.
-
-    Ordering can be set to "last_name" or "first_name". Prepend "-" for descending order.
+    Text search acts on `first_name` and `last_name`. Although there is a \
+            notion to move on to `full_name` only.
 
     No authorization required:
 
@@ -210,7 +206,6 @@ class AthleteViewSet(viewsets.ModelViewSet):
     - Create
     - Update (PATCH requests preferred)
     - Delete
-
     """
 
     filterset_class = AthleteFilter
@@ -219,9 +214,14 @@ class AthleteViewSet(viewsets.ModelViewSet):
     pagination_class = StandardSetPagination
 
     def get_queryset(self):
+        """Access entire Athlete model."""
         return Athlete.objects.all()
 
     def get_serializer_class(self):
+        """Get serializer for Athlete.
+
+        Detail view contains lifts, while lifts only has most recent.
+        """
         if self.action == "retrieve":
             return AthleteDetailSerializer
         return AthleteSerializer

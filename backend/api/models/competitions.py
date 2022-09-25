@@ -1,10 +1,13 @@
 """Competition Models."""
 
+from auditlog.registry import auditlog
 from django.core.exceptions import ValidationError
 from django.db import models
 from hashid_field import HashidAutoField
 
 from config.settings import HASHID_FIELD_SALT
+
+from .managers import CompetitionManager
 
 
 class Competition(models.Model):
@@ -24,6 +27,8 @@ class Competition(models.Model):
     date_end = models.DateField(blank=True)
     # TODO
     # classify status of the competition e.g club, record breaking
+
+    objects = CompetitionManager()
 
     class Meta:
         ordering = ["-date_start", "name"]
@@ -51,3 +56,6 @@ class Competition(models.Model):
     def save(self, *args, **kwargs):
         self.full_clean()
         super().save(*args, **kwargs)
+
+
+auditlog.register(Competition)

@@ -3,6 +3,7 @@
 [![Build](https://github.com/WeightliftingNZ/lifter-api/actions/workflows/main.yml/badge.svg)](https://github.com/WeightliftingNZ/lifter-api/actions/workflows/main.yml)
 [![Docs](https://github.com/WeightliftingNZ/lifter-api/actions/workflows/docs.yml/badge.svg)](https://github.com/WeightliftingNZ/lifter-api/actions/workflows/docs.yml)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
 This is a database of all lifts and competitions in the past, present and future.
 

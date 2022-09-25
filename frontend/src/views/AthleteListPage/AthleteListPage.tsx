@@ -1,3 +1,5 @@
+/** @format */
+
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { AthleteListObjectProps } from "../../interfaces";
 import CustomSearchInput from "../../components/CustomSearchInput";
@@ -11,14 +13,13 @@ import SubTitle from "../../components/SubTitle";
 import CustomError from "../../components/Error";
 import CustomLoading from "../../components/Loading";
 
-const PAGE_LIMIT = 10;
-
 const AthleteListPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
   const observerElem = useRef(null);
 
   const fetchAthletes = async (page: number) => {
+    const PAGE_LIMIT = 10;
     const res = await apiClient.get(
       `/athletes?search=${debouncedSearchQuery}&page=${page}&page_size=${PAGE_LIMIT}`
     );

@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
-    # "django.contrib.staticfiles",
+    "django.contrib.staticfiles",
     "django.contrib.postgres",
     # third-party
     "corsheaders",
@@ -60,15 +60,18 @@ INSTALLED_APPS = [
     #   simplejwt
     "rest_framework_simplejwt",
     "rest_framework_simplejwt.token_blacklist",
-    # django extensions
+    #   django extensions
     "django_extensions",
-    # django filters / cripsy forms
+    #   django filters / cripsy forms
     "django_filters",
     "crispy_forms",
-    # whitenoise for development
+    #   whitenoise for development
     "whitenoise.runserver_nostatic",
-    "django.contrib.staticfiles",
-    #   custom
+    #   debug tools
+    "debug_toolbar",
+    #   auditlog
+    "auditlog",
+    # custom
     "api",
     "users",
 ]
@@ -78,6 +81,7 @@ AUTH_USER_MODEL = "users.CustomUser"
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -85,6 +89,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "auditlog.middleware.AuditlogMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -232,9 +237,15 @@ GRAPH_MODELS = {
     "group_models": True,
 }
 
+# Django Debugging
+INTERNAL_IPS = ["127.0.0.1"]
+
+
+# Auditlog
+AUDITLOG_INCLUDE_ALL_MODELS = True
+
 
 # Static files (CSS, JavaScript, Images)
-
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"

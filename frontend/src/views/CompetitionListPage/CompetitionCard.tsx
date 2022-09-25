@@ -1,3 +1,5 @@
+/** @format */
+
 import React from "react";
 import { LiftObjectProps } from "../../interfaces";
 import { useTheme } from "@mui/material/styles";
@@ -68,7 +70,7 @@ const CompetitionCard: React.FC<CompetitionCardProps> = ({
                 <Table>
                   <TableHead>
                     <TableRow>
-                      <TableCell colSpan={2}>Lifts</TableCell>
+                      <TableCell colSpan={2}></TableCell>
                       <TableCell>Sn</TableCell>
                       <TableCell>CJ</TableCell>
                       <TableCell>Total</TableCell>
@@ -80,7 +82,7 @@ const CompetitionCard: React.FC<CompetitionCardProps> = ({
                     {randomLifts.map((lift: LiftObjectProps) => {
                       return (
                         <TableRow key={lift.reference_id}>
-                          <TableCell sx={{ maxWidth: 200 }}>
+                          <TableCell sx={{ maxWidth: 100 }}>
                             {lift.athlete_name}
                           </TableCell>
                           <TableCell>{lift.weight_category}</TableCell>
@@ -92,6 +94,10 @@ const CompetitionCard: React.FC<CompetitionCardProps> = ({
                         </TableRow>
                       );
                     })}
+                    <TableRow>
+                      <TableCell>...</TableCell>
+                      <TableCell colSpan={6}></TableCell>
+                    </TableRow>
                   </TableBody>
                 </Table>
               </Stack>
