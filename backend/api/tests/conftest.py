@@ -1,6 +1,6 @@
 """Set mock data and set up fixtures to be used for testing."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 
 import pytest
@@ -10,14 +10,19 @@ from api.models.athletes import Athlete
 from api.models.competitions import Competition
 from api.models.lifts import Lift
 
+Faker.seed(42)
+_faker = Faker("en_NZ")
 
-@dataclass
+
+@dataclass(frozen=True)
 class AthleteMock:
     """Athlete mock."""
 
-    first_name: str
-    last_name: str
-    yearborn: int
+    first_name: str = field(default_factory=_faker.first_name)
+    last_name: str = field(default_factory=_faker.last_name)
+    yearborn: int = field(
+        default_factory=lambda: _faker.date_of_birth(minimum_age=13).year
+    )
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -39,31 +44,14 @@ def faker_seed():
 
 
 @pytest.fixture
-def mock_athlete(django_db_blocker, faker) -> list[Athlete]:
+def mock_athlete(django_db_blocker) -> list[Athlete]:
     """Provide edited athlete data.
 
     Returns:
         list[Athlete]: list of mocked Athlete models.
     """
 
-    def _create_athlete():
-        return AthleteMock(
-            first_name=faker.first_name(),
-            last_name=faker.last_name(),
-            yearborn=faker.date_of_birth(minimum_age=13).year,
-        )
-
-    # MOCK_ATHLETE_ONE = {
-    #     "first_name": faker.first_name(),
-    #     "last_name": faker.last_name(),
-    #     "yearborn": faker.date_of_birth(minimum_age=13).year,
-    # }
-    # MOCK_ATHLETE_TWO = {
-    #     "first_name": faker.first_name(),
-    #     "last_name": faker.last_name(),
-    #     "yearborn": faker.date_of_birth(minimum_age=13).year,
-    # }
-    athletes = [_create_athlete() for _ in range(2)]
+    athletes = [AthleteMock() for _ in range(10_000)]
     created = []
     for athlete in athletes:
         with django_db_blocker.unblock():

@@ -69,6 +69,7 @@ repos:
           - whitenoise
           - django-debug-toolbar
           - django-auditlog
+          - faker
         id: mypy
     repo: https://github.com/pre-commit/mirrors-mypy
     rev: v0.971

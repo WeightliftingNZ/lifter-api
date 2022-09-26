@@ -18,16 +18,18 @@ import moment from "moment";
 const CompetitionListPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [dateAfter, setDateAfter] = useState<string | null>(null);
-  const [dateBefore, setDateBefore] = useState<string | null>(
-    moment().format()
-  );
+  const [dateBefore, setDateBefore] = useState<string | null>(null);
   const debouncedSearchQuery = useDebounce<string>(searchQuery, 500);
   const observerElem = useRef(null);
 
   const fetchCompetitions = async (page: number) => {
     const PAGE_LIMIT = 10;
     const res = await apiClient.get(
-      `/competitions?search=${debouncedSearchQuery}&date_start_after=${dateAfter}&date_start_before=${dateBefore}&page=${page}&page_size=${PAGE_LIMIT}`
+      `/competitions?search=${debouncedSearchQuery}&date_start_after=${
+        dateAfter ? moment(dateAfter).format("YYYY-MM-DD") : ""
+      }&date_start_before=${
+        dateBefore ? moment(dateBefore).format("YYYY-MM-DD") : ""
+      }&page=${page}&page_size=${PAGE_LIMIT}`
     );
     return res.data;
   };
@@ -85,20 +87,19 @@ const CompetitionListPage: React.FC = () => {
   };
 
   const handleOnChangeDateAfterInput = (newValue: string | null) => {
-    setDateAfter(newValue);
+    setDateAfter(moment(newValue).startOf("month").format("YYYY-MM-DD"));
   };
 
   const handleOnChangeDateBeforeInput = (newValue: string | null) => {
-    setDateBefore(newValue);
+    setDateBefore(moment(newValue).endOf("month").format("YYYY-MM-DD"));
   };
 
   return (
     <Box
       sx={{
         display: "flex",
-        flex: 1,
-        gap: 2,
         flexWrap: "wrap",
+        gap: 2,
         justifyContent: "flex-start",
       }}
     >
@@ -117,16 +118,20 @@ const CompetitionListPage: React.FC = () => {
           />
           <Stack direction="row" spacing={2}>
             <MobileDatePicker
+              views={["year", "month"]}
+              openTo="year"
               label="Date After"
               value={dateAfter}
-              maxDate={moment().format()}
+              disableFuture
               onChange={handleOnChangeDateAfterInput}
               renderInput={(params) => <TextField {...params} />}
             />
             <MobileDatePicker
+              views={["year", "month"]}
               label="Date Before"
               value={dateBefore}
-              maxDate={moment().format()}
+              openTo="year"
+              disableFuture
               onChange={handleOnChangeDateBeforeInput}
               renderInput={(params) => <TextField {...params} />}
             />
@@ -153,6 +158,7 @@ const CompetitionListPage: React.FC = () => {
                     key={competition.reference_id}
                     referenceId={competition.reference_id}
                     name={competition.name}
+                    location={competition.location}
                     dateStart={competition.date_start}
                     dateEnd={competition.date_end}
                     liftCount={competition.lifts_count}

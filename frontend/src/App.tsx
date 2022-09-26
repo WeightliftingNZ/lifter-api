@@ -6,7 +6,11 @@ import CompetitionListPage from "./views/CompetitionListPage";
 import CompetitionDetailPage from "./views/CompetitionDetailPage";
 import AthleteListPage from "./views/AthleteListPage";
 import AthleteDetailPage from "./views/AthleteDetailPage";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
+import {
+  ThemeProvider,
+  createTheme,
+  responsiveFontSizes,
+} from "@mui/material/styles";
 import Home from "./views/Home";
 import Navbar from "./components/Navbar";
 import { useMediaQuery } from "@mui/material";
@@ -28,9 +32,12 @@ const App: React.FC = () => {
     []
   );
   const mode = darkmode ? "dark" : "light";
-  const theme = useMemo(
+  let theme = useMemo(
     () =>
       createTheme({
+        typography: {
+          fontFamily: "Roboto",
+        },
         palette: {
           mode,
           primary: {
@@ -58,6 +65,7 @@ const App: React.FC = () => {
       }),
     [mode]
   );
+  theme = responsiveFontSizes(theme);
 
   return (
     <ColorModeContext.Provider value={colorMode}>

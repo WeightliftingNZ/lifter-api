@@ -14,9 +14,9 @@ const Heading: React.FC<React.PropsWithChildren<HeadingProps>> = (
   const theme = useTheme();
   return (
     <Typography
-      variant="h6"
+      variant="h4"
       gutterBottom
-      sx={{ color: theme.palette.secondary.dark }}
+      sx={{ p: 1, color: theme.palette.secondary.dark }}
       {...props}
     >
       {props.children}

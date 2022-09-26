@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { useDebounce } from "usehooks-ts";
 import {
   Autocomplete,
-  IconButton,
   InputAdornment,
   LinearProgress,
   List,
@@ -20,9 +19,9 @@ import { useQuery } from "react-query";
 import apiClient from "../../utils/http-common/http-common";
 import { useTheme } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
-import { Box } from "@mui/system";
 import SubTitle from "../SubTitle";
 import Body from "../Body";
+import { Box } from "@mui/system";
 
 interface CustomPopperProps extends PopperProps {}
 
@@ -30,7 +29,14 @@ const CustomPopper = (props: CustomPopperProps) => {
   return <Popper {...props} placement="bottom" />;
 };
 
-const CombinedSearch: React.FC = () => {
+interface CombinedSearchProps {
+  handleSearchOnBlur: any;
+}
+
+/* TODO: types? */
+const CombinedSearch: React.FC<CombinedSearchProps> = ({
+  handleSearchOnBlur,
+}) => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
   const theme = useTheme();
@@ -93,56 +99,68 @@ const CombinedSearch: React.FC = () => {
   };
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "row" }}>
-      <Autocomplete
-        id="search-box"
-        freeSolo
-        size="small"
-        PopperComponent={CustomPopper}
-        onInputChange={handleOnChange}
-        options={getOptions()}
-        getOptionLabel={getOptionLabels}
-        filterOptions={(x) => x}
-        loading={isLoading}
-        loadingText={
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 4 }}>
+    <Autocomplete
+      id="search-box"
+      freeSolo
+      PopperComponent={CustomPopper}
+      onInputChange={handleOnChange}
+      options={getOptions()}
+      getOptionLabel={getOptionLabels}
+      filterOptions={(x) => x}
+      loading={isLoading}
+      loadingText={
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 4,
+            justifySelf: "auto",
+          }}
+        >
+          <>
             <LinearProgress color="secondary" />
-            <Skeleton />
-            <Skeleton />
-            <Skeleton />
-            <Skeleton />
-          </Box>
-        }
-        renderOption={renderOption}
-        renderInput={(params: any) => (
-          <TextField
-            {...params}
-            sx={{
-              bgcolor:
-                theme.palette.mode === "light"
-                  ? theme.palette.grey[200]
-                  : "default",
-              minWidth: "200px",
-              width: "600px",
-              borderRadius: 1,
-            }}
-            placeholder={"Search Competitions/Athletes"}
-            InputProps={{
-              ...params.InputProps,
-
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon color="secondary" />
-                </InputAdornment>
-              ),
-            }}
-          />
-        )}
-      />
-      <IconButton sx={{ color: theme.palette.secondary.light }}>
-        <SearchIcon />
-      </IconButton>
-    </Box>
+            {Array.from(Array(4).keys()).map((idx: number) => {
+              return (
+                <Box
+                  key={idx}
+                  sx={{ display: "flex", justifyContent: "space-between" }}
+                >
+                  <Skeleton sx={{ flexGrow: 4 }} animation="wave" />
+                  <Box sx={{ flexGrow: 1 }} />
+                  <Skeleton sx={{ flexGrow: 4 }} animation="wave" />
+                  <Box sx={{ flexGrow: 3 }} />
+                  <Skeleton sx={{ flexGrow: 2 }} animation="wave" />
+                </Box>
+              );
+            })}
+          </>
+        </Box>
+      }
+      renderOption={renderOption}
+      renderInput={(params: any) => (
+        <TextField
+          {...params}
+          onBlur={handleSearchOnBlur}
+          autoFocus
+          sx={{
+            bgcolor:
+              theme.palette.mode === "light"
+                ? theme.palette.grey[200]
+                : "default",
+            borderRadius: 1,
+          }}
+          placeholder={"Search Competitions/Athletes"}
+          InputProps={{
+            ...params.InputProps,
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon color="secondary" />
+              </InputAdornment>
+            ),
+          }}
+        />
+      )}
+    />
   );
 };
 

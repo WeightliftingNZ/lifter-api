@@ -1,5 +1,6 @@
 """Competition Models."""
 
+from auditlog.models import AuditlogHistoryField
 from auditlog.registry import auditlog
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -27,6 +28,8 @@ class Competition(models.Model):
     date_end = models.DateField(blank=True)
     # TODO
     # classify status of the competition e.g club, record breaking
+
+    history = AuditlogHistoryField(pk_indexable=False)
 
     objects = CompetitionManager()
 

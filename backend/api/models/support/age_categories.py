@@ -17,6 +17,7 @@ Masters age categories:
     - 70+
 """
 
+from auditlog.models import AuditlogHistoryField
 from auditlog.registry import auditlog
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -34,6 +35,7 @@ class AgeCategoryEra(BaseEra):
         primary_key=True,
         salt=f"aceramodel_reference_id_{HASHID_FIELD_SALT}",
     )
+    history = AuditlogHistoryField(pk_indexable=False)
 
 
 class AgeCategory(models.Model):
@@ -52,6 +54,8 @@ class AgeCategory(models.Model):
     name = models.CharField(max_length=32, blank=True)
     upper_age_bound = models.IntegerField(null=True, blank=True)
     lower_age_bound = models.IntegerField(blank=True, default=0)
+
+    history = AuditlogHistoryField(pk_indexable=False)
 
     class Meta:
         """Model settings."""

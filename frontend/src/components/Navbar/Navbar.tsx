@@ -24,9 +24,10 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { styled, useTheme } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import CombinedSearch from "./Search";
-import { Box, Drawer } from "@mui/material";
+import { Box, Container, Drawer } from "@mui/material";
 import { Stack } from "@mui/system";
 import DarkModeSwitch from "./DarkModeSwitch";
+import SearchIcon from "@mui/icons-material/Search";
 
 const drawerWidth = 240;
 
@@ -34,7 +35,7 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
   open?: boolean;
 }>(({ theme, open }) => ({
   flexGrow: 1,
-  padding: theme.spacing(3),
+  paddingTop: theme.spacing(3),
   transition: theme.transitions.create("margin", {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
@@ -148,6 +149,102 @@ const AppBar = styled(MuiAppBar, {
   }),
 }));
 
+interface HeaderBarProps {
+  open: boolean;
+  handleDrawerOpen: any;
+}
+
+const HeaderBar: React.FC<HeaderBarProps> = ({ open, handleDrawerOpen }) => {
+  const theme = useTheme();
+  const [showSearchOnly, setShowSearchOnly] = useState<boolean>(false);
+
+  console.log(showSearchOnly);
+
+  const handleSearchOnClick = () => {
+    setShowSearchOnly(true);
+  };
+
+  const handleSearchOnBlur = () => {
+    setShowSearchOnly(false);
+  };
+
+  return (
+    <AppBar position="fixed" open={open}>
+      <Toolbar
+        sx={{
+          display: "flex",
+          flexWrap: "nowrap",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        {showSearchOnly ? (
+          <Box
+            sx={{
+              flexGrow: 1,
+              px: 2,
+            }}
+          >
+            <CombinedSearch handleSearchOnBlur={handleSearchOnBlur} />
+          </Box>
+        ) : (
+          <>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                flexWrap: "nowrap",
+                gap: 1,
+              }}
+            >
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                onClick={handleDrawerOpen}
+                edge="start"
+                sx={{
+                  marginRight: 0,
+                  ...(open && { display: { sm: "none" } }),
+                }}
+              >
+                <MenuIcon />
+              </IconButton>
+              <Button component={RouterLink} to="/">
+                <Stack>
+                  <Typography
+                    noWrap
+                    component="div"
+                    sx={{ color: theme.palette.primary.contrastText }}
+                  >
+                    Weightlifting
+                  </Typography>
+                  <Typography
+                    noWrap
+                    component="div"
+                    sx={{ color: theme.palette.primary.contrastText }}
+                  >
+                    New Zealand
+                  </Typography>
+                </Stack>
+              </Button>
+              <IconButton>
+                <SearchIcon
+                  htmlColor={theme.palette.secondary.main}
+                  onClick={handleSearchOnClick}
+                />
+              </IconButton>
+            </Box>
+            <Box>
+              <DarkModeSwitch />
+            </Box>
+          </>
+        )}
+      </Toolbar>
+    </AppBar>
+  );
+};
+
 const Navbar: React.FC<PropsWithChildren> = (props) => {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
@@ -162,51 +259,7 @@ const Navbar: React.FC<PropsWithChildren> = (props) => {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open}>
-        <Toolbar
-          sx={{
-            display: "flex",
-            flexWrap: "nowrap",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <Box sx={{ display: "flex", flexWrap: "nowrap", gap: 1 }}>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              onClick={handleDrawerOpen}
-              edge="start"
-              sx={{ marginRight: 0, ...(open && { display: { sm: "none" } }) }}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Button component={RouterLink} to="/">
-              <Stack>
-                <Typography
-                  noWrap
-                  component="div"
-                  sx={{ color: theme.palette.primary.contrastText }}
-                >
-                  Weightlifting
-                </Typography>
-                <Typography
-                  noWrap
-                  component="div"
-                  sx={{ color: theme.palette.primary.contrastText }}
-                >
-                  New Zealand
-                </Typography>
-              </Stack>
-            </Button>
-          </Box>
-          <CombinedSearch />
-          <Box>
-            <DarkModeSwitch />
-          </Box>
-        </Toolbar>
-      </AppBar>
+      <HeaderBar handleDrawerOpen={handleDrawerOpen} open={open} />
       <Drawer
         sx={{
           width: drawerWidth,
@@ -243,7 +296,9 @@ const Navbar: React.FC<PropsWithChildren> = (props) => {
       </Drawer>
       <Main open={open}>
         <NavbarHeader />
-        {props.children}
+        <Container disableGutters maxWidth="lg">
+          {props.children}
+        </Container>
       </Main>
     </Box>
   );

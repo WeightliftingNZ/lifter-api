@@ -72,38 +72,30 @@ const CompetitionRecent: React.FC = () => {
       <Box
         sx={{
           display: "flex",
-          flex: 1,
           gap: 2,
-          justifyContent: "flex-start",
-          alignItems: "flex-start",
-          flexWrap: "wrap",
+          flexDirection: "column",
         }}
       >
         {isLoading && <CompetitionRecentLoading />}
         {isError && <CustomError />}
         {isSuccess && (
-          <Box>
+          <Box
+            sx={{ display: "flex", flexDirection: "inherit", gap: "inherit" }}
+          >
             {data?.pages.map((page) => (
               <React.Fragment key={page}>
                 {page.results.map((competition: CompetitionListObjectProps) => (
-                  <Box
-                    sx={{
-                      flexGrow: 0,
-                      flexShrink: 0,
-                      flexBasis: "31%",
-                      alignSelf: "stretch",
-                    }}
-                    key={competition.reference_id}
-                  >
+                  <React.Fragment key={competition.reference_id}>
                     <CompetitionCard
                       referenceId={competition.reference_id}
                       name={competition.name}
+                      location={competition.location}
                       liftCount={competition.lifts_count}
                       dateStart={competition.date_start}
                       dateEnd={competition.date_end}
                       randomLifts={competition.random_lifts}
                     />
-                  </Box>
+                  </React.Fragment>
                 ))}
               </React.Fragment>
             ))}

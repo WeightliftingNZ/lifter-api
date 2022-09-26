@@ -11,7 +11,7 @@ class TestSearch:
 
     url = "/v1/search"
 
-    @pytest.mark.parameterize(
+    @pytest.mark.parametrize(
         "test_input,expected", [pytest.param("&q=", None, id="empty_search")]
     )
     def test_get_search(self, client, test_input, expected):

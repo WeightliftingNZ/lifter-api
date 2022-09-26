@@ -2,6 +2,7 @@
 
 from decimal import Decimal
 
+from auditlog.models import AuditlogHistoryField
 from auditlog.registry import auditlog
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -137,6 +138,8 @@ class Lift(models.Model):
         default=DEFAULT_LIFT_STATUS,
     )
     cnj_third_weight = models.IntegerField(blank=True, default=0)
+
+    history = AuditlogHistoryField(pk_indexable=False)
 
     objects = LiftManager()
 

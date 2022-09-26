@@ -12,8 +12,18 @@ from .models import (
 
 
 class AthleteAdmin(admin.ModelAdmin):
-    readonly_fields = ("reference_id",)
+    readonly_fields = (
+        "reference_id",
+        "full_name",
+        "age_categories",
+    )
     list_display = ("first_name", "last_name", "yearborn")
+    # fieldsets = (
+    #     (
+    #         None,
+    #         {"fields": ("history",)},
+    #     ),
+    # )
 
 
 class CompetitionAdmin(admin.ModelAdmin):

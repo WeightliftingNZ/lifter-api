@@ -4,7 +4,7 @@ import React from "react";
 import CustomLoading from "../../components/Loading";
 
 const CompetitionRecentLoading: React.FC = () => {
-  const NUM = 10;
+  const NUM = 4;
   return (
     <>
       {Array.from(Array(NUM).keys()).map((idx: number) => {

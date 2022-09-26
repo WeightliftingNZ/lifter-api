@@ -21,10 +21,9 @@ class SearchAPIView(ListAPIView):
         query = request.GET.get("q", None)
 
         if query is not None:
-            # FIXME: types ignore because mypy says too many args
             qs_chain = chain(
-                Athlete.objects.search(query),  # type: ignore
-                Competition.objects.search(query),  # type: ignore
+                Athlete.objects.search(query),
+                Competition.objects.search(query),
                 Lift.objects.search(query),
             )
 

@@ -16,7 +16,7 @@ import Heading from "../Heading";
 
 const Loading: React.FC = () => {
   return (
-    <Box sx={{ minWidth: "500px" }}>
+    <Box sx={{ width: "100%" }}>
       <Card variant="outlined" elevation={2}>
         <CardContent>
           <Box>
