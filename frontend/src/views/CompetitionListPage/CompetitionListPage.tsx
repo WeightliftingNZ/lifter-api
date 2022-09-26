@@ -5,9 +5,8 @@ import CustomSearchInput from "../../components/CustomSearchInput";
 import apiClient from "../../utils/http-common/http-common";
 import { CompetitionListObjectProps } from "../../interfaces";
 import Title from "../../components/Title";
-import SubTitle from "../../components/SubTitle";
 import { useDebounce } from "usehooks-ts";
-import CompetitionCard from "./CompetitionCard";
+import CompetitionCard from "../../components/CompetitionCard";
 import { Stack, Box, TextField } from "@mui/material";
 import { useInfiniteQuery } from "react-query";
 import CustomError from "../../components/Error";
@@ -105,8 +104,7 @@ const CompetitionListPage: React.FC = () => {
     >
       <Box>
         <Box>
-          <Title>Competition</Title>
-          <SubTitle>Browse competition results</SubTitle>
+          <Title>Competition Search</Title>
         </Box>
         <Stack spacing={2}>
           <CustomSearchInput

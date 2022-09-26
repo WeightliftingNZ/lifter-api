@@ -33,7 +33,6 @@ interface CombinedSearchProps {
   handleSearchOnBlur: any;
 }
 
-/* TODO: types? */
 const CombinedSearch: React.FC<CombinedSearchProps> = ({
   handleSearchOnBlur,
 }) => {
@@ -149,7 +148,7 @@ const CombinedSearch: React.FC<CombinedSearchProps> = ({
                 : "default",
             borderRadius: 1,
           }}
-          placeholder={"Search Competitions/Athletes"}
+          placeholder={"Search..."}
           InputProps={{
             ...params.InputProps,
             startAdornment: (

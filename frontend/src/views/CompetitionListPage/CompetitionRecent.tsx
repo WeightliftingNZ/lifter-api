@@ -7,7 +7,7 @@ import apiClient from "../../utils/http-common/http-common";
 import { CompetitionListObjectProps } from "../../interfaces";
 import CustomError from "../../components/Error";
 import CustomLoading from "../../components/Loading";
-import CompetitionCard from "./CompetitionCard";
+import CompetitionCard from "../../components/CompetitionCard";
 import CompetitionRecentLoading from "./CompetitionRecentLoading";
 
 const CompetitionRecent: React.FC = () => {

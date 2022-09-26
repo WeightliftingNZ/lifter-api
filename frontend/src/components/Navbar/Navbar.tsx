@@ -158,8 +158,6 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ open, handleDrawerOpen }) => {
   const theme = useTheme();
   const [showSearchOnly, setShowSearchOnly] = useState<boolean>(false);
 
-  console.log(showSearchOnly);
-
   const handleSearchOnClick = () => {
     setShowSearchOnly(true);
   };
@@ -228,11 +226,8 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ open, handleDrawerOpen }) => {
                   </Typography>
                 </Stack>
               </Button>
-              <IconButton>
-                <SearchIcon
-                  htmlColor={theme.palette.secondary.main}
-                  onClick={handleSearchOnClick}
-                />
+              <IconButton onClick={handleSearchOnClick}>
+                <SearchIcon htmlColor={theme.palette.secondary.main} />
               </IconButton>
             </Box>
             <Box>

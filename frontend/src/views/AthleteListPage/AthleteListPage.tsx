@@ -5,11 +5,10 @@ import { AthleteListObjectProps } from "../../interfaces";
 import CustomSearchInput from "../../components/CustomSearchInput";
 import { useDebounce } from "usehooks-ts";
 import { useInfiniteQuery } from "react-query";
-import AthleteCard from "./AthleteCard";
+import AthleteCard from "../../components/AthleteCard";
 import { Stack, Box } from "@mui/material";
 import apiClient from "../../utils/http-common";
 import Title from "../../components/Title";
-import SubTitle from "../../components/SubTitle";
 import CustomError from "../../components/Error";
 import CustomLoading from "../../components/Loading";
 
@@ -90,8 +89,7 @@ const AthleteListPage: React.FC = () => {
     >
       <Box>
         <Box>
-          <Title>Athletes</Title>
-          <SubTitle>Browse athletes</SubTitle>
+          <Title>Athlete Search</Title>
         </Box>
         <Box>
           <CustomSearchInput

@@ -69,7 +69,7 @@ addopts = [
   "--cov-branch",
   "--cov-report=html",
   "--create-db",
-  "--migrations",
+  "--no-migrations",
 ]
 testpaths = ["tests"]
 DJANGO_SETTINGS_MODULE = "config.settings"

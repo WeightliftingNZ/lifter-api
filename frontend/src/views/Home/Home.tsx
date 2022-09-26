@@ -1,13 +1,13 @@
 /** @format */
 
 import React from "react";
-import Heading from "../../components/Heading";
+import Title from "../../components/Title";
 import CompetitionRecent from "../CompetitionListPage/CompetitionRecent";
 
 const Home: React.FC = () => {
   return (
     <>
-      <Heading>Recent Competitions</Heading>
+      <Title>Recent Competitions</Title>
       <CompetitionRecent />
     </>
   );

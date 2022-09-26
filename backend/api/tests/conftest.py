@@ -15,7 +15,7 @@ _faker = Faker("en_NZ")
 
 
 @dataclass(frozen=True)
-class AthleteMock:
+class AthleteMocker:
     """Athlete mock."""
 
     first_name: str = field(default_factory=_faker.first_name)
@@ -23,6 +23,18 @@ class AthleteMock:
     yearborn: int = field(
         default_factory=lambda: _faker.date_of_birth(minimum_age=13).year
     )
+
+
+@dataclass(frozen=True)
+class CompetitionMocker:
+    """Competition mock."""
+
+    date_start: datetime = field(default_factory=datetime.now)
+    date_end: datetime = field(default_factory=datetime.now)
+    name: str = field(
+        default_factory=lambda: " ".join(["Competition", _faker.color_name])
+    )
+    location: str = field(default_factory=_faker.address)
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -43,15 +55,15 @@ def faker_seed():
     return 42
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def mock_athlete(django_db_blocker) -> list[Athlete]:
     """Provide edited athlete data.
 
     Returns:
         list[Athlete]: list of mocked Athlete models.
     """
-
-    athletes = [AthleteMock() for _ in range(10_000)]
+    ATHLETES = 4
+    athletes = [AthleteMocker() for _ in range(ATHLETES)]
     created = []
     for athlete in athletes:
         with django_db_blocker.unblock():
@@ -66,6 +78,7 @@ def mock_competition(django_db_blocker, faker) -> list[Competition]:
     Returns:
         list[Competition]: list of mock competitions
     """
+    # COMPETITIONS = 2
     MOCK_COMPETIION_ONE = {
         "date_start": str(datetime.now())[:10],
         "date_end": str(datetime.now())[:10],
