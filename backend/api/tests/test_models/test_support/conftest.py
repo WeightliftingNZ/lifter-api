@@ -43,7 +43,7 @@ class WeightCategoryMock:
     is_plus: bool | None = False
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture
 def mock_age_category_era(django_db_blocker) -> list[AgeCategoryEra]:
     """Create age category era.
 
@@ -72,7 +72,7 @@ def mock_age_category_era(django_db_blocker) -> list[AgeCategoryEra]:
     return created
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture
 def mock_age_categories(django_db_blocker) -> list[AgeCategory]:
     """Create Age categories."""
     age_categories = [
@@ -116,7 +116,7 @@ def mock_age_categories(django_db_blocker) -> list[AgeCategory]:
     return created
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture
 def mock_weight_category_era(django_db_blocker) -> list[WeightCategoryEra]:
     """Create Weight category eras."""
     eras = [
@@ -144,7 +144,7 @@ def mock_weight_category_era(django_db_blocker) -> list[WeightCategoryEra]:
     return created
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture
 def mock_weight_categories(
     django_db_blocker,
     mock_weight_category_era,

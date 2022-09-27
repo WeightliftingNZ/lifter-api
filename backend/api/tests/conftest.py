@@ -1,9 +1,12 @@
 """Set mock data and set up fixtures to be used for testing."""
 
+import logging
 from dataclasses import dataclass, field
 from datetime import datetime
+from typing import Literal
 
 import pytest
+from django.db import connection
 from faker import Faker
 
 from api.models.athletes import Athlete
@@ -14,7 +17,7 @@ Faker.seed(42)
 _faker = Faker("en_NZ")
 
 
-@dataclass(frozen=True)
+@dataclass
 class AthleteMocker:
     """Athlete mock."""
 
@@ -25,7 +28,7 @@ class AthleteMocker:
     )
 
 
-@dataclass(frozen=True)
+@dataclass
 class CompetitionMocker:
     """Competition mock."""
 
@@ -35,6 +38,32 @@ class CompetitionMocker:
         default_factory=lambda: " ".join(["Competition", _faker.color_name])
     )
     location: str = field(default_factory=_faker.address)
+
+
+LiftStatusT = Literal["LIFT", "NOLIFT", "DNA"]
+
+
+@dataclass
+class LiftMocker:
+    """Lift mock."""
+
+    snatch_first: LiftStatusT
+    snatch_first_weight: int
+    snatch_second: LiftStatusT
+    snatch_second_weight: int
+    snatch_third: LiftStatusT
+    snatch_third_weight: int
+    cnj_first: LiftStatusT
+    cnj_first_weight: int
+    cnj_second: LiftStatusT
+    cnj_second_weight: int
+    cnj_third: LiftStatusT
+    cnj_third_weight: int
+    bodyweight: float
+    weight_category: str
+    team: str
+    session_number: int
+    lottery_number: int
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -56,6 +85,14 @@ def faker_seed():
 
 
 @pytest.fixture(scope="session")
+def django_db_setup(django_db_setup, django_db_blocker):
+    """Test database setup."""
+    logging.info(django_db_setup)
+    with django_db_blocker.unblock(), connection.cursor() as cursor:
+        cursor.execute("CREATE EXTENSION IF NOT EXISTS pg_trgm;")
+
+
+@pytest.fixture
 def mock_athlete(django_db_blocker) -> list[Athlete]:
     """Provide edited athlete data.
 
@@ -65,8 +102,8 @@ def mock_athlete(django_db_blocker) -> list[Athlete]:
     ATHLETES = 4
     athletes = [AthleteMocker() for _ in range(ATHLETES)]
     created = []
-    for athlete in athletes:
-        with django_db_blocker.unblock():
+    with django_db_blocker.unblock():
+        for athlete in athletes:
             created.append(Athlete.objects.create(**athlete.__dict__))
     return created
 
@@ -96,6 +133,7 @@ def mock_competition(django_db_blocker, faker) -> list[Competition]:
         "name": f"Competition {faker.color_name()}",
         "location": MOCK_COMPETIION_ONE["location"],
     }
+    # competitions = [CompetitionMocker() for _ in range(COMPETITIONS)]
     competitions = [MOCK_COMPETIION_ONE, MOCK_COMPETIION_TWO]
     created = []
     for competition in competitions:

@@ -12,7 +12,8 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from hashid_field import HashidAutoField
 
-from config.settings import DISABLE_FAKE_NAMES, HASHID_FIELD_SALT, faker
+# from config.settings import DISABLE_FAKE_NAMES, HASHID_FIELD_SALT, faker
+from config.settings import HASHID_FIELD_SALT
 
 from .managers import AthleteManager
 from .utils import age_category
@@ -54,9 +55,10 @@ class Athlete(models.Model):
 
         Format: first_name + last_name
         """
-        if DISABLE_FAKE_NAMES == "1":
-            return f"{self.first_name.title()} {self.last_name.title()}"
-        return faker.name()
+        return f"{self.first_name.title()} {self.last_name.title()}"
+        # TODO: give fake names?
+        # if DISABLE_FAKE_NAMES == "1":
+        # return faker.name()
 
     @property
     def age_categories(self) -> AgeCategories:

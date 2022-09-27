@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "lifter_api"
-version = "0.1.0"
+version = "0.6.1"
 
 [project.optional-dependencies]
 
@@ -13,6 +13,8 @@ test = [
   "pytest-xdist",
   "pytest-cov",
   "pytest-django",
+  "faker",
+  "factory-boy",
   "tox",
   "mypy",
   "flake8",
@@ -76,6 +78,10 @@ DJANGO_SETTINGS_MODULE = "config.settings"
 python_files = ["tests.py", "test_*.py", "*_tests.py"]
 log_format = "%(asctime)s %(levelname)s %(message)s"
 log_date_format = "%Y-%m-%d %H:%M:%S"
+log_cli = false
+log_cli_level = "DEBUG"
+log_cli_format = "%(asctime)s %(levelname)s %(message)s"
+log_cli_date_format = "%Y-%m-%d %H:%M:%S"
 
 [tool.coverage.run]
 branch = true

@@ -9,14 +9,14 @@ pytestmark = pytest.mark.django_db
 class TestSearch:
     """Testing combined search."""
 
-    url = "/v1/search"
+    url = "/v1/search?q="
 
     @pytest.mark.parametrize(
-        "test_input,expected", [pytest.param("&q=", None, id="empty_search")]
+        "test_input,expected", [pytest.param("", 0, id="empty_search")]
     )
     def test_get_search(self, client, test_input, expected):
         """Ensure search endpoint works."""
-        response = client.get(f"{self.url}/{test_input}")
+        response = client.get(f"{self.url}{test_input}")
         assert response.status_code == status.HTTP_200_OK
         result = response.json()
-        assert result["count"] >= 1
+        assert result["count"] >= expected
