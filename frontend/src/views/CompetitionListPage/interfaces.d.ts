@@ -1,3 +1,5 @@
+/** @format */
+
 import { CompetitionListObjectProps } from "../../interfaces";
 
 interface CompetitionListTableProps

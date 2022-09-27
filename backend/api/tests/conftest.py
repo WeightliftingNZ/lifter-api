@@ -1,23 +1,69 @@
 """Set mock data and set up fixtures to be used for testing."""
 
-from dataclasses import dataclass
+import logging
+from dataclasses import dataclass, field
 from datetime import datetime
+from typing import Literal
 
 import pytest
+from django.db import connection
 from faker import Faker
 
 from api.models.athletes import Athlete
 from api.models.competitions import Competition
 from api.models.lifts import Lift
 
+Faker.seed(42)
+_faker = Faker("en_NZ")
+
 
 @dataclass
-class AthleteMock:
+class AthleteMocker:
     """Athlete mock."""
 
-    first_name: str
-    last_name: str
-    yearborn: int
+    first_name: str = field(default_factory=_faker.first_name)
+    last_name: str = field(default_factory=_faker.last_name)
+    yearborn: int = field(
+        default_factory=lambda: _faker.date_of_birth(minimum_age=13).year
+    )
+
+
+@dataclass
+class CompetitionMocker:
+    """Competition mock."""
+
+    date_start: datetime = field(default_factory=datetime.now)
+    date_end: datetime = field(default_factory=datetime.now)
+    name: str = field(
+        default_factory=lambda: " ".join(["Competition", _faker.color_name])
+    )
+    location: str = field(default_factory=_faker.address)
+
+
+LiftStatusT = Literal["LIFT", "NOLIFT", "DNA"]
+
+
+@dataclass
+class LiftMocker:
+    """Lift mock."""
+
+    snatch_first: LiftStatusT
+    snatch_first_weight: int
+    snatch_second: LiftStatusT
+    snatch_second_weight: int
+    snatch_third: LiftStatusT
+    snatch_third_weight: int
+    cnj_first: LiftStatusT
+    cnj_first_weight: int
+    cnj_second: LiftStatusT
+    cnj_second_weight: int
+    cnj_third: LiftStatusT
+    cnj_third_weight: int
+    bodyweight: float
+    weight_category: str
+    team: str
+    session_number: int
+    lottery_number: int
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -38,35 +84,26 @@ def faker_seed():
     return 42
 
 
+@pytest.fixture(scope="session")
+def django_db_setup(django_db_setup, django_db_blocker):
+    """Test database setup."""
+    logging.info(django_db_setup)
+    with django_db_blocker.unblock(), connection.cursor() as cursor:
+        cursor.execute("CREATE EXTENSION IF NOT EXISTS pg_trgm;")
+
+
 @pytest.fixture
-def mock_athlete(django_db_blocker, faker) -> list[Athlete]:
+def mock_athlete(django_db_blocker) -> list[Athlete]:
     """Provide edited athlete data.
 
     Returns:
         list[Athlete]: list of mocked Athlete models.
     """
-
-    def _create_athlete():
-        return AthleteMock(
-            first_name=faker.first_name(),
-            last_name=faker.last_name(),
-            yearborn=faker.date_of_birth(minimum_age=13).year,
-        )
-
-    # MOCK_ATHLETE_ONE = {
-    #     "first_name": faker.first_name(),
-    #     "last_name": faker.last_name(),
-    #     "yearborn": faker.date_of_birth(minimum_age=13).year,
-    # }
-    # MOCK_ATHLETE_TWO = {
-    #     "first_name": faker.first_name(),
-    #     "last_name": faker.last_name(),
-    #     "yearborn": faker.date_of_birth(minimum_age=13).year,
-    # }
-    athletes = [_create_athlete() for _ in range(2)]
+    ATHLETES = 4
+    athletes = [AthleteMocker() for _ in range(ATHLETES)]
     created = []
-    for athlete in athletes:
-        with django_db_blocker.unblock():
+    with django_db_blocker.unblock():
+        for athlete in athletes:
             created.append(Athlete.objects.create(**athlete.__dict__))
     return created
 
@@ -78,6 +115,7 @@ def mock_competition(django_db_blocker, faker) -> list[Competition]:
     Returns:
         list[Competition]: list of mock competitions
     """
+    # COMPETITIONS = 2
     MOCK_COMPETIION_ONE = {
         "date_start": str(datetime.now())[:10],
         "date_end": str(datetime.now())[:10],
@@ -95,6 +133,7 @@ def mock_competition(django_db_blocker, faker) -> list[Competition]:
         "name": f"Competition {faker.color_name()}",
         "location": MOCK_COMPETIION_ONE["location"],
     }
+    # competitions = [CompetitionMocker() for _ in range(COMPETITIONS)]
     competitions = [MOCK_COMPETIION_ONE, MOCK_COMPETIION_TWO]
     created = []
     for competition in competitions:

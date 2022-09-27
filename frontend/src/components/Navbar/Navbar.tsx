@@ -1,11 +1,12 @@
-import React, { useState, forwardRef, useMemo } from "react";
+/** @format */
+
+import React, { useState, forwardRef, useMemo, PropsWithChildren } from "react";
 import {
   Link as RouterLink,
   LinkProps as RouterLinkProps,
 } from "react-router-dom";
 import Divider from "@mui/material/Divider";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
-import MuiDrawer from "@mui/material/Drawer";
 import CssBaseline from "@mui/material/CssBaseline";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
@@ -20,10 +21,34 @@ import PeopleIcon from "@mui/icons-material/People";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import { styled, useTheme, Theme, CSSObject } from "@mui/material/styles";
+import { styled, useTheme } from "@mui/material/styles";
 import Button from "@mui/material/Button";
+import CombinedSearch from "./Search";
+import { Box, Container, Drawer } from "@mui/material";
+import { Stack } from "@mui/system";
+import DarkModeSwitch from "./DarkModeSwitch";
+import SearchIcon from "@mui/icons-material/Search";
 
 const drawerWidth = 240;
+
+const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
+  open?: boolean;
+}>(({ theme, open }) => ({
+  flexGrow: 1,
+  paddingTop: theme.spacing(3),
+  transition: theme.transitions.create("margin", {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  marginLeft: `-${drawerWidth}px`,
+  ...(open && {
+    transition: theme.transitions.create("margin", {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+    marginLeft: 0,
+  }),
+}));
 
 type ListItemLinkProps = {
   primary: string;
@@ -87,26 +112,13 @@ const ListItemLink = (props: ListItemLinkProps) => {
   );
 };
 
-const openedMixin = (theme: Theme): CSSObject => ({
-  width: drawerWidth,
-  transition: theme.transitions.create("width", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.enteringScreen,
-  }),
-  overflowX: "hidden",
-});
-
-const closedMixin = (theme: Theme): CSSObject => ({
-  transition: theme.transitions.create("width", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.enteringScreen,
-  }),
-  overflowX: "hidden",
-  width: `calc(${theme.spacing(7)} + 1px)`,
-  [theme.breakpoints.up("sm")]: {
-    width: `calc(${theme.spacing(8)} + 1px)`,
-  },
-});
+const NavbarHeader = styled("div")(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "flex-end",
+  padding: theme.spacing(0, 1),
+  ...theme.mixins.toolbar,
+}));
 
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
@@ -123,7 +135,6 @@ interface AppBarProps extends MuiAppBarProps {
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
 })<AppBarProps>(({ theme, open }) => ({
-  zIndex: theme.zIndex.drawer + 1,
   transition: theme.transitions.create(["width", "margin"], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
@@ -138,24 +149,98 @@ const AppBar = styled(MuiAppBar, {
   }),
 }));
 
-const Drawer = styled(MuiDrawer, {
-  shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
-  width: drawerWidth,
-  flexShrink: 0,
-  whiteSpace: "nowrap",
-  boxSizing: "border-box",
-  ...(open && {
-    ...openedMixin(theme),
-    "& .MuiDrawer-paper": openedMixin(theme),
-  }),
-  ...(!open && {
-    ...closedMixin(theme),
-    "& .MuiDrawer-paper": closedMixin(theme),
-  }),
-}));
+interface HeaderBarProps {
+  open: boolean;
+  handleDrawerOpen: any;
+}
 
-const Navbar = () => {
+const HeaderBar: React.FC<HeaderBarProps> = ({ open, handleDrawerOpen }) => {
+  const theme = useTheme();
+  const [showSearchOnly, setShowSearchOnly] = useState<boolean>(false);
+
+  const handleSearchOnClick = () => {
+    setShowSearchOnly(true);
+  };
+
+  const handleSearchOnBlur = () => {
+    setShowSearchOnly(false);
+  };
+
+  return (
+    <AppBar position="fixed" open={open}>
+      <Toolbar
+        sx={{
+          display: "flex",
+          flexWrap: "nowrap",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        {showSearchOnly ? (
+          <Box
+            sx={{
+              flexGrow: 1,
+              px: 2,
+            }}
+          >
+            <CombinedSearch handleSearchOnBlur={handleSearchOnBlur} />
+          </Box>
+        ) : (
+          <>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                flexWrap: "nowrap",
+                gap: 1,
+              }}
+            >
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                onClick={handleDrawerOpen}
+                edge="start"
+                sx={{
+                  marginRight: 0,
+                  ...(open && { display: { sm: "none" } }),
+                }}
+              >
+                <MenuIcon />
+              </IconButton>
+              <Button component={RouterLink} to="/">
+                <Stack>
+                  <Typography
+                    noWrap
+                    component="div"
+                    sx={{ color: theme.palette.primary.contrastText }}
+                  >
+                    Weightlifting
+                  </Typography>
+                  <Typography
+                    noWrap
+                    component="div"
+                    sx={{ color: theme.palette.primary.contrastText }}
+                  >
+                    New Zealand
+                  </Typography>
+                </Stack>
+              </Button>
+              <IconButton onClick={handleSearchOnClick}>
+                <SearchIcon htmlColor={theme.palette.secondary.main} />
+              </IconButton>
+            </Box>
+            <Box>
+              <DarkModeSwitch />
+            </Box>
+          </>
+        )}
+      </Toolbar>
+    </AppBar>
+  );
+};
+
+const Navbar: React.FC<PropsWithChildren> = (props) => {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
 
@@ -167,32 +252,21 @@ const Navbar = () => {
     setOpen(false);
   };
   return (
-    <>
+    <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open}>
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            sx={{ marginRight: 5, ...(open && { display: { sm: "none" } }) }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Button component={RouterLink} to="/">
-            <Typography
-              variant="h6"
-              noWrap
-              component="div"
-              sx={{ color: theme.palette.primary.contrastText }}
-            >
-              Weightlifting Results for New Zealand
-            </Typography>
-          </Button>
-        </Toolbar>
-      </AppBar>
-      <Drawer variant="permanent" open={open}>
+      <HeaderBar handleDrawerOpen={handleDrawerOpen} open={open} />
+      <Drawer
+        sx={{
+          width: drawerWidth,
+          flexShrink: 0,
+          "& .MuiDrawer-paper": {
+            width: drawerWidth,
+            boxSizing: "border-box",
+          },
+        }}
+        variant="persistent"
+        open={open}
+      >
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === "rtl" ? (
@@ -215,7 +289,13 @@ const Navbar = () => {
           );
         })}
       </Drawer>
-    </>
+      <Main open={open}>
+        <NavbarHeader />
+        <Container disableGutters maxWidth="lg">
+          {props.children}
+        </Container>
+      </Main>
+    </Box>
   );
 };
 

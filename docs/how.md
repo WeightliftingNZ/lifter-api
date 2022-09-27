@@ -24,7 +24,6 @@ The only data available is the athlete's name, birth year (to determine age grad
 
 Grading is determined by looking at the lifts for the current year and determining the best grade from these lifts.
 
-
 ## Roadmap
 
 - Include volunteers on the competition results

@@ -44,6 +44,7 @@
         React   Wrapper
 
 ```
+
 ---
 
 ## The Backend
@@ -67,6 +68,7 @@ React Typescript TailwindCSS
 API Endpoints -> React TS -> HTML | TailwindCSS
 
 Important libraries:
+
 - React Query
 - React Table
 
@@ -77,11 +79,12 @@ Important libraries:
 How to organise data?
 
 Competition Model -> Session Model -> Lift Model
-                                        |
-                                        ^
-                                      Athlete Model
+|
+^
+Athlete Model
 
 Constraints:
+
 - Competition has many sessions. Sessions can have many lifts.
 - Only one session instance can be in one competition.
 - An athlete's lift can only be in one session for one competition.
@@ -93,6 +96,7 @@ Constraints:
 How to validate lifts?
 
 Rules:
+
 1. A lift is a 'good lift', a 'no lift', or a 'did not attempt'.
 2. An athlete attempts 3 lifts per lift type.
 3. If the lift is a 'good lift', the next weight must be at least one kg greater.
@@ -112,10 +116,11 @@ How to come up with placings? - Complex
 Placings can be determined by the lifts numbers and don't need to be inputted.
 
 Rules:
+
 1. The person with the highest total wins
 2. If totals are equal, it's the person who gets to the total first
-        a. smallest clean and jerk
-        b. least lottery number
+   a. smallest clean and jerk
+   b. least lottery number
 
 ---
 
@@ -145,8 +150,8 @@ Show the project!
 - Struggle
 - Make an MVP!
 - Am I doing it right?
-        e.g. Lift model validation
-        e.g. React code
+  e.g. Lift model validation
+  e.g. React code
 
 ---
 

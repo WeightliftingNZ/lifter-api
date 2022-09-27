@@ -7,6 +7,7 @@ from urllib.parse import urlparse
 
 import sentry_sdk
 from django.core.management.utils import get_random_secret_key
+from faker import Faker
 from sentry_sdk.integrations.django import DjangoIntegration
 
 SENTRY_DSN_1 = os.getenv("SENTRY_DSN_1", None)
@@ -21,12 +22,24 @@ if SENTRY_DSN_1 is not None and SENTRY_DSN_2 is not None:
         send_default_pii=True,
     )
 
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv("SECRET_KEY", get_random_secret_key())
 HASHID_FIELD_SALT = os.getenv("HASHID_FIELD_SALT", get_random_secret_key())
 
 SITE_ID = 1
+
+# Fake name
+
+DISABLE_FAKE_NAMES = os.getenv("DISABLE_FAKE_NAMES", "0")
+FAKER_SEED = os.getenv("FAKER_SEED", "42")
+
+if not FAKER_SEED.isdigit():
+    FAKER_SEED = "42"
+
+Faker.seed(int(FAKER_SEED))
+faker = Faker("en_NZ")
 
 # Default primary key field type
 
@@ -41,7 +54,7 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
-    # "django.contrib.staticfiles",
+    "django.contrib.staticfiles",
     "django.contrib.postgres",
     # third-party
     "corsheaders",
@@ -60,15 +73,18 @@ INSTALLED_APPS = [
     #   simplejwt
     "rest_framework_simplejwt",
     "rest_framework_simplejwt.token_blacklist",
-    # django extensions
+    #   django extensions
     "django_extensions",
-    # django filters / cripsy forms
+    #   django filters / cripsy forms
     "django_filters",
     "crispy_forms",
-    # whitenoise for development
+    #   whitenoise for development
     "whitenoise.runserver_nostatic",
-    "django.contrib.staticfiles",
-    #   custom
+    #   debug tools
+    "debug_toolbar",
+    #   auditlog
+    "auditlog",
+    # custom
     "api",
     "users",
 ]
@@ -78,6 +94,7 @@ AUTH_USER_MODEL = "users.CustomUser"
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -85,6 +102,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "auditlog.middleware.AuditlogMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -232,9 +250,15 @@ GRAPH_MODELS = {
     "group_models": True,
 }
 
+# Django Debugging
+INTERNAL_IPS = ["127.0.0.1"]
+
+
+# Auditlog
+AUDITLOG_INCLUDE_ALL_MODELS = True
+
 
 # Static files (CSS, JavaScript, Images)
-
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"

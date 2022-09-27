@@ -26,6 +26,8 @@ django-crispy-forms = "*"
 pytest-xdist = "*"
 faker = "*"
 whitenoise = {extras = ["brotli"], version = "*"}
+django-debug-toolbar = "*"
+django-auditlog = "*"
 
 [dev-packages]
 pytest = "*"
@@ -41,6 +43,7 @@ mkdocs-material = "*"
 faker = "*"
 coverage = {extras = ["toml"], version = "*"}
 mkdocstrings = {extras = ["python"], version = "*"}
+factory-boy = "*"
 
 [requires]
 python_version = "3.10"

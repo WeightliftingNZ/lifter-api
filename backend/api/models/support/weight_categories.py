@@ -1,5 +1,7 @@
 """Weight Categories"""
 
+from auditlog.models import AuditlogHistoryField
+from auditlog.registry import auditlog
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -24,6 +26,7 @@ class WeightCategoryEra(BaseEra):
         primary_key=True,
         salt=f"wceramodel_reference_id_{HASHID_FIELD_SALT}",
     )
+    history = AuditlogHistoryField(pk_indexable=False)
 
 
 class WeightCategory(models.Model):
@@ -40,6 +43,8 @@ class WeightCategory(models.Model):
     sex = models.CharField(max_length=1, choices=SEX_CHOICES)
     weight = models.IntegerField(blank=True)
     is_plus = models.BooleanField(blank=True, default=False)
+
+    history = AuditlogHistoryField(pk_indexable=False)
 
     class Meta:
         """Model settings."""
@@ -83,3 +88,7 @@ class WeightCategory(models.Model):
     def __str__(self) -> str:
         """Give string representation."""
         return self.name
+
+
+auditlog.register(WeightCategory)
+auditlog.register(WeightCategoryEra)

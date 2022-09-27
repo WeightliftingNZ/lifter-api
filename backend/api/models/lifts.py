@@ -2,6 +2,8 @@
 
 from decimal import Decimal
 
+from auditlog.models import AuditlogHistoryField
+from auditlog.registry import auditlog
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.functional import cached_property
@@ -136,6 +138,8 @@ class Lift(models.Model):
         default=DEFAULT_LIFT_STATUS,
     )
     cnj_third_weight = models.IntegerField(blank=True, default=0)
+
+    history = AuditlogHistoryField(pk_indexable=False)
 
     objects = LiftManager()
 
@@ -348,3 +352,6 @@ class Lift(models.Model):
     def __str__(self):
         """__str__."""
         return f"{self.athlete} - {self.competition} {self.competition.date_start.year}"
+
+
+auditlog.register(Lift)

@@ -1,7 +1,9 @@
 /**
+ * @format
  * @param title - A title string (e.g. piped_title)
  * @returns Better looking title (e.g. Piped Title)
  */
+
 export function titleMaker(title: string) {
   return title
     .replace("_", " ")

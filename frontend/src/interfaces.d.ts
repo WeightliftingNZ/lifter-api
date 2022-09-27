@@ -1,9 +1,21 @@
+/** @format */
+
 export interface DRFPaginatedResponseProps {
   count: number;
   next: string;
   previous: string;
   per_page: number;
   results: any[];
+}
+
+export interface SearchResultProps {
+  query_result_type: string;
+  query_result_headline: string;
+  query_result_headline_no_html: string;
+  query_result:
+    | CompetitionListObjectProps
+    | LiftObjectProps
+    | AthleteListObjectProps;
 }
 
 export interface CompetitionListObjectProps {

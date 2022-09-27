@@ -1,3 +1,5 @@
+/** @format */
+
 import { test } from "@jest/globals";
 import { titleMaker } from "../customFunctions";
 

@@ -1,50 +1,77 @@
-import React from "react";
+/** @format */
+
+import React, { useMemo, createContext, useState } from "react";
 import { Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar";
 import CompetitionListPage from "./views/CompetitionListPage";
 import CompetitionDetailPage from "./views/CompetitionDetailPage";
 import AthleteListPage from "./views/AthleteListPage";
 import AthleteDetailPage from "./views/AthleteDetailPage";
-import Box from "@mui/material/Box";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { styled } from "@mui/material/styles";
+import {
+  ThemeProvider,
+  createTheme,
+  responsiveFontSizes,
+} from "@mui/material/styles";
 import Home from "./views/Home";
+import Navbar from "./components/Navbar";
+import { useMediaQuery } from "@mui/material";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import type {} from "@mui/x-date-pickers/themeAugmentation";
 
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: "#212121",
-      light: "#484848",
-      dark: "#000000",
-      contrastText: "#FFFFFF",
-    },
-    secondary: {
-      main: "#78909c",
-      light: "#a7c0cd",
-      dark: "#4b636e",
-      contrastText: "#000000",
-    },
-  },
-});
+export const ColorModeContext = createContext({ toggleColorMode: () => {} });
 
 const App: React.FC = () => {
-  const NavbarHeader = styled("div")(({ theme }) => ({
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "flex-end",
-    padding: theme.spacing(0, 1),
-    ...theme.mixins.toolbar,
-  }));
+  const prefersDarkmode = useMediaQuery("(prefers-color-scheme: dark)");
+  const [darkmode, setDarkMode] = useState<boolean>(prefersDarkmode === true);
+  const colorMode = React.useMemo(
+    () => ({
+      toggleColorMode: () => {
+        setDarkMode((prevMode) => !prevMode);
+      },
+    }),
+    []
+  );
+  const mode = darkmode ? "dark" : "light";
+  let theme = useMemo(
+    () =>
+      createTheme({
+        typography: {
+          fontFamily: "Roboto",
+        },
+        palette: {
+          mode,
+          primary: {
+            main: "#424242",
+            light: "#1b1b1b",
+            dark: "#000000",
+            contrastText: "#FFFFFF",
+          },
+          secondary: {
+            main: "#b0bec5",
+            light: "#e21f8",
+            dark: "#808e95",
+            contrastText: "#FFFFFF",
+          },
+        },
+        components: {
+          MuiDatePicker: {
+            styleOverrides: {
+              root: {
+                backgroundColor: "red",
+              },
+            },
+          },
+        },
+      }),
+    [mode]
+  );
+  theme = responsiveFontSizes(theme);
+
   return (
-    <>
+    <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
-        <Box sx={{ display: "flex" }}>
-          <Navbar />
-          <Box
-            component="main"
-            sx={{ flexGrow: 1, p: 3, marginLeft: "auto", marginRight: "auto" }}
-          >
-            <NavbarHeader />
+        <LocalizationProvider dateAdapter={AdapterMoment}>
+          <Navbar>
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/competitions" element={<CompetitionListPage />} />
@@ -58,10 +85,10 @@ const App: React.FC = () => {
                 element={<AthleteDetailPage />}
               />
             </Routes>
-          </Box>
-        </Box>
+          </Navbar>
+        </LocalizationProvider>
       </ThemeProvider>
-    </>
+    </ColorModeContext.Provider>
   );
 };
 

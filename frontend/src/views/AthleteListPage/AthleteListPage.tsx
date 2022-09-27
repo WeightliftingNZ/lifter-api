@@ -1,17 +1,16 @@
+/** @format */
+
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { AthleteListObjectProps } from "../../interfaces";
 import CustomSearchInput from "../../components/CustomSearchInput";
 import { useDebounce } from "usehooks-ts";
 import { useInfiniteQuery } from "react-query";
-import AthleteCard from "./AthleteCard";
+import AthleteCard from "../../components/AthleteCard";
 import { Stack, Box } from "@mui/material";
 import apiClient from "../../utils/http-common";
 import Title from "../../components/Title";
-import SubTitle from "../../components/SubTitle";
 import CustomError from "../../components/Error";
 import CustomLoading from "../../components/Loading";
-
-const PAGE_LIMIT = 10;
 
 const AthleteListPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -19,6 +18,7 @@ const AthleteListPage: React.FC = () => {
   const observerElem = useRef(null);
 
   const fetchAthletes = async (page: number) => {
+    const PAGE_LIMIT = 10;
     const res = await apiClient.get(
       `/athletes?search=${debouncedSearchQuery}&page=${page}&page_size=${PAGE_LIMIT}`
     );
@@ -38,6 +38,7 @@ const AthleteListPage: React.FC = () => {
     ["athletes", debouncedSearchQuery],
     ({ pageParam = 1 }) => fetchAthletes(pageParam),
     {
+      enabled: debouncedSearchQuery ? true : false,
       getNextPageParam: (lastPage, pages) => {
         if (lastPage.next == null) {
           return undefined;
@@ -77,20 +78,20 @@ const AthleteListPage: React.FC = () => {
   };
 
   return (
-    <>
+    <Box
+      sx={{
+        display: "flex",
+        flex: 1,
+        gap: 2,
+        flexWrap: "wrap",
+        justifyContent: "flex-start",
+      }}
+    >
       <Box>
-        <Title>Athletes</Title>
-        <SubTitle>Browse athletes</SubTitle>
-      </Box>
-      <Box
-        sx={{
-          display: "flex",
-          flex: 1,
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <Box sx={{ mt: 6 }}>
+        <Box>
+          <Title>Athlete Search</Title>
+        </Box>
+        <Box>
           <CustomSearchInput
             label="Search athletes"
             error={data?.pages[0].count === 0 ? true : false}
@@ -99,39 +100,41 @@ const AthleteListPage: React.FC = () => {
             handleOnChange={handleOnChange}
           />
         </Box>
-        <Box
-          sx={{
-            mt: 6,
-          }}
-        >
-          {isLoading && <CustomLoading />}
-          {isError && <CustomError />}
-          {isSuccess && (
-            <>
-              <Stack sx={{ maxWidth: "max-content" }} spacing={1}>
-                {data?.pages.map((page) => (
-                  <>
-                    {page.results.map((athlete: AthleteListObjectProps) => (
-                      <AthleteCard
-                        key={athlete.reference_id}
-                        referenceId={athlete.reference_id}
-                        fullName={athlete.full_name}
-                        ageCategories={athlete.age_categories}
-                        currentGrade={athlete.current_grade}
-                        recentLift={athlete.recent_lift}
-                      />
-                    ))}
-                  </>
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          flex: 1,
+          gap: 0,
+          flexDirection: "column",
+          alignItems: "flex-start",
+        }}
+      >
+        {isLoading && <CustomLoading />}
+        {isError && <CustomError />}
+        {isSuccess && (
+          <Stack sx={{ maxWidth: "max-content" }} spacing={1}>
+            {data?.pages.map((page) => (
+              <React.Fragment key={page}>
+                {page.results.map((athlete: AthleteListObjectProps) => (
+                  <AthleteCard
+                    key={athlete.reference_id}
+                    referenceId={athlete.reference_id}
+                    fullName={athlete.full_name}
+                    ageCategories={athlete.age_categories}
+                    currentGrade={athlete.current_grade}
+                    recentLift={athlete.recent_lift}
+                  />
                 ))}
-              </Stack>
-            </>
-          )}
-          <Box ref={observerElem}>
-            {isFetchingNextPage && hasNextPage ? <CustomLoading /> : null}
-          </Box>
+              </React.Fragment>
+            ))}
+          </Stack>
+        )}
+        <Box ref={observerElem}>
+          {isFetchingNextPage && hasNextPage ? <CustomLoading /> : null}
         </Box>
       </Box>
-    </>
+    </Box>
   );
 };
 

@@ -1,3 +1,5 @@
+/** @format */
+
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import { styled } from "@mui/material/styles";
 

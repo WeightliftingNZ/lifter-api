@@ -1,3 +1,5 @@
+/** @format */
+
 import React from "react";
 import { Typography } from "@mui/material";
 
@@ -9,13 +11,7 @@ const Title: React.FC<React.PropsWithChildren<TitleProps>> = (
   props: TitleProps
 ) => {
   return (
-    <Typography
-      component="h2"
-      color="primary"
-      variant="h4"
-      gutterBottom
-      {...props}
-    >
+    <Typography color="primary" variant="h2" gutterBottom {...props}>
       {props.children}
     </Typography>
   );

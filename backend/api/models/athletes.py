@@ -6,12 +6,16 @@ This is all the Athlete model.
 from datetime import datetime
 from typing import Any
 
+from auditlog.models import AuditlogHistoryField
+from auditlog.registry import auditlog
 from django.core.exceptions import ValidationError
 from django.db import models
 from hashid_field import HashidAutoField
 
+# from config.settings import DISABLE_FAKE_NAMES, HASHID_FIELD_SALT, faker
 from config.settings import HASHID_FIELD_SALT
 
+from .managers import AthleteManager
 from .utils import age_category
 from .utils.types import AgeCategories
 
@@ -38,6 +42,10 @@ class Athlete(models.Model):
     last_name = models.CharField(max_length=128)
     yearborn = models.IntegerField(default=1900, validators=[check_yearborn])
 
+    history = AuditlogHistoryField(pk_indexable=False)
+
+    objects = AthleteManager()
+
     class Meta:
         ordering = ["last_name", "first_name"]
 
@@ -48,6 +56,9 @@ class Athlete(models.Model):
         Format: first_name + last_name
         """
         return f"{self.first_name.title()} {self.last_name.title()}"
+        # TODO: give fake names?
+        # if DISABLE_FAKE_NAMES == "1":
+        # return faker.name()
 
     @property
     def age_categories(self) -> AgeCategories:
@@ -56,3 +67,6 @@ class Athlete(models.Model):
 
     def __str__(self) -> str:
         return self.full_name
+
+
+auditlog.register(Athlete)
