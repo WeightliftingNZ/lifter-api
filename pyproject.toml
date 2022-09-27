@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "lifter_api"
-version = "0.6.1"
+version = "0.7.0"
 
 [project.optional-dependencies]
 
@@ -107,7 +107,7 @@ version_files = [
   "frontend/package.json",
   "backend/api/__init__.py",
 ]
-version = "0.6.1"
+version = "0.7.0"
 tag_format = "$version"
 
 style = [

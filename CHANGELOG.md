@@ -1,3 +1,17 @@
+## 0.7.0 (2022-09-27)
+
+### Feat
+
+- improving frontend UI for mobile
+- adding combined search, auditlogging, and advanced debugging
+- competition changed and improved homepage
+
+### Fix
+
+- improving mypy error
+- improving ui
+- improving ui
+
 ## 0.6.1 (2022-09-23)
 
 ### Fix
