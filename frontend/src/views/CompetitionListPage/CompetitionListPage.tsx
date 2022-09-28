@@ -13,6 +13,7 @@ import CustomError from "../../components/Error";
 import CustomLoading from "../../components/Loading";
 import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
 import moment from "moment";
+import { PAGE_LIMIT } from "../../constants";
 
 const CompetitionListPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -22,7 +23,6 @@ const CompetitionListPage: React.FC = () => {
   const observerElem = useRef(null);
 
   const fetchCompetitions = async (page: number) => {
-    const PAGE_LIMIT = 10;
     const res = await apiClient.get(
       `/competitions?search=${debouncedSearchQuery}&date_start_after=${
         dateAfter ? moment(dateAfter).format("YYYY-MM-DD") : ""
