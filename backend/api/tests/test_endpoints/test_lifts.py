@@ -54,7 +54,7 @@ class TestLift:
         assert result["snatches"] == lift.snatches
         assert result["cnjs"] == lift.cnjs
         assert result["total_lifted"] == lift.total_lifted
-        assert str(result["sinclair"]) == str(lift.sinclair)
+        assert result["sinclair"] == float(lift.sinclair)
         assert result["grade"] == lift.grade
         assert result["age_categories"] == lift.age_categories
         assert str(result["bodyweight"]) == str(lift.bodyweight)

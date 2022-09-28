@@ -50,7 +50,7 @@ class Competition(models.Model):
         ordering = ["-date_start", "name"]
 
     def __str__(self):
-        """String representation."""
+        """Representation of string."""
         return f"{self.name} {self.date_start.year}"
 
     def clean(self, *args, **kwargs):

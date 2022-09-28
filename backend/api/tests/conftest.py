@@ -1,6 +1,7 @@
 """Set mock data and set up fixtures to be used for testing."""
 
 import logging
+import random
 
 import factory.random
 import faker.config
@@ -33,8 +34,11 @@ register(Post2019Pre2022CompetitionFactory)
 register(LiftFactory)
 
 
+TEST_RANDOM_SEED = 42
+
 faker.config.DEFAULT_LOCALE = "en_NZ"
-factory.random.reseed_random(42)
+factory.random.reseed_random(TEST_RANDOM_SEED)
+random.seed(TEST_RANDOM_SEED)
 
 
 @pytest.fixture(scope="session")
