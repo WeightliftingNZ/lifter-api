@@ -28,6 +28,10 @@ faker = "*"
 whitenoise = {extras = ["brotli"], version = "*"}
 django-debug-toolbar = "*"
 django-auditlog = "*"
+pytest-factory = "*"
+pytest-factoryboy = "*"
+django-simple-history = "*"
+pytest-instafail = "*"
 
 [dev-packages]
 pytest = "*"
@@ -44,6 +48,7 @@ faker = "*"
 coverage = {extras = ["toml"], version = "*"}
 mkdocstrings = {extras = ["python"], version = "*"}
 factory-boy = "*"
+pdbr = "*"
 
 [requires]
 python_version = "3.10"

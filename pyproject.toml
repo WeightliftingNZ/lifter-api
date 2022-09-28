@@ -18,6 +18,8 @@ test = [
   "tox",
   "mypy",
   "flake8",
+  "pytest-factoryboy",
+  "pytest-instafail",
 ]
 
 [tool.setuptools.packages.find]
@@ -48,10 +50,14 @@ line-length = 79
 include = '\.pyi?%'
 
 [tool.pyright]
-include = "backend"
-exclude = "backend/.venv"
-venvPath = "./backend"
+include = ["backend"]
+exclude = ["backend/.venv"]
+venvPath = "backend"
 venv = ".venv"
+stubPath = ""
+extraPaths = ["backend/api", "backend/users", "backend/tests", "backend/config"]
+pythonVersion = "3.10"
+executionEnvironments = [{ root = "backend" }]
 
 [tool.mypy]
 mypy_path = "./backend"
@@ -65,21 +71,23 @@ ignore_missing_imports = true
 [tool.pytest.ini_options]
 addopts = [
   "-n",
-  "4",
+  "auto",
   "--cov",
   "--cov-config=../pyproject.toml",
   "--cov-branch",
   "--cov-report=html",
   "--create-db",
   "--no-migrations",
+  "--pdbcls=pdbr:RichPdb",
 ]
 testpaths = ["tests"]
 DJANGO_SETTINGS_MODULE = "config.settings"
 python_files = ["tests.py", "test_*.py", "*_tests.py"]
+log_level = "ERROR"
 log_format = "%(asctime)s %(levelname)s %(message)s"
 log_date_format = "%Y-%m-%d %H:%M:%S"
-log_cli = false
-log_cli_level = "DEBUG"
+log_cli = true
+log_cli_level = "ERROR"
 log_cli_format = "%(asctime)s %(levelname)s %(message)s"
 log_cli_date_format = "%Y-%m-%d %H:%M:%S"
 

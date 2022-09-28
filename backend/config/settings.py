@@ -22,7 +22,6 @@ if SENTRY_DSN_1 is not None and SENTRY_DSN_2 is not None:
         send_default_pii=True,
     )
 
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv("SECRET_KEY", get_random_secret_key())
@@ -84,6 +83,8 @@ INSTALLED_APPS = [
     "debug_toolbar",
     #   auditlog
     "auditlog",
+    #   simple history
+    "simple_history",
     # custom
     "api",
     "users",
@@ -103,6 +104,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "auditlog.middleware.AuditlogMiddleware",
+    "simple_history.middleware.HistoryRequestMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
