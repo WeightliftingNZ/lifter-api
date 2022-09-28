@@ -9,12 +9,12 @@ import CustomError from "../../components/Error";
 import CustomLoading from "../../components/Loading";
 import CompetitionCard from "../../components/CompetitionCard";
 import CompetitionRecentLoading from "./CompetitionRecentLoading";
+import { PAGE_LIMIT } from "../../constants";
 
 const CompetitionRecent: React.FC = () => {
   const observerElem = useRef(null);
 
   const fetchRecentCompetitions = async (page: number) => {
-    const PAGE_LIMIT = 10;
     const res = await apiClient.get(
       `/competitions?page=${page}&page_size=${PAGE_LIMIT}`
     );
@@ -101,9 +101,9 @@ const CompetitionRecent: React.FC = () => {
             ))}
           </Box>
         )}
-      </Box>
-      <Box ref={observerElem}>
-        {isFetchingNextPage && hasNextPage ? <CustomLoading /> : null}
+        <Box ref={observerElem}>
+          {isFetchingNextPage && hasNextPage ? <CustomLoading /> : null}
+        </Box>
       </Box>
     </>
   );

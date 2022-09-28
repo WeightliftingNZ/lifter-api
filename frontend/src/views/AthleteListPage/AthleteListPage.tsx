@@ -11,6 +11,7 @@ import apiClient from "../../utils/http-common";
 import Title from "../../components/Title";
 import CustomError from "../../components/Error";
 import CustomLoading from "../../components/Loading";
+import { PAGE_LIMIT } from "../../constants";
 
 const AthleteListPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -18,7 +19,6 @@ const AthleteListPage: React.FC = () => {
   const observerElem = useRef(null);
 
   const fetchAthletes = async (page: number) => {
-    const PAGE_LIMIT = 10;
     const res = await apiClient.get(
       `/athletes?search=${debouncedSearchQuery}&page=${page}&page_size=${PAGE_LIMIT}`
     );
