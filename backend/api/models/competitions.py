@@ -5,6 +5,7 @@ from auditlog.registry import auditlog
 from django.core.exceptions import ValidationError
 from django.db import models
 from hashid_field import HashidAutoField
+from simple_history.models import HistoricalRecords
 
 from config.settings import HASHID_FIELD_SALT
 
@@ -12,6 +13,11 @@ from .managers import CompetitionManager
 
 
 class Competition(models.Model):
+    """Competition model.
+
+    This is where all the competiton data is  encapsulated
+    """
+
     reference_id = HashidAutoField(
         primary_key=True,
         salt=f"competitionmodel_reference_id_{HASHID_FIELD_SALT}",
@@ -30,13 +36,21 @@ class Competition(models.Model):
     # classify status of the competition e.g club, record breaking
 
     history = AuditlogHistoryField(pk_indexable=False)
+    history_record = HistoricalRecords(
+        history_id_field=HashidAutoField(
+            salt=f"competition_history_id_{HASHID_FIELD_SALT}"
+        )
+    )
 
     objects = CompetitionManager()
 
     class Meta:
+        """Competition model setting."""
+
         ordering = ["-date_start", "name"]
 
     def __str__(self):
+        """String representation."""
         return f"{self.name} {self.date_start.year}"
 
     def clean(self, *args, **kwargs):
@@ -57,6 +71,7 @@ class Competition(models.Model):
         super().clean(*args, **kwargs)
 
     def save(self, *args, **kwargs):
+        """Enforce custom validation."""
         self.full_clean()
         super().save(*args, **kwargs)
 

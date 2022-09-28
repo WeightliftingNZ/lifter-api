@@ -11,6 +11,7 @@ from auditlog.registry import auditlog
 from django.core.exceptions import ValidationError
 from django.db import models
 from hashid_field import HashidAutoField
+from simple_history.models import HistoricalRecords
 
 # from config.settings import DISABLE_FAKE_NAMES, HASHID_FIELD_SALT, faker
 from config.settings import HASHID_FIELD_SALT
@@ -43,6 +44,11 @@ class Athlete(models.Model):
     yearborn = models.IntegerField(default=1900, validators=[check_yearborn])
 
     history = AuditlogHistoryField(pk_indexable=False)
+    history_record = HistoricalRecords(
+        history_id_field=HashidAutoField(
+            salt=f"athlete_history_id_{HASHID_FIELD_SALT}"
+        )
+    )
 
     objects = AthleteManager()
 

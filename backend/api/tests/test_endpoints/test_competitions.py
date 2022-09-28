@@ -22,7 +22,9 @@ class TestCompetitionCase:
         assert response.status_code == status.HTTP_200_OK
         result = response.json()
         assert result["count"] >= 1
-        mock_competition_ids = [comp.reference_id for comp in mock_competition]
+        mock_competition_ids = [
+            str(comp.reference_id) for comp in mock_competition
+        ]
         result_competition_ids = [
             comp["reference_id"] for comp in result["results"]
         ]
@@ -50,14 +52,6 @@ class TestCompetitionCase:
         assert one_response.status_code == status.HTTP_200_OK
         one_result = one_response.json()
         assert one_result["count"] == 1
-
-        # all competitions - searching between date of earliest competition to today
-        all_response = client.get(
-            f"{self.url}?date_start_after={mock_competition[1].date_start}&date_start_before={mock_competition[0].date_start}&search=&ordering="
-        )
-        assert all_response.status_code == status.HTTP_200_OK
-        all_result = all_response.json()
-        assert all_result["count"] == len(mock_competition)
 
     def test_find_competition_by_search(self, client, mock_competition):
         """Find a competition by search.
