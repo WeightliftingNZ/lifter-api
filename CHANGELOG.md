@@ -1,3 +1,13 @@
+## 0.8.0 (2022-09-28)
+
+### Feat
+
+- ability to look up athlete, competition, lift data via admin by searching
+
+### Fix
+
+- fixing athlete search
+
 ## 0.7.2 (2022-09-28)
 
 ### Fix
