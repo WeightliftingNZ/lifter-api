@@ -12,6 +12,7 @@ from .models import (
 
 
 class AthleteAdmin(admin.ModelAdmin):
+    search_fields = ("first_name", "last_name")
     readonly_fields = (
         "reference_id",
         "full_name",
@@ -21,11 +22,18 @@ class AthleteAdmin(admin.ModelAdmin):
 
 
 class CompetitionAdmin(admin.ModelAdmin):
+    search_fields = ("name", "location")
     readonly_fields = ("reference_id",)
     list_display = ("date_start", "date_end", "location", "name")
 
 
 class LiftAdmin(admin.ModelAdmin):
+    search_fields = (
+        "athlete__first_name",
+        "athlete__last_name",
+        "competition__name",
+        "competition__location",
+    )
     readonly_fields = ("reference_id",)
     fieldsets = (
         (
