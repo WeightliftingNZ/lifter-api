@@ -30,7 +30,7 @@ class CompetitionAdmin(admin.ModelAdmin):
 class LiftAdmin(admin.ModelAdmin):
     search_fields = (
         "athlete__first_name",
-        "athelte__last_name",
+        "athlete__last_name",
         "competition__name",
         "competition__location",
     )
