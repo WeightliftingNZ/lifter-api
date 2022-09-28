@@ -1,3 +1,10 @@
+## 0.7.2 (2022-09-28)
+
+### Fix
+
+- fixing test error and staticfiles
+- fixing infinite scroll on home page
+
 ## 0.7.1 (2022-09-28)
 
 ### Refactor
