@@ -23,35 +23,27 @@ class TestAthleteCase:
             str(athlete.reference_id) for athlete in mock_athlete
         ]
         result_athlete_ids = [
-            comp["reference_id"] for comp in result["results"]
+            athlete["reference_id"] for athlete in result["results"]
         ]
         assert set(mock_athlete_ids) == set(result_athlete_ids)
 
-    def test_get_athlete(self, client, mock_athlete):
+    def test_get_athlete(self, client, athlete_factory):
         """Retrieve a particular athlete by id using the url."""
-        response = client.get(f"{self.url}/{mock_athlete[0].reference_id}")
+        athlete = athlete_factory()
+        response = client.get(f"{self.url}/{athlete.reference_id}")
         assert response.status_code == status.HTTP_200_OK
         result = response.json()
-        assert result["last_name"] == mock_athlete[0].last_name
+        assert result["last_name"] == athlete.last_name
 
-    @pytest.mark.parametrize(
-        "test_input,expected",
-        [
-            pytest.param(
-                "&search={}",
-                2,
-                id="2 match for name",
-            ),
-        ],
-    )
-    def test_find_athlete(self, client, mock_athlete, test_input, expected):
+    def test_find_athlete(self, client, athlete):
         """Find a athlete using the url search terms."""
         response = client.get(
-            f"{self.url}?search={mock_athlete[0].first_name} {mock_athlete[0].last_name}"
+            f"{self.url}?search={athlete.first_name} {athlete.last_name}"
         )
         assert response.status_code == status.HTTP_200_OK
         result = response.json()
         assert result["count"] > 0
+        assert result["results"][0]["first_name"] == athlete.first_name
 
     @pytest.mark.parametrize(
         "test_input,expected",

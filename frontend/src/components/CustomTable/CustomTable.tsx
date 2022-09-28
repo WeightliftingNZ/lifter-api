@@ -10,8 +10,8 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TablePagination from "@mui/material/TablePagination";
 import TableRowLink from "./tableRowLink";
-import { StyledTableCell } from "./customStyles";
 import TablePaginationActions from "./tablePaginationActions";
+import { StyledTableCell } from "./customStyles";
 
 interface RowProps extends Record<string, any> {}
 
@@ -27,10 +27,15 @@ interface CustomTableProps {
   uriBase: "competitions" | "athletes";
 }
 
-const CustomTable: React.FC<CustomTableProps> = (props: CustomTableProps) => {
-  const { columns, rows, page, handleChangePage, count, rowsPerPage, uriBase } =
-    props;
-
+const CustomTable: React.FC<CustomTableProps> = ({
+  columns,
+  rows,
+  page,
+  handleChangePage,
+  rowsPerPage,
+  uriBase,
+  count,
+}) => {
   return (
     <>
       <TableContainer

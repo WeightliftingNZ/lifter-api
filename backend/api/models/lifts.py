@@ -8,6 +8,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.functional import cached_property
 from hashid_field import HashidAutoField
+from simple_history.models import HistoricalRecords
 
 from api.models.utils import calculate_sinclair, determine_grade
 from config.settings import HASHID_FIELD_SALT
@@ -140,6 +141,11 @@ class Lift(models.Model):
     cnj_third_weight = models.IntegerField(blank=True, default=0)
 
     history = AuditlogHistoryField(pk_indexable=False)
+    history_record = HistoricalRecords(
+        history_id_field=HashidAutoField(
+            salt=f"lift_history_id_{HASHID_FIELD_SALT}"
+        )
+    )
 
     objects = LiftManager()
 

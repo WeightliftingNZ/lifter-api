@@ -1,233 +1,104 @@
 """Set mock data and set up fixtures to be used for testing."""
 
 import logging
-from dataclasses import dataclass, field
-from datetime import datetime
-from typing import Literal
 
+import factory.random
+import faker.config
 import pytest
 from django.db import connection
-from faker import Faker
+from pytest_factoryboy import register
 
 from api.models.athletes import Athlete
 from api.models.competitions import Competition
 from api.models.lifts import Lift
 
-Faker.seed(42)
-_faker = Faker("en_NZ")
+from .factories import (
+    AthleteFactory,
+    CompetitionFactory,
+    JuniorAthleteFactory,
+    LiftFactory,
+    MastersAthleteFactory,
+    Post2019Pre2022CompetitionFactory,
+    SeniorAthleteFactory,
+    YouthAthleteFactory,
+)
+
+register(AthleteFactory)
+register(YouthAthleteFactory)
+register(JuniorAthleteFactory)
+register(SeniorAthleteFactory)
+register(MastersAthleteFactory)
+register(CompetitionFactory)
+register(Post2019Pre2022CompetitionFactory)
+register(LiftFactory)
 
 
-@dataclass
-class AthleteMocker:
-    """Athlete mock."""
-
-    first_name: str = field(default_factory=_faker.first_name)
-    last_name: str = field(default_factory=_faker.last_name)
-    yearborn: int = field(
-        default_factory=lambda: _faker.date_of_birth(minimum_age=13).year
-    )
-
-
-@dataclass
-class CompetitionMocker:
-    """Competition mock."""
-
-    date_start: datetime = field(default_factory=datetime.now)
-    date_end: datetime = field(default_factory=datetime.now)
-    name: str = field(
-        default_factory=lambda: " ".join(["Competition", _faker.color_name])
-    )
-    location: str = field(default_factory=_faker.address)
-
-
-LiftStatusT = Literal["LIFT", "NOLIFT", "DNA"]
-
-
-@dataclass
-class LiftMocker:
-    """Lift mock."""
-
-    snatch_first: LiftStatusT
-    snatch_first_weight: int
-    snatch_second: LiftStatusT
-    snatch_second_weight: int
-    snatch_third: LiftStatusT
-    snatch_third_weight: int
-    cnj_first: LiftStatusT
-    cnj_first_weight: int
-    cnj_second: LiftStatusT
-    cnj_second_weight: int
-    cnj_third: LiftStatusT
-    cnj_third_weight: int
-    bodyweight: float
-    weight_category: str
-    team: str
-    session_number: int
-    lottery_number: int
-
-
-@pytest.fixture(scope="session", autouse=True)
-def faker():
-    """Faker instance."""
-    return Faker()
-
-
-@pytest.fixture(scope="session", autouse=True)
-def faker_session_locale():
-    """Set up local for faker."""
-    return ["en_NZ"]
-
-
-@pytest.fixture(scope="session", autouse=True)
-def faker_seed():
-    """Random seed to ensure faker information is consistent."""
-    return 42
+faker.config.DEFAULT_LOCALE = "en_NZ"
+factory.random.reseed_random(42)
 
 
 @pytest.fixture(scope="session")
 def django_db_setup(django_db_setup, django_db_blocker):
-    """Test database setup."""
+    """Test database setup.
+
+    Installing `pg_trgm` on to the test database, other wise '%' will not be \
+            recognised.
+    """
     logging.info(django_db_setup)
     with django_db_blocker.unblock(), connection.cursor() as cursor:
         cursor.execute("CREATE EXTENSION IF NOT EXISTS pg_trgm;")
 
 
 @pytest.fixture
-def mock_athlete(django_db_blocker) -> list[Athlete]:
+def mock_athlete() -> list[Athlete]:
     """Provide edited athlete data.
 
     Returns:
         list[Athlete]: list of mocked Athlete models.
     """
     ATHLETES = 4
-    athletes = [AthleteMocker() for _ in range(ATHLETES)]
-    created = []
-    with django_db_blocker.unblock():
-        for athlete in athletes:
-            created.append(Athlete.objects.create(**athlete.__dict__))
-    return created
+    return [AthleteFactory() for _ in range(ATHLETES)]
 
 
 @pytest.fixture
-def mock_competition(django_db_blocker, faker) -> list[Competition]:
+def mock_competition() -> list[Competition]:
     """Mock competition data.
 
     Returns:
         list[Competition]: list of mock competitions
     """
     # COMPETITIONS = 2
-    MOCK_COMPETIION_ONE = {
-        "date_start": str(datetime.now())[:10],
-        "date_end": str(datetime.now())[:10],
-        "name": f"Competition {faker.color_name()}",
-        "location": faker.company(),
-    }
-
-    MOCK_COMPETIION_TWO = {
-        "date_start": faker.date_between(
-            start_date=datetime(2019, 1, 1), end_date=datetime(2019, 1, 3)
-        ),
-        "date_end": faker.date_between(
-            start_date=datetime(2019, 1, 4), end_date=datetime(2019, 1, 8)
-        ),
-        "name": f"Competition {faker.color_name()}",
-        "location": MOCK_COMPETIION_ONE["location"],
-    }
-    # competitions = [CompetitionMocker() for _ in range(COMPETITIONS)]
-    competitions = [MOCK_COMPETIION_ONE, MOCK_COMPETIION_TWO]
-    created = []
-    for competition in competitions:
-        with django_db_blocker.unblock():
-            created.append(Competition.objects.create(**competition))
-    return created
+    MOCK_COMPETIION_ONE = Post2019Pre2022CompetitionFactory()
+    MOCK_COMPETIION_TWO = Post2019Pre2022CompetitionFactory(
+        location=MOCK_COMPETIION_ONE.location
+    )
+    return [MOCK_COMPETIION_ONE, MOCK_COMPETIION_TWO]
 
 
 @pytest.fixture
-def mock_lift(django_db_blocker, mock_competition, mock_athlete) -> list[Lift]:
+def mock_lift(mock_competition, mock_athlete) -> list[Lift]:
     """Mock lift data.
 
     Returns:
         list[Lift]: list of mock lifts
     """
-    lifts = [
-        {  # 0
-            "competition": Competition.objects.get(
-                reference_id=mock_competition[0].reference_id
-            ),
-            "athlete": Athlete.objects.get(
-                reference_id=mock_athlete[0].reference_id
-            ),
-            "snatch_first": "LIFT",
-            "snatch_first_weight": 100,
-            "snatch_second": "LIFT",
-            "snatch_second_weight": 101,
-            "snatch_third": "LIFT",
-            "snatch_third_weight": 102,
-            "cnj_first": "LIFT",
-            "cnj_first_weight": 100,
-            "cnj_second": "LIFT",
-            "cnj_second_weight": 101,
-            "cnj_third": "LIFT",
-            "cnj_third_weight": 102,
-            "bodyweight": 102.00,
-            "weight_category": "M102+",
-            "team": "TEST",
-            "session_number": 0,
-            "lottery_number": 1,
-        },
-        {  # 1
-            "competition": Competition.objects.get(
-                reference_id=mock_competition[0].reference_id
-            ),
-            "athlete": Athlete.objects.get(
-                reference_id=mock_athlete[1].reference_id
-            ),
-            "snatch_first": "LIFT",
-            "snatch_first_weight": 100,
-            "snatch_second": "LIFT",
-            "snatch_second_weight": 101,
-            "snatch_third": "LIFT",
-            "snatch_third_weight": 102,
-            "cnj_first": "LIFT",
-            "cnj_first_weight": 100,
-            "cnj_second": "LIFT",
-            "cnj_second_weight": 101,
-            "cnj_third": "LIFT",
-            "cnj_third_weight": 102,
-            "bodyweight": 102.00,
-            "weight_category": "M102+",
-            "team": "TEST",
-            "session_number": 0,
-            "lottery_number": 2,
-        },
-        {  # 2
-            "competition": Competition.objects.get(
-                reference_id=mock_competition[1].reference_id
-            ),
-            "athlete": Athlete.objects.get(
-                reference_id=mock_athlete[0].reference_id
-            ),
-            "snatch_first": "LIFT",
-            "snatch_first_weight": 100,
-            "snatch_second": "LIFT",
-            "snatch_second_weight": 101,
-            "snatch_third": "LIFT",
-            "snatch_third_weight": 102,
-            "cnj_first": "LIFT",
-            "cnj_first_weight": 100,
-            "cnj_second": "LIFT",
-            "cnj_second_weight": 101,
-            "cnj_third": "LIFT",
-            "cnj_third_weight": 102,
-            "bodyweight": 102.00,
-            "weight_category": "M102+",
-            "team": "TEST",
-            "session_number": 0,
-            "lottery_number": 1,
-        },
+    return [
+        LiftFactory(
+            competition=mock_competition[0],
+            athlete=mock_athlete[0],
+            session_number=0,
+            lottery_number=1,
+        ),
+        LiftFactory(
+            competition=mock_competition[0],
+            athlete=mock_athlete[1],
+            session_number=0,
+            lottery_number=2,
+        ),
+        LiftFactory(
+            competition=mock_competition[1],
+            athlete=mock_athlete[0],
+            session_number=0,
+            lottery_number=1,
+        ),
     ]
-    created = []
-    for lift in lifts:
-        with django_db_blocker.unblock():
-            created.append(Lift.objects.create(**lift))
-    return created

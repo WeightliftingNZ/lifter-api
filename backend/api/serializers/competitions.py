@@ -21,6 +21,7 @@ class CompetitionSerializer(serializers.ModelSerializer):
     )
     lifts_count = serializers.SerializerMethodField(read_only=True)
     random_lifts = serializers.SerializerMethodField(read_only=True)
+    last_edited = serializers.SerializerMethodField(read_only=True)
 
     def get_lifts_count(self, competition) -> int:
         return Lift.objects.filter(competition=competition).count()
@@ -51,6 +52,10 @@ class CompetitionSerializer(serializers.ModelSerializer):
             context=self.context,
         ).data
 
+    def get_last_edited(self, competition):
+        if competition.history_record:
+            return competition.history_record.latest().history_date
+
     class Meta:
         model = Competition
         fields = [
@@ -62,6 +67,7 @@ class CompetitionSerializer(serializers.ModelSerializer):
             "name",
             "lifts_count",
             "random_lifts",
+            "last_edited",
         ]
 
 
