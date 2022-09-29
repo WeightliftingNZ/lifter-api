@@ -6,7 +6,7 @@ import CustomSearchInput from "../../components/CustomSearchInput";
 import { useDebounce } from "usehooks-ts";
 import { useInfiniteQuery } from "react-query";
 import AthleteCard from "../../components/AthleteCard";
-import { Stack, Box } from "@mui/material";
+import { Box } from "@mui/material";
 import apiClient from "../../utils/http-common";
 import Title from "../../components/Title";
 import CustomError from "../../components/Error";
@@ -83,10 +83,8 @@ const AthleteListPage: React.FC = () => {
       <Box
         sx={{
           display: "flex",
-          flex: 1,
+          flexDirection: "column",
           gap: 2,
-          flexWrap: "wrap",
-          justifyContent: "flex-start",
         }}
       >
         <Box>
@@ -106,16 +104,16 @@ const AthleteListPage: React.FC = () => {
         <Box
           sx={{
             display: "flex",
-            flex: 1,
-            gap: 0,
-            flexDirection: "column",
-            alignItems: "flex-start",
+            gap: "inherit",
+            flexDirection: "inherit",
           }}
         >
           {isLoading && <CustomLoading />}
           {isError && <CustomError />}
           {isSuccess && (
-            <Stack sx={{ maxWidth: "max-content" }} spacing={1}>
+            <Box
+              sx={{ display: "flex", flexDirection: "inherit", gap: "inherit" }}
+            >
               {data?.pages.map((page) => (
                 <React.Fragment key={page}>
                   {page.results.map((athlete: AthleteListObjectProps) => (
@@ -130,17 +128,12 @@ const AthleteListPage: React.FC = () => {
                   ))}
                 </React.Fragment>
               ))}
-            </Stack>
+            </Box>
           )}
         </Box>
-        <>
-          "test"
-          {console.log("isFetchingNextPage", isFetchingNextPage)}
-          {console.log("hasNextPage", hasNextPage)}
-        </>
-      </Box>
-      <Box id={`infinity-${page}`} ref={observerElem}>
-        {isFetchingNextPage && hasNextPage ? <CustomLoading /> : null}
+        <Box id={`infinity-${page}`} ref={observerElem}>
+          {isFetchingNextPage && hasNextPage ? <CustomLoading /> : null}
+        </Box>
       </Box>
     </>
   );

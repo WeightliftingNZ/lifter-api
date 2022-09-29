@@ -101,9 +101,9 @@ const CompetitionRecent: React.FC = () => {
             ))}
           </Box>
         )}
-      </Box>
-      <Box id="infinite-scroll" ref={observerElem}>
-        {isFetchingNextPage && hasNextPage ? <CustomLoading /> : null}
+        <Box id="infinite-scroll" ref={observerElem}>
+          {isFetchingNextPage && hasNextPage ? <CustomLoading /> : null}
+        </Box>
       </Box>
     </>
   );

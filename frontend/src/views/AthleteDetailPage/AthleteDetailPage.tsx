@@ -1,6 +1,6 @@
 /** @format */
 
-import React from "react";
+import React, { useState } from "react";
 import { useQuery } from "react-query";
 import { useParams } from "react-router-dom";
 import apiClient from "../../utils/http-common";
@@ -18,7 +18,6 @@ import Box from "@mui/material/Box";
 import { Column } from "./interfaces";
 import Paper from "@mui/material/Paper";
 import Title from "../../components/Title";
-import SubTitle from "../../components/SubTitle";
 import AgeCategoryBadges from "../../components/AgeCategoryBadges";
 import moment from "moment";
 
@@ -32,7 +31,7 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
-import { CardContent, Typography, Stack } from "@mui/material";
+import { CardContent, Typography, Stack, Tabs, Tab } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 
 interface LiftChartDataProps {
@@ -159,26 +158,34 @@ const columns: Column[] = [
 const AthleteDetailPage: React.FC = () => {
   const params = useParams();
   const AthleteId = params.athleteReferenceId;
+  const [value, setValue] = useState(0);
 
-  const { data, isLoading, isError } = useQuery(
+  const handleOnChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
+
+  const fetchAthlete = async () => {
+    const res = await apiClient.get(`/athletes/${AthleteId}`);
+    return res.data;
+  };
+
+  const { data, error, isLoading, isError, isSuccess } = useQuery(
     ["athlete", AthleteId],
-    async () => {
-      const res = await apiClient.get(`/athletes/${AthleteId}`);
-      return res.data;
-    }
+    () => fetchAthlete(),
+    { enabled: true }
   );
+
   if (isLoading) {
     return <CustomLoading />;
   }
 
   if (isError) {
-    return <CustomError />;
+    console.log(error);
   }
 
   const parsedData: AthleteDetailObjectProps = data;
   const rows: LiftObjectProps[] = parsedData.lift_set;
   const fullName: string = parsedData.full_name;
-  const birthYear: number = parsedData.yearborn;
   const liftsCount: number = parsedData.lift_set.length;
   const ageCategories: AgeCategoriesProps = parsedData.age_categories;
 
@@ -197,27 +204,49 @@ const AthleteDetailPage: React.FC = () => {
   });
 
   return (
-    <>
-      <Box>
-        <Title>{fullName}</Title>
-        <SubTitle>Birth Year: {birthYear}</SubTitle>
-        <AgeCategoryBadges ageCategories={ageCategories} />
-      </Box>
-      <Box sx={{ mt: 6 }}>
-        {liftsCount === 0 ? (
-          <Alert severity="info">No lifts recorded for "{fullName}"</Alert>
-        ) : (
-          <>
-            <Box>
-              <LiftChart data={chartData} />
-            </Box>
-            <Box>
-              <CustomTable rows={rows} columns={columns} />
-            </Box>
-          </>
-        )}
-      </Box>
-    </>
+    <Box
+      sx={{
+        display: "flex",
+        flexWrap: "wrap",
+        flexDirection: "column",
+        gap: 2,
+      }}
+    >
+      {isLoading && !data && <CustomLoading />}
+      {isError && <CustomError />}
+      {isSuccess && data && (
+        <>
+          <Title>{fullName}</Title>
+          <AgeCategoryBadges ageCategories={ageCategories} />
+          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+            <Tabs
+              value={value}
+              onChange={handleOnChange}
+              aria-label="athlete selection tabs"
+            >
+              <Tab label="Lifts"></Tab>
+              <Tab label="Stats"></Tab>
+            </Tabs>
+          </Box>
+          {liftsCount === 0 ? (
+            <Alert severity="info">No lifts recorded for "{fullName}"</Alert>
+          ) : (
+            <>
+              {value === 0 && (
+                <Box>
+                  <CustomTable rows={rows} columns={columns} />
+                </Box>
+              )}
+              {value === 1 && (
+                <Box>
+                  <LiftChart data={chartData} />
+                </Box>
+              )}
+            </>
+          )}
+        </>
+      )}
+    </Box>
   );
 };
 

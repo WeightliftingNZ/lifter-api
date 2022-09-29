@@ -35,9 +35,8 @@ const CompetitionDetailPage: React.FC = () => {
     <Box
       sx={{
         display: "flex",
-        flexWrap: "wrap",
+        flexDirection: "column",
         gap: 2,
-        justifyContent: "flex-start",
       }}
     >
       {isLoading && !data && <CompetitionDetailLoading />}
@@ -46,12 +45,10 @@ const CompetitionDetailPage: React.FC = () => {
         <>
           <Box sx={{ m: 1 }}>
             <Title>{data?.name}</Title>
-            <Box sx={{ display: "flex", gap: 2 }}>
-              {data?.location}
-              <br />
-              {dateRangeProvider(data?.date_start, data?.date_end)}
-              <br />
-              Athletes: {data?.lifts_count}
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+              <Box>{data?.location}</Box>
+              <Box>{dateRangeProvider(data?.date_start, data?.date_end)}</Box>
+              <Box>Athletes: {data?.lifts_count}</Box>
             </Box>
           </Box>
           <LiftTable liftSet={data?.lift_set} />
