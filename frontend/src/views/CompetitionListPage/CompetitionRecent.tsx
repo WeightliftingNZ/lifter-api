@@ -93,7 +93,7 @@ const CompetitionRecent: React.FC = () => {
                       liftCount={competition.lifts_count}
                       dateStart={competition.date_start}
                       dateEnd={competition.date_end}
-                      randomLifts={competition.random_lifts}
+                      liftSet={competition.random_lifts}
                     />
                   </React.Fragment>
                 ))}
@@ -101,9 +101,9 @@ const CompetitionRecent: React.FC = () => {
             ))}
           </Box>
         )}
-        <Box ref={observerElem}>
-          {isFetchingNextPage && hasNextPage ? <CustomLoading /> : null}
-        </Box>
+      </Box>
+      <Box id="infinite-scroll" ref={observerElem}>
+        {isFetchingNextPage && hasNextPage ? <CustomLoading /> : null}
       </Box>
     </>
   );

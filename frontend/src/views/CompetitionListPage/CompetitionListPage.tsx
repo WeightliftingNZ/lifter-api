@@ -103,9 +103,7 @@ const CompetitionListPage: React.FC = () => {
       }}
     >
       <Box>
-        <Box>
-          <Title>Competition Search</Title>
-        </Box>
+        <Title>Competition Search</Title>
         <Stack spacing={2}>
           <CustomSearchInput
             label="Search competitions"
@@ -160,14 +158,14 @@ const CompetitionListPage: React.FC = () => {
                     dateStart={competition.date_start}
                     dateEnd={competition.date_end}
                     liftCount={competition.lifts_count}
-                    randomLifts={competition.random_lifts}
+                    liftSet={competition.random_lifts}
                   />
                 ))}
               </React.Fragment>
             ))}
           </Stack>
         )}
-        <Box ref={observerElem}>
+        <Box id="infinite" ref={observerElem}>
           {isFetchingNextPage && hasNextPage ? <CustomLoading /> : null}
         </Box>
       </Box>

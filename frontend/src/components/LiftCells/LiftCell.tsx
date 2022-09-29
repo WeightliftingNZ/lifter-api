@@ -6,7 +6,10 @@ import { SxProps, TableCell } from "@mui/material";
 import { green, red } from "@mui/material/colors";
 import { LiftCellProps } from "./interfaces";
 
-const LiftCell: React.FC<LiftCellProps> = ({ isBest, liftStatus, weight }) => {
+const LiftCell: React.FC<LiftCellProps> = (
+  { isBest, liftStatus, weight, isEnd },
+  props
+) => {
   const veryDarkGreen = "#011202";
   const veryDarkRed = "#1c0303";
 
@@ -19,6 +22,7 @@ const LiftCell: React.FC<LiftCellProps> = ({ isBest, liftStatus, weight }) => {
     borderColor: isDarkMode ? green[800] : green[400],
     textAlign: "center",
     ...(isBest && { fontWeight: "bolder", borderWidth: 3 }),
+    ...(isEnd && { borderRight: 1 }),
   };
 
   const noLiftSx: SxProps = {
@@ -27,6 +31,7 @@ const LiftCell: React.FC<LiftCellProps> = ({ isBest, liftStatus, weight }) => {
     borderColor: isDarkMode ? red[800] : red[400],
     textAlign: "center",
     ...(liftStatus === "NOLIFT" && { textDecoration: "line-through" }),
+    ...(isEnd && { borderRight: 1 }),
   };
 
   switch (liftStatus) {

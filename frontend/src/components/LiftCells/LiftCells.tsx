@@ -36,6 +36,7 @@ const LiftCells: React.FC<LiftObjectProps> = ({
         weight={snatch_second_weight}
       />
       <LiftCell
+        isEnd
         isBest={best_snatch === "3rd"}
         liftStatus={snatch_third}
         weight={snatch_third_weight}

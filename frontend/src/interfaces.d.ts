@@ -27,6 +27,7 @@ export interface CompetitionListObjectProps {
   name: string;
   reference_id: string;
   url: string;
+  last_edited: string;
 }
 
 export interface CompetitionDetailObjectProps
