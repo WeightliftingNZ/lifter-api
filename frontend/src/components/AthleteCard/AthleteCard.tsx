@@ -92,7 +92,13 @@ const AthleteCard: React.FC<AthleteCardProps> = ({
                       <TableCell>
                         {moment(lift.competition_date_start).from(moment())}
                       </TableCell>
-                      <TableCell sx={{ maxWidth: 100 }}>
+                      <TableCell
+                        sx={{
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          maxWidth: 100,
+                        }}
+                      >
                         {lift.competition_name}
                       </TableCell>
                       <TableCell>{lift.weight_category}</TableCell>
