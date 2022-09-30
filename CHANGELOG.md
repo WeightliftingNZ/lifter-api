@@ -1,3 +1,22 @@
+## 0.9.0 (2022-09-30)
+
+### Feat
+
+- added search tooling to admin for athlete, competition, lift
+
+### Fix
+
+- fixing athlete link to competition
+- bodyweight comparison fixed on test code
+
+### Refactor
+
+- improving athlete list
+- improved athlete card
+- improved athlete view and fonts
+- **competitiondetailpage.tsx**: refactored and improved table look
+- updaing branch
+
 ## 0.8.0 (2022-09-28)
 
 ### Feat
