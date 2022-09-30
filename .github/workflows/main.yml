@@ -61,7 +61,7 @@ jobs:
         name: Generage coverage report
         run: |
           cd backend
-          pipenv run coverage
+          pipenv run pytest -n auto --cov --cov-config=../pyproject.toml --cov-branch
 
       - id: store-coverage-report
         name: Store coverage report
