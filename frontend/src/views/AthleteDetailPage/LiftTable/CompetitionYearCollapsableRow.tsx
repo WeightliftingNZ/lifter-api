@@ -4,32 +4,33 @@ import { Collapse, IconButton, TableCell, TableRow } from "@mui/material";
 import React, { useState } from "react";
 import { LiftObjectProps } from "../../../interfaces";
 import { printWeightCategories } from "../../../utils/customFunctions/customFunctions";
-import { TABLE_COL_SPAN } from "./constants";
-import { WeightCategoryCollapsableRowProps } from "./interfaces";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import WeightCategoryTable from "./WeightCategoryTable";
+import WeightCategoryTable from "./CompetitionYearTable";
+import { CompetitionYearCollapsableRowProps } from "./interfaces";
 
-const WeightCategoryCollapsableRow: React.FC<
-  WeightCategoryCollapsableRowProps
-> = ({ groupByWeightCategory, weightCategory }) => {
+const TABLE_COL_SPAN = 15;
+
+const CompetitionYearCollapsableRow: React.FC<
+  CompetitionYearCollapsableRowProps
+> = ({ groupByCompetitionYear, competitionYear }) => {
   const [open, setOpen] = useState(true);
 
   const handleOnClick = () => setOpen(!open);
 
-  const lifts: LiftObjectProps[] = groupByWeightCategory[weightCategory];
+  const lifts: LiftObjectProps[] = groupByCompetitionYear[competitionYear];
   return (
     <>
       <TableRow>
         <TableCell
-          key={weightCategory}
-          id={weightCategory}
+          key={competitionYear}
+          id={competitionYear}
           variant="head"
           colSpan={TABLE_COL_SPAN}
         >
-          {printWeightCategories(weightCategory)}
+          {competitionYear}
           <IconButton
-            aria-label={`expand ${printWeightCategories(weightCategory)} row`}
+            aria-label={`expand ${printWeightCategories(competitionYear)} row`}
             size="small"
             onClick={handleOnClick}
           >
@@ -54,4 +55,4 @@ const WeightCategoryCollapsableRow: React.FC<
   );
 };
 
-export default WeightCategoryCollapsableRow;
+export default CompetitionYearCollapsableRow;

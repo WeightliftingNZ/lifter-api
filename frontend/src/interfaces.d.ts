@@ -27,7 +27,8 @@ export interface CompetitionListObjectProps {
   name: string;
   reference_id: string;
   url: string;
-  last_edited: string;
+  competition_last_edited: string;
+  lift_last_edited?: string;
 }
 
 export interface CompetitionDetailObjectProps
@@ -68,8 +69,11 @@ export interface AthleteListObjectProps {
   first_name: string;
   last_name: string;
   yearborn: number;
-  age_categories: ageCategories;
+  lifts_count: number;
+  athlete_last_edited: string;
+  lift_last_edited?: string;
   current_grade: GradeT;
+  age_categories: ageCategories;
   recent_lift: LiftObjectProps[];
 }
 

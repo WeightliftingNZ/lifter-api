@@ -11,7 +11,7 @@ const SubTitle: React.FC<React.PropsWithChildren<SubTitleProps>> = (
   props: SubTitleProps
 ) => {
   return (
-    <Typography component="h6" color="primary" variant="subtitle2" gutterBottom>
+    <Typography component="h6" color="primary" variant="subtitle2">
       {props.children}
     </Typography>
   );

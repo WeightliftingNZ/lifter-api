@@ -3,7 +3,7 @@
 import { Table, TableBody, TableContainer } from "@mui/material";
 import React from "react";
 import { LiftObjectProps } from "../../../interfaces";
-import { groupByWeightCategoryProps, LiftTableProps } from "../interfaces";
+import { groupByWeightCategoryProps, LiftTableProps } from "./interfaces";
 import WeightCategoryCollapsableRow from "./WeightCategoryCollapsableRow";
 
 const LiftTable: React.FC<LiftTableProps> = ({ liftSet }) => {

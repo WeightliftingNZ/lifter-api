@@ -83,7 +83,7 @@ const LoadingTable: React.FC = () => (
   </TableContainer>
 );
 
-const CompetitionDetailLoading: React.FC = () => {
+const CustomLoading: React.FC = () => {
   const NUM = 3;
   return (
     <Box sx={{ m: 1 }}>
@@ -120,4 +120,4 @@ const CompetitionDetailLoading: React.FC = () => {
   );
 };
 
-export default CompetitionDetailLoading;
+export default CustomLoading;

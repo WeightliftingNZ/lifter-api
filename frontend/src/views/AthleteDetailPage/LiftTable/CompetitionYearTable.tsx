@@ -14,18 +14,21 @@ import React from "react";
 import AgeCategoryBadges from "../../../components/AgeCategoryBadges";
 import LiftCells from "../../../components/LiftCells";
 import { LiftObjectProps } from "../../../interfaces";
-import { WeightCategoryTableProps } from "./interfaces";
+import { CompetitionYearTableProps } from "./interfaces";
+import moment from "moment";
 
-const WeightCategoryTable: React.FC<WeightCategoryTableProps> = ({ lifts }) => (
+const CompetitionYearTable: React.FC<CompetitionYearTableProps> = ({
+  lifts,
+}) => (
   <TableContainer sx={{ maxWidth: "95vw" }}>
     <Table>
       <TableHead>
         <TableRow>
-          <TableCell align="center">Lott.</TableCell>
           <TableCell align="center" colSpan={2}>
-            Name
+            Competition
           </TableCell>
           <TableCell align="center">Team</TableCell>
+          <TableCell align="center">Weight Cat.</TableCell>
           <TableCell align="center" colSpan={3}>
             Snatch
           </TableCell>
@@ -34,7 +37,9 @@ const WeightCategoryTable: React.FC<WeightCategoryTableProps> = ({ lifts }) => (
           </TableCell>
           <TableCell align="center">Total</TableCell>
           <TableCell align="center">Sinclair</TableCell>
-          <TableCell align="center">Place</TableCell>
+          <TableCell align="center" colSpan={2}>
+            Place
+          </TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
@@ -42,7 +47,7 @@ const WeightCategoryTable: React.FC<WeightCategoryTableProps> = ({ lifts }) => (
           <TableRow
             hover
             key={lift.reference_id}
-            id={`athete-${lift.reference_id}`}
+            id={`lift-${lift.reference_id}`}
             sx={{
               "&:last-child td, &:last-child th": {
                 border: 0,
@@ -56,19 +61,19 @@ const WeightCategoryTable: React.FC<WeightCategoryTableProps> = ({ lifts }) => (
                   display: "block",
                   width: "100%",
                   height: "100%",
-                  m: -3,
-                  p: 3,
                   textDecoration: "none",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  maxWidth: 100,
                 }}
                 component={RouterLink}
-                to={`/athletes/${lift.athlete}`}
+                to={`/competition/${lift.competition}#${lift.weight_category}`}
               >
-                {lift.lottery_number}
+                {lift.competition_name}
               </Link>
             </TableCell>
-            <TableCell sx={{ maxWidth: 100 }}>{lift.athlete_name}</TableCell>
-            <TableCell sx={{ maxWidth: 100 }}>
-              <AgeCategoryBadges isColumn ageCategories={lift.age_categories} />
+            <TableCell>
+              {moment(lift.competition_date_start).format("ddd, Do MMM")}
             </TableCell>
             <TableCell
               sx={{
@@ -79,6 +84,7 @@ const WeightCategoryTable: React.FC<WeightCategoryTableProps> = ({ lifts }) => (
             >
               {lift.team}
             </TableCell>
+            <TableCell>{lift.weight_category}</TableCell>
             <LiftCells {...lift} />
             <TableCell align="center">
               {lift.total_lifted === 0 ? "-" : lift.total_lifted}
@@ -87,6 +93,9 @@ const WeightCategoryTable: React.FC<WeightCategoryTableProps> = ({ lifts }) => (
               {lift.sinclair === 0 ? "-" : lift.total_lifted}
             </TableCell>
             <TableCell align="center">{lift.placing}</TableCell>
+            <TableCell sx={{ maxWidth: 100 }}>
+              <AgeCategoryBadges isColumn ageCategories={lift.age_categories} />
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>
@@ -94,4 +103,4 @@ const WeightCategoryTable: React.FC<WeightCategoryTableProps> = ({ lifts }) => (
   </TableContainer>
 );
 
-export default WeightCategoryTable;
+export default CompetitionYearTable;

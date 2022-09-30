@@ -32,7 +32,13 @@ test:
 	clear
 	docker-compose up --build db -d && \
 	cd ./backend && \
-	pipenv run pytest
+	pipenv run pytest -k $(ARGPATH)
+
+.PHONY: test-frontend
+test-frontend:
+	clear
+	cd ./frontend && \
+	npm test
 
 .PHONY: mypy
 mypy:

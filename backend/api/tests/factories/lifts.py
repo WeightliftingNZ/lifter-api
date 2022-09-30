@@ -1,7 +1,6 @@
 """Lift factories."""
 
 import random
-from decimal import Decimal
 from typing import Literal
 
 import factory
@@ -41,8 +40,6 @@ def _determine_lift(
 
 class LiftFactory(factory.django.DjangoModelFactory):
     """Lift factory."""
-
-    # TODO: will this work?
 
     class Meta:
         """LiftFactory settings."""
@@ -112,10 +109,9 @@ class LiftFactory(factory.django.DjangoModelFactory):
         """Third clean and jerk weight."""
         return _determine_lift((self.cnj_second, self.cnj_second_weight))
 
-    @factory.lazy_attribute
-    def bodyweight(self):
-        """Generate random bodyweight."""
-        return round(Decimal(random.uniform(50, 150)), 2)
+    bodyweight = factory.Faker(
+        "pydecimal", positive=True, min_value=50, max_value=150, right_digits=2
+    )
 
     # TODO: weight cats
     weight_category = "M96"
