@@ -57,32 +57,31 @@ jobs:
           python -m pip install tox tox-gh-actions
           tox
 
-      - id: coverage-badge
-        name: Coverage Badge
-        uses: tj-actions/coverage-badge-py@v1.8
-        with:
-          run: cd backend
-
-      - id: changed-files
-        name: Verify Changed files
-        uses: tj-actions/verify-changed-files@v9
-        with:
-          files: coverage.svg
-
-      - name: Commit files
-        if: steps.changed-files.outputs.files_changed == 'true'
+      - id: generate-coverage
+        name: Generage coverage report
         run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git add coverage.svg
-          git commit -m "Updated coverage.svg"
+          cd backend
+          pipenv run coverage
 
-      - name: Push changes
-        if: steps.changed-files.outputs.files_changed == 'true'
-        uses: ad-m/github-push-action@master
+      - id: store-coverage-report
+        name: Store coverage report
+        uses: actions/upload-artifact@v3
         with:
-          github_token: ${{ secrets.github_token }}
-          branch: ${{ github.ref }}
+          name: coverage
+          path: backend/.coverage
+
+      - id: coverage-comment
+        name: Coverage comment
+        uses: py-cov-action/python-coverage-comment-action@v3
+        with:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Store Pull Request comment to be posted
+        uses: actions/upload-artifact@v3
+        if: steps.coverage-comment.outputs.COMMENT_FILE_WRITTEN == 'true'
+        with:
+          name: python-coverage-comment-action
+          path: python-coverage-comment-action.txt
 
       - id: install-node
         name: Install Node
