@@ -6,10 +6,12 @@ import { SxProps, TableCell } from "@mui/material";
 import { green, red } from "@mui/material/colors";
 import { LiftCellProps } from "./interfaces";
 
-const LiftCell: React.FC<LiftCellProps> = (
-  { isBest, liftStatus, weight, isEnd },
-  props
-) => {
+const LiftCell: React.FC<LiftCellProps> = ({
+  isBest,
+  liftStatus,
+  weight,
+  isEnd,
+}) => {
   const veryDarkGreen = "#011202";
   const veryDarkRed = "#1c0303";
 

@@ -15,7 +15,6 @@ import { PAGE_LIMIT } from "../../constants";
 
 const AthleteListPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [page, setPage] = useState<number>(0);
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
   const observerElem = useRef(null);
 
@@ -131,7 +130,7 @@ const AthleteListPage: React.FC = () => {
             </Box>
           )}
         </Box>
-        <Box id={`infinity-${page}`} ref={observerElem}>
+        <Box ref={observerElem}>
           {isFetchingNextPage && hasNextPage ? <CustomLoading /> : null}
         </Box>
       </Box>

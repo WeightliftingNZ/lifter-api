@@ -67,7 +67,7 @@ const CompetitionYearTable: React.FC<CompetitionYearTableProps> = ({
                   maxWidth: 100,
                 }}
                 component={RouterLink}
-                to={`/competition/${lift.competition}#${lift.weight_category}`}
+                to={`/competitions/${lift.competition}#${lift.weight_category}`}
               >
                 {lift.competition_name}
               </Link>
