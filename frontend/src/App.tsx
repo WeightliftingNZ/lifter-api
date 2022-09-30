@@ -17,6 +17,10 @@ import { useMediaQuery } from "@mui/material";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import type {} from "@mui/x-date-pickers/themeAugmentation";
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
 
 export const ColorModeContext = createContext({ toggleColorMode: () => {} });
 

@@ -19,11 +19,14 @@ class CompetitionSerializer(serializers.ModelSerializer):
         ),
         read_only=True,
     )
+
     lifts_count = serializers.SerializerMethodField(read_only=True)
     random_lifts = serializers.SerializerMethodField(read_only=True)
-    last_edited = serializers.SerializerMethodField(read_only=True)
+    competition_last_edited = serializers.SerializerMethodField(read_only=True)
+    lift_last_edited = serializers.SerializerMethodField(read_only=True)
 
     def get_lifts_count(self, competition) -> int:
+        """Provide count of all lifts in a competition."""
         return Lift.objects.filter(competition=competition).count()
 
     def get_random_lifts(self, competition):
@@ -52,22 +55,30 @@ class CompetitionSerializer(serializers.ModelSerializer):
             context=self.context,
         ).data
 
-    def get_last_edited(self, competition):
-        if competition.history_record:
+    def get_competition_last_edited(self, competition):
+        """Provide when competition was last edited."""
+        if competition.history_record.all():
             return competition.history_record.latest().history_date
+
+    def get_lift_last_edited(self, competition):
+        """Provide when lifts for a competition were last edited."""
+        lifts = Lift.history_record.filter(competition=competition)
+        if lifts:
+            return lifts.latest().history_date
 
     class Meta:
         model = Competition
         fields = [
             "url",
             "reference_id",
+            "name",
+            "location",
             "date_start",
             "date_end",
-            "location",
-            "name",
+            "competition_last_edited",
+            "lift_last_edited",
             "lifts_count",
             "random_lifts",
-            "last_edited",
         ]
 
 
@@ -75,7 +86,7 @@ class CompetitionDetailSerializer(CompetitionSerializer):
     lift_set = serializers.SerializerMethodField(read_only=True)
 
     def get_lift_set(self, competition):
-        """Required to ensure lifts are in custom order due to weight classes."""
+        """Require to ensure lifts are in custom order due to weight classes."""
         query = Lift.objects.ordered_filter(**{"competition": competition})
         return LiftSerializer(
             query, many=True, read_only=True, context=self.context

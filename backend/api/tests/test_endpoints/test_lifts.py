@@ -3,6 +3,7 @@
 Lift retrieve, create, edit and delete.
 """
 from contextlib import nullcontext as does_not_raise
+from decimal import Decimal
 
 import pytest
 from django.core.exceptions import ValidationError
@@ -57,7 +58,7 @@ class TestLift:
         assert result["sinclair"] == float(lift.sinclair)
         assert result["grade"] == lift.grade
         assert result["age_categories"] == lift.age_categories
-        assert str(result["bodyweight"]) == str(lift.bodyweight)
+        assert Decimal(result["bodyweight"]) == lift.bodyweight
         assert result["weight_category"] == lift.weight_category
         assert result["team"] == lift.team
         assert result["session_number"] == lift.session_number

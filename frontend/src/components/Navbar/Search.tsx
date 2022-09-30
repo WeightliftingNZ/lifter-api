@@ -74,7 +74,6 @@ const CombinedSearch: React.FC<CombinedSearchProps> = ({
   };
 
   const renderOption = (props: any, option: any) => {
-    console.log("render", option);
     return (
       <List>
         <ListItem disablePadding>

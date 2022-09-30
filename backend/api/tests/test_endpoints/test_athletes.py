@@ -33,7 +33,10 @@ class TestAthleteCase:
         response = client.get(f"{self.url}/{athlete.reference_id}")
         assert response.status_code == status.HTTP_200_OK
         result = response.json()
+        assert result["first_name"] == athlete.first_name
         assert result["last_name"] == athlete.last_name
+        assert result["yearborn"] == athlete.yearborn
+        assert result["age_categories"] == athlete.age_categories
 
     def test_find_athlete(self, client, athlete):
         """Find a athlete using the url search terms."""

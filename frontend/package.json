@@ -5,6 +5,7 @@
   "dependencies": {
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
+    "@fontsource/roboto": "^4.5.8",
     "@mui/icons-material": "^5.10.3",
     "@mui/material": "^5.10.4",
     "@mui/x-date-pickers": "^5.0.3",
@@ -31,8 +32,12 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "jest",
-    "eject": "react-scripts eject",
-    "prepare": "cd .. && husky install frontend/.husky"
+    "eject": "react-scripts eject"
+  },
+  "globals": {
+    "ts-jest": {
+      "tsConfig": "."
+    }
   },
   "prettier": {
     "arrowParens": "always",
@@ -52,6 +57,12 @@
     "trailingComma": "es5",
     "useTabs": false,
     "vueIndentScriptAndStyle": false
+  },
+  "jest": {
+    "verbose": true,
+    "collectCoverage": true,
+    "coverageDirectory": "coverage",
+    "watchman": true
   },
   "eslintConfig": {
     "plugins": [
@@ -89,10 +100,11 @@
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.18.6",
-    "@types/jest": "^29.0.1",
+    "@types/jest": "^29.1.0",
+    "@types/react-test-renderer": "^18.0.0",
     "eslint-plugin-unused-imports": "^2.0.0",
-    "husky": "^8.0.1",
     "jest": "^27.5.1",
+    "react-test-renderer": "^18.2.0",
     "ts-node": "^10.9.1"
   }
 }

@@ -4,82 +4,80 @@ import React from "react";
 import { useQuery } from "react-query";
 import { useParams } from "react-router-dom";
 import apiClient from "../../utils/http-common";
-import CustomLoading from "../../components/Loading";
 import CustomError from "../../components/Error";
-import CustomTable from "./table";
-import {
-  CompetitionDetailObjectProps,
-  LiftObjectProps,
-} from "../../interfaces";
-import Alert from "@mui/material/Alert";
-import { dateTimeConverter } from "../../utils/customFunctions/customFunctions";
-import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-
-const COLUMNS_TO_SHOW: (keyof LiftObjectProps)[] = [
-  "lottery_number",
-  "athlete_name",
-  "sinclair",
-  "total_lifted",
-  "bodyweight",
-  "weight_category",
-  "team",
-  "placing",
-];
+import Title from "../../components/Title";
+import { dateRangeProvider } from "../../utils/customFunctions/customFunctions";
+import LiftTable from "./LiftTable";
+import CustomLoading from "./Loading";
+import moment from "moment";
+import { Alert } from "@mui/material";
+import SubTitle from "../../components/SubTitle";
+import CompetitionBadges from "../../components/CompetitionBadges";
 
 const CompetitionDetailPage: React.FC = () => {
   const params = useParams();
   const competitionId = params.competitionReferenceId;
 
-  const { data, isLoading, isError } = useQuery(
+  const fetchCompetition = async () => {
+    const res = await apiClient.get(`/competitions/${competitionId}`);
+    return res.data;
+  };
+
+  const { data, isLoading, isError, isSuccess, error } = useQuery(
     ["competitions", competitionId],
-    async () => {
-      const res = await apiClient.get(`/competitions/${competitionId}`);
-      return res.data;
-    }
+    () => fetchCompetition(),
+    { enabled: true }
   );
-  if (isLoading) {
-    return <CustomLoading />;
-  }
 
   if (isError) {
-    return <CustomError />;
+    console.log(error);
   }
 
-  const parsedData: CompetitionDetailObjectProps = data;
-  const rows: LiftObjectProps[] = parsedData.lift_set;
-  const columns: (keyof LiftObjectProps)[] = COLUMNS_TO_SHOW;
-  const name: string = parsedData.name;
-  const dateStart: string = parsedData.date_start;
-  const dateEnd: string = parsedData.date_end;
-  const liftCounts: number = parsedData.lifts_count;
-
   return (
-    <>
-      <Box>
-        <Typography variant="h4" gutterBottom>
-          {name}
-        </Typography>
-        <Typography variant="subtitle2">
-          {dateTimeConverter(dateStart, false)}
-          {dateStart !== dateEnd
-            ? ` - ${dateTimeConverter(dateEnd, false)}`
-            : ""}
-        </Typography>
-        <Typography variant="subtitle2">
-          Number of lifts: {liftCounts}
-        </Typography>
-      </Box>
-      <Box sx={{ mt: 6 }}>
-        {rows.length === 0 ? (
-          <Alert severity="info">
-            No lifts recorded for "{name}" competition
-          </Alert>
-        ) : (
-          <CustomTable rows={rows} columns={columns} />
-        )}
-      </Box>
-    </>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 2,
+      }}
+    >
+      {isLoading && !data && <CustomLoading />}
+      {isError && <CustomError />}
+      {isSuccess && data && (
+        <>
+          <Box sx={{ m: 1 }}>
+            <Title>{data?.name}</Title>
+            <CompetitionBadges name={data?.name} />
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+              <Box>{data?.location}</Box>
+              <Box>{dateRangeProvider(data?.date_start, data?.date_end)}</Box>
+              {data?.lifts_count > 1 && (
+                <Box>Athletes: {data?.lifts_count}</Box>
+              )}
+            </Box>
+          </Box>
+          {data?.lift_count === 0 ? (
+            <Alert severity="info">Pending results</Alert>
+          ) : (
+            <LiftTable liftSet={data?.lift_set} />
+          )}
+          <Box sx={{ m: 1 }}>
+            Last Updated:
+            <SubTitle>
+              {`Competition details: ${moment(
+                data?.competition_last_edited
+              ).format("dddd, MMMM Do YYYY, h:mm a")}`}
+            </SubTitle>
+            <SubTitle>
+              {`Lift details: ${moment(data?.lift_last_edited).format(
+                "dddd, MMMM Do YYYY, h:mm a"
+              )}`}
+            </SubTitle>
+          </Box>
+        </>
+      )}
+    </Box>
   );
 };
 

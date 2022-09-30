@@ -1,6 +1,9 @@
 /** @format */
 
-export interface LiftCellProps {
+import { TableCellProps } from "@mui/material";
+
+export interface LiftCellProps extends TableCellProps {
+  isEnd?: boolean;
   isBest: boolean;
   liftStatus: "LIFT" | "NOLIFT" | "DNA";
   weight: number;

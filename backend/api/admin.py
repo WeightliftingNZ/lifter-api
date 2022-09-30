@@ -29,10 +29,10 @@ class CompetitionAdmin(admin.ModelAdmin):
 
 class LiftAdmin(admin.ModelAdmin):
     search_fields = (
-        "athlete__first_name",
-        "athlete__last_name",
         "competition__name",
         "competition__location",
+        "athlete__first_name",
+        "athlete__last_name",
     )
     readonly_fields = ("reference_id",)
     fieldsets = (
