@@ -10,10 +10,9 @@ import Title from "../../components/Title";
 import { dateRangeProvider } from "../../utils/customFunctions/customFunctions";
 import LiftTable from "./LiftTable";
 import CustomLoading from "./Loading";
-import moment from "moment";
-import { Alert } from "@mui/material";
-import SubTitle from "../../components/SubTitle";
 import CompetitionBadges from "../../components/CompetitionBadges";
+import NoResults from "../../components/NoResults";
+import LastUpdated from "../../components/LastUpdated";
 
 const CompetitionDetailPage: React.FC = () => {
   const params = useParams();
@@ -53,28 +52,20 @@ const CompetitionDetailPage: React.FC = () => {
               <Box>{data?.location}</Box>
               <Box>{dateRangeProvider(data?.date_start, data?.date_end)}</Box>
               {data?.lifts_count > 1 && (
-                <Box>Athletes: {data?.lifts_count}</Box>
+                <Box>
+                  <b>{data?.lifts_count}</b> Athletes
+                </Box>
               )}
             </Box>
           </Box>
           {data?.lift_count === 0 ? (
-            <Alert severity="info">Pending results</Alert>
+            <NoResults />
           ) : (
             <LiftTable liftSet={data?.lift_set} />
           )}
-          <Box sx={{ m: 1 }}>
-            Last Updated:
-            <SubTitle>
-              {`Competition details: ${moment(
-                data?.competition_last_edited
-              ).format("dddd, MMMM Do YYYY, h:mm a")}`}
-            </SubTitle>
-            <SubTitle>
-              {`Lift details: ${moment(data?.lift_last_edited).format(
-                "dddd, MMMM Do YYYY, h:mm a"
-              )}`}
-            </SubTitle>
-          </Box>
+          <LastUpdated
+            update={[data?.competition_last_edited, data?.lift_last_edited]}
+          />
         </>
       )}
     </Box>

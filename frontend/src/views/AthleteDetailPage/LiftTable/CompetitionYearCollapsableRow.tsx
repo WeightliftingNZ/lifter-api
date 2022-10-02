@@ -6,7 +6,7 @@ import { LiftObjectProps } from "../../../interfaces";
 import { printWeightCategories } from "../../../utils/customFunctions/customFunctions";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import WeightCategoryTable from "./CompetitionYearTable";
+import CompetitionYearTable from "./CompetitionYearTable";
 import { CompetitionYearCollapsableRowProps } from "./interfaces";
 
 const TABLE_COL_SPAN = 15;
@@ -44,10 +44,11 @@ const CompetitionYearCollapsableRow: React.FC<
           sx={{
             paddingBottom: 0,
             paddingTop: 0,
+            borderBottom: 0,
           }}
         >
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <WeightCategoryTable lifts={lifts} />
+            <CompetitionYearTable lifts={lifts} />
           </Collapse>
         </TableCell>
       </TableRow>

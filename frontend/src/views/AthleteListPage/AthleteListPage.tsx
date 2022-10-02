@@ -5,7 +5,7 @@ import { AthleteListObjectProps } from "../../interfaces";
 import CustomSearchInput from "../../components/CustomSearchInput";
 import { useDebounce } from "usehooks-ts";
 import { useInfiniteQuery } from "react-query";
-import AthleteCard from "../../components/AthleteCard";
+import AthleteCard from "../../components/Cards/AthleteCard";
 import { Box } from "@mui/material";
 import apiClient from "../../utils/http-common";
 import Title from "../../components/Title";
@@ -116,14 +116,7 @@ const AthleteListPage: React.FC = () => {
               {data?.pages.map((page) => (
                 <React.Fragment key={page}>
                   {page.results.map((athlete: AthleteListObjectProps) => (
-                    <AthleteCard
-                      key={athlete.reference_id}
-                      referenceId={athlete.reference_id}
-                      fullName={athlete.full_name}
-                      ageCategories={athlete.age_categories}
-                      currentGrade={athlete.current_grade}
-                      recentLift={athlete.recent_lift}
-                    />
+                    <AthleteCard key={athlete.reference_id} {...athlete} />
                   ))}
                 </React.Fragment>
               ))}

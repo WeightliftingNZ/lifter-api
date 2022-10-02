@@ -7,7 +7,6 @@ import apiClient from "../../utils/http-common";
 import CustomLoading from "../../components/Loading";
 import CustomError from "../../components/Error";
 import { AthleteDetailObjectProps, LiftObjectProps } from "../../interfaces";
-import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import Title from "../../components/Title";
 import AgeCategoryBadges from "../../components/AgeCategoryBadges";
@@ -17,7 +16,8 @@ import { LiftChartDataProps } from "./SinclairChart/interfaces";
 import SinclairChart from "./SinclairChart";
 import GradeBadges from "../../components/GradeBadges";
 import LiftTable from "./LiftTable";
-import SubTitle from "../../components/SubTitle";
+import NoResults from "../../components/NoResults";
+import LastUpdated from "../../components/LastUpdated";
 
 const AthleteDetailPage: React.FC = () => {
   const params = useParams();
@@ -82,7 +82,9 @@ const AthleteDetailPage: React.FC = () => {
           <AgeCategoryBadges ageCategories={data?.age_categories} />
           <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
             {data?.lifts_count > 1 && (
-              <Box>Number time competed: {data?.lifts_count}</Box>
+              <Box>
+                <b>{data?.lifts_count}</b> Competitions
+              </Box>
             )}
           </Box>
           <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
@@ -96,7 +98,7 @@ const AthleteDetailPage: React.FC = () => {
             </Tabs>
           </Box>
           {liftsCount === 0 ? (
-            <Alert severity="info">No results available</Alert>
+            <NoResults />
           ) : (
             <>
               {value === 0 && (
@@ -112,19 +114,9 @@ const AthleteDetailPage: React.FC = () => {
             </>
           )}
 
-          <Box sx={{ m: 1 }}>
-            Last Updated:
-            <SubTitle>
-              {`Athlete details: ${moment(data?.athlete_last_edited).format(
-                "dddd, MMMM Do YYYY, h:mm a"
-              )}`}
-            </SubTitle>
-            <SubTitle>
-              {`Lift details: ${moment(data?.lift_last_edited).format(
-                "dddd, MMMM Do YYYY, h:mm a"
-              )}`}
-            </SubTitle>
-          </Box>
+          <LastUpdated
+            update={[data?.athlete_last_edited, data?.lift_last_edited]}
+          />
         </>
       )}
     </Box>

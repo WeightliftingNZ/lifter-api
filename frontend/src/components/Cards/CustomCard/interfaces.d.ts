@@ -1,7 +1,7 @@
 /** @format */
 
 export interface CustomCardProps {
-  actionLink?: string;
+  actionLink: string;
   title: string;
   subheader?: string | React.ReactNode;
   contents: React.ReactNode;

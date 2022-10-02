@@ -43,11 +43,6 @@ const WeightCategoryTable: React.FC<WeightCategoryTableProps> = ({ lifts }) => (
             hover
             key={lift.reference_id}
             id={`athete-${lift.reference_id}`}
-            sx={{
-              "&:last-child td, &:last-child th": {
-                border: 0,
-              },
-            }}
           >
             <TableCell>
               {/* TODO: make tablerow a link */}
@@ -61,7 +56,10 @@ const WeightCategoryTable: React.FC<WeightCategoryTableProps> = ({ lifts }) => (
                   textDecoration: "none",
                 }}
                 component={RouterLink}
-                to={`/athletes/${lift.athlete}`}
+                to={{
+                  pathname: `/athletes/${lift.athlete}`,
+                  hash: `#${lift.competition_date_start.substring(0, 4)}`,
+                }}
               >
                 {lift.lottery_number}
               </Link>

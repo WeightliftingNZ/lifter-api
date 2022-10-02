@@ -8,15 +8,30 @@ export interface DRFPaginatedResponseProps {
   results: any[];
 }
 
-export interface SearchResultProps {
-  query_result_type: string;
+interface BaseSearchResultProps {
   query_result_headline: string;
   query_result_headline_no_html: string;
-  query_result:
-    | CompetitionListObjectProps
-    | LiftObjectProps
-    | AthleteListObjectProps;
 }
+
+interface CompetitionSearchResultProps extends BaseSearchResultProps {
+  query_result_type: "Competition";
+  query_result: CompetitionListObjectProps;
+}
+
+interface AthleteSearchResultProps extends BaseSearchResultProps {
+  query_result_type: "Athlete";
+  query_result: AthleteListObjectProps;
+}
+
+interface LiftSearchResultProps extends BaseSearchResultProps {
+  query_result_type: "Lift";
+  query_result: LiftObjectProps;
+}
+
+export type SearchResultProps =
+  | LiftSearchResultProps
+  | AthleteSearchResultProps
+  | CompetitionSearchResultProps;
 
 export interface CompetitionListObjectProps {
   date_end: string;

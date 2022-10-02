@@ -38,15 +38,15 @@ const LiftTable: React.FC<LiftTableProps> = ({ liftSet }) => {
       <Table>
         <TableBody>
           <>
-            {Object.keys(groupByCompetitionYear).map(
-              (competitionYear: string) => (
+            {Object.keys(groupByCompetitionYear)
+              .reverse()
+              .map((competitionYear: string) => (
                 <CompetitionYearCollapsableRow
                   key={competitionYear}
                   competitionYear={competitionYear}
                   groupByCompetitionYear={groupByCompetitionYear}
                 />
-              )
-            )}
+              ))}
           </>
         </TableBody>
       </Table>
