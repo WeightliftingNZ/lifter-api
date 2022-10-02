@@ -1,3 +1,13 @@
+## 0.10.0 (2022-10-02)
+
+### Feat
+
+- navbar functional
+
+### Fix
+
+- navbar searh now working
+
 ## 0.9.0 (2022-09-30)
 
 ### Feat
