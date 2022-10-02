@@ -77,18 +77,18 @@ const CompetitionYearTable: React.FC<CompetitionYearTableProps> = ({
               sx={{
                 overflow: "hidden",
                 textOverflow: "ellipsis",
-                maxWidth: 100,
+                Width: 100,
               }}
             >
               {lift.team}
             </TableCell>
-            <TableCell>{lift.weight_category}</TableCell>
+            <TableCell align="center">{lift.weight_category}</TableCell>
             <LiftCells {...lift} />
             <TableCell align="center">
               {lift.total_lifted === 0 ? "-" : lift.total_lifted}
             </TableCell>
             <TableCell align="center">
-              {lift.sinclair === 0 ? "-" : lift.total_lifted}
+              {lift.sinclair === 0 ? "-" : lift.sinclair}
             </TableCell>
             <TableCell align="center">{lift.placing}</TableCell>
             <TableCell sx={{ maxWidth: 100 }}>

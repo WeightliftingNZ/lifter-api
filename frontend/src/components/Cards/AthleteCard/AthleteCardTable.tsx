@@ -27,8 +27,8 @@ const AthleteCardTable: React.FC<AthleteListObjectProps> = (athlete) => {
             <TableCell align="center" colSpan={3}>
               Clean and Jerk
             </TableCell>
-            <TableCell>Total</TableCell>
-            <TableCell>Sinclair</TableCell>
+            <TableCell align="center">Total</TableCell>
+            <TableCell align="center">Sinclair</TableCell>
             <TableCell></TableCell>
           </TableRow>
         </TableHead>

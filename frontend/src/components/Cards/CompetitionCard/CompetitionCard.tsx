@@ -19,7 +19,7 @@ const CompetitionCard: React.FC<CompetitionListObjectProps> = (competition) => {
         <Box
           sx={{
             display: "flex",
-            alignItems: "center",
+            flexDirection: "column",
             width: "fit-content",
             borderRadius: 1,
             color: "text.secondary",
@@ -28,11 +28,15 @@ const CompetitionCard: React.FC<CompetitionListObjectProps> = (competition) => {
             },
           }}
         >
-          {moment(competition.date_start).fromNow()}
-          <Divider orientation="vertical" variant="fullWidth" flexItem />
-          {competition.lifts_count}{" "}
-          {competition.lifts_count > 1 ? "athletes" : "athlete"}
-          <CompetitionBadges name={competition.name} />
+          <Box>
+            <CompetitionBadges name={competition.name} />
+          </Box>
+          <Box sx={{ display: "flex", flexDirection: "flex-start" }}>
+            {moment(competition.date_start).fromNow()}
+            <Divider orientation="vertical" variant="fullWidth" flexItem />
+            {competition.lifts_count}{" "}
+            {competition.lifts_count > 1 ? "athletes" : "athlete"}
+          </Box>
         </Box>
       }
       contents={

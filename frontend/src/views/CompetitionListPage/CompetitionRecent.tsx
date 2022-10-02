@@ -10,6 +10,7 @@ import CustomLoading from "../../components/Loading";
 import CompetitionCard from "../../components/Cards/CompetitionCard";
 import CompetitionRecentLoading from "./CompetitionRecentLoading";
 import { PAGE_LIMIT } from "../../constants";
+import NothingMore from "../../components/NothingMore";
 
 const CompetitionRecent: React.FC = () => {
   const observerElem = useRef(null);
@@ -94,9 +95,12 @@ const CompetitionRecent: React.FC = () => {
             ))}
           </Box>
         )}
-        <Box id="infinite-scroll" ref={observerElem}>
-          {isFetchingNextPage && hasNextPage ? <CustomLoading /> : null}
-        </Box>
+      </Box>
+      <Box id="infinity" ref={observerElem}>
+        {isFetchingNextPage && hasNextPage && <CustomLoading />}
+        {data?.pages[0].count > 0 && isSuccess && !hasNextPage && (
+          <NothingMore />
+        )}
       </Box>
     </>
   );
