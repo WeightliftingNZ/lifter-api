@@ -6,7 +6,7 @@ import apiClient from "../../utils/http-common/http-common";
 import { CompetitionListObjectProps } from "../../interfaces";
 import Title from "../../components/Title";
 import { useDebounce } from "usehooks-ts";
-import CompetitionCard from "../../components/CompetitionCard";
+import CompetitionCard from "../../components/Cards/CompetitionCard";
 import { Stack, Box, TextField } from "@mui/material";
 import { useInfiniteQuery } from "react-query";
 import CustomError from "../../components/Error";
@@ -152,13 +152,7 @@ const CompetitionListPage: React.FC = () => {
                 {page.results.map((competition: CompetitionListObjectProps) => (
                   <CompetitionCard
                     key={competition.reference_id}
-                    referenceId={competition.reference_id}
-                    name={competition.name}
-                    location={competition.location}
-                    dateStart={competition.date_start}
-                    dateEnd={competition.date_end}
-                    liftCount={competition.lifts_count}
-                    liftSet={competition.random_lifts}
+                    {...competition}
                   />
                 ))}
               </React.Fragment>

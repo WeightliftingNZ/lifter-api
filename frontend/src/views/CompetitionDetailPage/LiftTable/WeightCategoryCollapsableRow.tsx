@@ -43,6 +43,7 @@ const WeightCategoryCollapsableRow: React.FC<
           sx={{
             paddingBottom: 0,
             paddingTop: 0,
+            borderBottom: 0,
           }}
         >
           <Collapse in={open} timeout="auto" unmountOnExit>

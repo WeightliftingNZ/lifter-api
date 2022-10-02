@@ -6,6 +6,7 @@ import CompetitionListPage from "./views/CompetitionListPage";
 import CompetitionDetailPage from "./views/CompetitionDetailPage";
 import AthleteListPage from "./views/AthleteListPage";
 import AthleteDetailPage from "./views/AthleteDetailPage";
+import SearchPage from "./views/SearchPage";
 import {
   ThemeProvider,
   createTheme,
@@ -88,6 +89,7 @@ const App: React.FC = () => {
                 path="/athletes/:athleteReferenceId"
                 element={<AthleteDetailPage />}
               />
+              <Route path="/search" element={<SearchPage />} />
             </Routes>
           </Navbar>
         </LocalizationProvider>

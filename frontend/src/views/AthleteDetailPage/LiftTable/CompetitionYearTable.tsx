@@ -48,11 +48,6 @@ const CompetitionYearTable: React.FC<CompetitionYearTableProps> = ({
             hover
             key={lift.reference_id}
             id={`lift-${lift.reference_id}`}
-            sx={{
-              "&:last-child td, &:last-child th": {
-                border: 0,
-              },
-            }}
           >
             <TableCell>
               {/* TODO: make tablerow a link */}
@@ -67,7 +62,10 @@ const CompetitionYearTable: React.FC<CompetitionYearTableProps> = ({
                   maxWidth: 100,
                 }}
                 component={RouterLink}
-                to={`/competitions/${lift.competition}#${lift.weight_category}`}
+                to={{
+                  pathname: `/competitions/${lift.competition}`,
+                  hash: `#${lift.weight_category}`,
+                }}
               >
                 {lift.competition_name}
               </Link>

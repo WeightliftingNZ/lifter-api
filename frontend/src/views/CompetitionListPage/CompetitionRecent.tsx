@@ -7,7 +7,7 @@ import apiClient from "../../utils/http-common/http-common";
 import { CompetitionListObjectProps } from "../../interfaces";
 import CustomError from "../../components/Error";
 import CustomLoading from "../../components/Loading";
-import CompetitionCard from "../../components/CompetitionCard";
+import CompetitionCard from "../../components/Cards/CompetitionCard";
 import CompetitionRecentLoading from "./CompetitionRecentLoading";
 import { PAGE_LIMIT } from "../../constants";
 
@@ -85,17 +85,10 @@ const CompetitionRecent: React.FC = () => {
             {data?.pages.map((page) => (
               <React.Fragment key={page}>
                 {page.results.map((competition: CompetitionListObjectProps) => (
-                  <React.Fragment key={competition.reference_id}>
-                    <CompetitionCard
-                      referenceId={competition.reference_id}
-                      name={competition.name}
-                      location={competition.location}
-                      liftCount={competition.lifts_count}
-                      dateStart={competition.date_start}
-                      dateEnd={competition.date_end}
-                      liftSet={competition.random_lifts}
-                    />
-                  </React.Fragment>
+                  <CompetitionCard
+                    key={competition.reference_id}
+                    {...competition}
+                  />
                 ))}
               </React.Fragment>
             ))}

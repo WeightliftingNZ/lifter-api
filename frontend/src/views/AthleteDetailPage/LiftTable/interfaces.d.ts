@@ -20,5 +20,5 @@ export interface CompetitionYearCollapsableRowProps {
 }
 
 export interface liftSetIncludingCompetitionYearProps extends LiftObjectProps {
-  competitionYear: number;
+  competitionYear: string;
 }

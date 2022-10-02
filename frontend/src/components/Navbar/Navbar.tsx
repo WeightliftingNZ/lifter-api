@@ -23,7 +23,7 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { styled, useTheme } from "@mui/material/styles";
 import Button from "@mui/material/Button";
-import CombinedSearch from "./Search";
+import NavbarSearch from "./NavbarSearch";
 import { Box, Container, Drawer } from "@mui/material";
 import { Stack } from "@mui/system";
 import DarkModeSwitch from "./DarkModeSwitch";
@@ -50,21 +50,24 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
   }),
 }));
 
-type ListItemLinkProps = {
+interface ListItemLinkProps {
   primary: string;
   to: string;
   icon?: React.ReactElement;
   open?: boolean;
-};
+}
 
 const links: ListItemLinkProps[] = [
   { primary: "Competition", to: "/competitions", icon: <EmojiEventsIcon /> },
   { primary: "Athlete", to: "/athletes", icon: <PeopleIcon /> },
 ];
 
-const ListItemLink = (props: ListItemLinkProps) => {
-  const { icon, primary, to, open } = props;
-
+const ListItemLink: React.FC<ListItemLinkProps> = ({
+  icon,
+  primary,
+  to,
+  open,
+}) => {
   const renderLink = useMemo(
     () =>
       forwardRef<HTMLAnchorElement, Omit<RouterLinkProps, "to">>(function Link(
@@ -184,7 +187,7 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ open, handleDrawerOpen }) => {
               px: 2,
             }}
           >
-            <CombinedSearch handleSearchOnBlur={handleSearchOnBlur} />
+            <NavbarSearch handleSearchOnBlur={handleSearchOnBlur} />
           </Box>
         ) : (
           <>

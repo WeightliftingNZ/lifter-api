@@ -21,17 +21,21 @@ interface AgeCategoryBadgesProps {
   isColumn?: boolean;
 }
 
-const AgeCategoryBadges: React.FC<AgeCategoryBadgesProps> = (
-  props: AgeCategoryBadgesProps
-) => {
-  const { ageCategories, isColumn } = props;
+const AgeCategoryBadges: React.FC<AgeCategoryBadgesProps> = ({
+  ageCategories,
+  isColumn,
+}) => {
   const { is_youth, is_junior, is_master } = ageCategories;
 
   return (
-    <Stack direction={isColumn ? "column" : "row"} spacing={1}>
-      {is_youth ? <YouthBadge /> : <></>}
-      {is_junior ? <JuniorBadge /> : <></>}
-      {is_master ? <MasterBadge /> : <></>}
+    <Stack
+      sx={{ maxWidth: "fit-content" }}
+      direction={isColumn ? "column" : "row"}
+      spacing={1}
+    >
+      {is_youth && <YouthBadge />}
+      {is_junior && <JuniorBadge />}
+      {is_master && <MasterBadge />}
     </Stack>
   );
 };
