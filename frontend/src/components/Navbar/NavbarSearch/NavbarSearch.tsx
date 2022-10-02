@@ -36,7 +36,7 @@ const NavbarSearch: React.FC<NavbarSearchProps> = ({ handleSearchOnBlur }) => {
   };
 
   const { data, error, isLoading, isError } = useQuery(
-    ["search", debouncedSearchQuery],
+    ["navbarSearch", debouncedSearchQuery],
     () => fetchSearchResults(),
     { enabled: debouncedSearchQuery ? true : false }
   );
@@ -81,8 +81,7 @@ const NavbarSearch: React.FC<NavbarSearchProps> = ({ handleSearchOnBlur }) => {
       }));
   };
 
-  const renderOption = (props: any, option: any, state: any) => {
-    console.log(state);
+  const renderOption = (props: any, option: any) => {
     return (
       <ListItem disablePadding>
         <ListItemButton

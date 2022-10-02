@@ -7,7 +7,6 @@ import LiftCardTable from "./LiftCardTable";
 import { LiftObjectProps } from "../../../interfaces";
 
 const LiftCard: React.FC<LiftObjectProps> = (lift) => {
-  console.log(lift);
   return (
     <CustomCard
       actionLink={`/competitions/${lift.competition}`}
