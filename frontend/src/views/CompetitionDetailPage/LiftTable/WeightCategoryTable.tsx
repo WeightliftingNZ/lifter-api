@@ -64,8 +64,8 @@ const WeightCategoryTable: React.FC<WeightCategoryTableProps> = ({ lifts }) => (
                 {lift.lottery_number}
               </Link>
             </TableCell>
-            <TableCell sx={{ maxWidth: 100 }}>{lift.athlete_name}</TableCell>
-            <TableCell sx={{ maxWidth: 100 }}>
+            <TableCell sx={{ width: 100 }}>{lift.athlete_name}</TableCell>
+            <TableCell sx={{ width: 100 }}>
               <AgeCategoryBadges isColumn ageCategories={lift.age_categories} />
             </TableCell>
             <TableCell

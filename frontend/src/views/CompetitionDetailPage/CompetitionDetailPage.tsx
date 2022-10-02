@@ -58,7 +58,7 @@ const CompetitionDetailPage: React.FC = () => {
               )}
             </Box>
           </Box>
-          {data?.lift_count === 0 ? (
+          {data?.lifts_count === 0 ? (
             <NoResults />
           ) : (
             <LiftTable liftSet={data?.lift_set} />

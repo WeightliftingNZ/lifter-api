@@ -6,14 +6,14 @@ import Title from "../../components/Title";
 import AthleteCard from "../../components/Cards/AthleteCard";
 import CompetitionCard from "../../components/Cards/CompetitionCard";
 import LiftCard from "../../components/Cards/LiftCard";
-import { Box } from "@mui/material";
+import { Box, Divider } from "@mui/material";
 import { useSearchParams } from "react-router-dom";
 import apiClient from "../../utils/http-common/http-common";
 import Error from "../../components/Error";
 import { PAGE_LIMIT } from "../../constants";
 import Loading from "../../components/Loading";
-import { Alert } from "@mui/material";
 import { SearchResultProps } from "../../interfaces";
+import NothingMore from "../../components/NothingMore";
 
 const SearchPage: React.FC = () => {
   const [searchQuery] = useSearchParams();
@@ -72,77 +72,90 @@ const SearchPage: React.FC = () => {
   }
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 2,
-      }}
-    >
-      <Title
+    <>
+      <Box
         sx={{
-          overflow: "hidden",
-          maxWidth: "90vw",
-          textOverflow: "ellipsis",
-          whiteSpace: "nowrap",
+          display: "flex",
+          flexDirection: "column",
+          gap: 2,
         }}
       >
-        Search: {searchQuery.get("q")}
-      </Title>
-      <Box>
-        <>
-          {isError && <Error />}
-          {isLoading && <Loading />}
-          {isSuccess &&
-            data &&
-            (data?.pages[0].count > 0 ? (
-              data?.pages.map((page) => {
-                return (
-                  <React.Fragment key={page}>
-                    {page.results.map((result: SearchResultProps) => {
-                      switch (result.query_result_type) {
-                        case "Athlete":
-                          return (
-                            <AthleteCard
-                              key={result.query_result.reference_id}
-                              {...result.query_result}
-                            />
-                          );
-                        case "Competition":
-                          return (
-                            <CompetitionCard
-                              key={result.query_result.reference_id}
-                              {...result.query_result}
-                            />
-                          );
-                        case "Lift":
-                          return (
-                            <LiftCard
-                              key={result.query_result.reference_id}
-                              {...result.query_result}
-                            />
-                          );
-                        default:
-                          return <></>;
-                      }
-                    })}
-                  </React.Fragment>
-                );
-              })
-            ) : (
-              <Box>No results.</Box>
-            ))}
-        </>
+        <Title
+          sx={{
+            overflow: "hidden",
+            maxWidth: "90vw",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+        >
+          Search: {searchQuery.get("q")}
+        </Title>
+        <Box>
+          <>
+            {isError && <Error />}
+            {isLoading && <Loading />}
+            {isSuccess &&
+              data &&
+              (data?.pages[0].count > 0 ? (
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 2,
+                  }}
+                >
+                  <Box>
+                    <b>{data?.pages[0].count}</b>{" "}
+                    {data?.pages[0].count > 1 ? "results" : "result"}
+                  </Box>
+                  <Divider textAlign="left"></Divider>
+                  {data?.pages.map((page) => {
+                    return (
+                      <React.Fragment key={page}>
+                        {page.results.map((result: SearchResultProps) => {
+                          switch (result.query_result_type) {
+                            case "Athlete":
+                              return (
+                                <AthleteCard
+                                  key={result.query_result.reference_id}
+                                  {...result.query_result}
+                                />
+                              );
+                            case "Competition":
+                              return (
+                                <CompetitionCard
+                                  key={result.query_result.reference_id}
+                                  {...result.query_result}
+                                />
+                              );
+                            case "Lift":
+                              return (
+                                <LiftCard
+                                  key={result.query_result.reference_id}
+                                  {...result.query_result}
+                                />
+                              );
+                            default:
+                              return <></>;
+                          }
+                        })}
+                      </React.Fragment>
+                    );
+                  })}
+                </Box>
+              ) : (
+                <Box>No results.</Box>
+              ))}
+          </>
+        </Box>
       </Box>
       <Box id="infinity" ref={observerElem}>
         {isFetchingNextPage && hasNextPage && <Loading />}
         {data?.pages[0].count > 0 && isSuccess && !hasNextPage && (
-          <Alert sx={{ m: 2 }} severity="success">
-            Nothing more to show!
-          </Alert>
+          <NothingMore />
         )}
       </Box>
-    </Box>
+    </>
   );
 };
 
