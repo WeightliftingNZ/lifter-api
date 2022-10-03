@@ -25,11 +25,11 @@ const CompetitionRecent: React.FC = () => {
   const {
     data,
     error,
-    isLoading,
     isError,
+    isLoading,
     isSuccess,
-    fetchNextPage,
     hasNextPage,
+    fetchNextPage,
     isFetchingNextPage,
   } = useInfiniteQuery(
     ["recentCompetitions"],

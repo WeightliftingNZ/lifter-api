@@ -40,35 +40,6 @@ OLD_WEIGHT_CATEGORIES = (
 ALL_WEIGHT_CATEGORIES = CURRENT_WEIGHT_CATEGORIES + OLD_WEIGHT_CATEGORIES
 
 
-# TODO: Not using this model
-class Session(models.Model):
-    reference_id = HashidAutoField(
-        primary_key=True, salt=f"sessionmodel_reference_id_{HASHID_FIELD_SALT}"
-    )
-    competition = models.ForeignKey(
-        "api.Competition", on_delete=models.CASCADE
-    )
-    number = models.IntegerField(blank=True)
-    date_time = models.DateTimeField(blank=True)
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=["competition", "number"],
-                name="competition_number_unique_combination",
-            ),
-        ]
-
-
-# TODO: Not using this model
-class Team(models.Model):
-    reference_id = HashidAutoField(
-        primary_key=True, salt=f"teammodel_reference_id_{HASHID_FIELD_SALT}"
-    )
-    team = models.CharField(max_length=20, blank=True)
-    location = models.CharField(max_length=128, blank=True)
-
-
 class Lift(models.Model):
     """Lift model."""
 
@@ -147,6 +118,13 @@ class Lift(models.Model):
         )
     )
 
+    new_snatch_first = models.IntegerField(null=True)
+    new_snatch_second = models.IntegerField(null=True)
+    new_snatch_third = models.IntegerField(null=True)
+    new_cnj_first = models.IntegerField(null=True)
+    new_cnj_second = models.IntegerField(null=True)
+    new_cnj_third = models.IntegerField(null=True)
+
     objects = LiftManager()
 
     class Meta:
@@ -184,15 +162,6 @@ class Lift(models.Model):
                 "weight": self.snatch_third_weight,
             },
         }
-
-    # @property
-    # def new_snatch_first(self) -> int | None:
-    #     if self.snatch_first == "DNA":
-    #         return None
-    #     elif self.snatch_first == "NOLIFT":
-    #         return -1 * abs(self.snatch_first_weight)
-    #     elif self.snatch_first == "LIFT":
-    #         return abs(self.snatch_first_weight)
 
     @property
     def cnjs(self) -> dict[str, LiftT]:
