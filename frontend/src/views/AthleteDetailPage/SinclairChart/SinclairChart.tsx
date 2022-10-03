@@ -1,100 +1,151 @@
 /** @format */
 
-import { Card, CardContent, Paper, Typography, useTheme } from "@mui/material";
-import { Box, Stack } from "@mui/system";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import { Box } from "@mui/system";
 import moment from "moment";
 import React from "react";
 import {
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
   Scatter,
   ScatterChart,
   XAxis,
   YAxis,
+  Label,
 } from "recharts";
-import Title from "../../../components/Title";
-import { LiftChartProps } from "./interfaces";
+import Heading from "../../../components/Heading";
+import { LiftObjectProps } from "../../../interfaces";
 
 /* TODO: types? */
-const CustomTooltip = (props: any) => {
-  const { active, payload } = props;
-  if (active) {
-    return (
-      <>
-        <Card>
-          <CardContent>
-            <Stack spacing={1}>
-              {payload.map((item: any) => {
-                let value = item.value;
-                if (item.name === "Date") {
-                  value = moment(item.value, "X").format("YYYY-MM-DD");
-                }
-                return (
-                  <Typography variant="body1" key={item.name}>
-                    {item.name}: {value}
-                  </Typography>
-                );
-              })}
-            </Stack>
-          </CardContent>
-        </Card>
-      </>
-    );
-  }
+const CustomTooltip = ({ active, payload }: any) => {
+  if (!active || !payload) return null;
+  return (
+    <Card>
+      <CardHeader
+        title={payload[0].payload.name}
+        titleTypographyProps={{
+          sx: {
+            overflow: "hidden",
+            maxWidth: "90%",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          },
+        }}
+        subheader={moment(payload[0].payload.date, "X").format("MMM Do, YYYY")}
+      />
+      <CardContent sx={{ display: "flex", justifyItems: "center" }}>
+        <TableContainer>
+          <Table padding="none" size="small">
+            <TableHead></TableHead>
+            <TableBody>
+              <TableRow>
+                <TableCell variant="head">Sinclair</TableCell>
+                <TableCell>{payload[0].payload.sinclair}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell variant="head">S</TableCell>
+                <TableCell>{payload[0].payload.snatch}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell variant="head">CJ</TableCell>
+                <TableCell>{payload[0].payload.cnj}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell variant="head">T</TableCell>
+                <TableCell>{payload[0].payload.total}</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </CardContent>
+    </Card>
+  );
 };
 
-const SinclairChart: React.FC<LiftChartProps> = ({ data }) => {
+interface SinclairChartProps {
+  liftSet: LiftObjectProps[];
+}
+
+interface SinclairChartDataProps {
+  name: string;
+  snatch: number;
+  cnj: number;
+  total: number;
+  sinclair: number;
+  date: number | string;
+}
+
+const SinclairChart: React.FC<SinclairChartProps> = ({ liftSet }) => {
   const theme = useTheme();
 
+  const chartData: SinclairChartDataProps[] = liftSet
+    .filter((lift) => lift.total_lifted !== 0)
+    .map((lift) => ({
+      name: lift.competition_name,
+      snatch: lift.best_snatch_weight[1],
+      cnj: lift.best_cnj_weight[1],
+      total: lift.total_lifted,
+      sinclair: lift.sinclair,
+      date: moment(lift.competition_date_start, "YYYY-MM-DD").format("X"),
+    }));
+
   return (
-    <Paper>
-      <Box sx={{ mx: 2, my: 4 }}>
-        <Title>Lifts</Title>
-        <ResponsiveContainer width="75%" height={500}>
-          <ScatterChart data={data}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis
-              dataKey="date"
-              domain={["dataMin", "dataMax"]}
-              name="Date"
-              tickFormatter={(unixTime) =>
-                moment(unixTime, "X").format("YYYY-MM-DD")
-              }
-              type="number"
-            ></XAxis>
-            <YAxis name="Weight" unit="kg"></YAxis>
-            <Scatter
-              dataKey="total"
-              line
-              fill={theme.palette.primary.main}
-              lineJointType="monotone"
-              lineType="joint"
-              name="Total"
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 1,
+        overflowX: "scroll",
+        whiteSpace: "nowrap",
+        position: "relative",
+        overflowY: "hidden",
+      }}
+    >
+      <Heading>Sinclair</Heading>
+      <ResponsiveContainer width="100%" height="100%" minHeight={400}>
+        <ScatterChart data={chartData}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis
+            dataKey="date"
+            domain={["auto", "auto"]}
+            name="Date"
+            tickFormatter={(unixTime) =>
+              moment(unixTime, "X").format("YYYY-MM-DD")
+            }
+            type="number"
+          >
+            <Label
+              value="Competition Date"
+              offset={-2}
+              position="insideBottom"
             />
-            <Scatter
-              dataKey="snatch"
-              line
-              fill={theme.palette.secondary.light}
-              lineJointType="monotone"
-              lineType="joint"
-              name="Snatch"
-            />
-            <Scatter
-              dataKey="cnj"
-              fill={theme.palette.secondary.main}
-              line
-              lineJointType="monotone"
-              lineType="joint"
-              name="Clean and Jerk"
-            />
-            <Tooltip content={CustomTooltip} />
-            <Legend />
-          </ScatterChart>
-        </ResponsiveContainer>
-      </Box>
-    </Paper>
+          </XAxis>
+          <YAxis name="Sinclair" type="number"></YAxis>
+          <Scatter
+            dataKey="sinclair"
+            line
+            fill={theme.palette.primary.main}
+            lineJointType="monotone"
+            lineType="joint"
+            name="Sinclair"
+            type="number"
+          />
+          <Tooltip content={CustomTooltip} />
+        </ScatterChart>
+      </ResponsiveContainer>
+    </Box>
   );
 };
 export default SinclairChart;
