@@ -142,15 +142,14 @@ class AthleteDetailSerializer(AthleteSerializer):
 
     def get_weight_categories_competed(self, athlete):
         """Provide weight categories for an athlete."""
-        return (
-            Lift.objects.filter(athlete=athlete)
-            .values_list("weight_category", flat=True)
-            .distinct()
-        )
+        unique_weight_categories = []
+        lifts = Lift.objects.filter(athlete=athlete)
+        for lift in lifts:
+            if lift.weight_category not in unique_weight_categories:
+                unique_weight_categories.append(lift.weight_category)
+        return unique_weight_categories
 
     def _best_lift(self, lifts, sort_key):
-        if len(lifts) == 0:
-            return None
         best_lift = LiftSerializer(
             sorted(
                 lifts,
@@ -190,6 +189,8 @@ class AthleteDetailSerializer(AthleteSerializer):
                             if lift.weight_category == weight_category
                             and lift.age_categories[age_category]  # type: ignore
                         ]
+                        if len(clean_lifts) == 0:
+                            break
                         lift_by_age_weight_category[order_by][
                             age_category
                         ].update(
