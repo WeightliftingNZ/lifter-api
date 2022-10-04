@@ -94,6 +94,12 @@ export interface AthleteListObjectProps {
 
 export interface AthleteDetailObjectProps extends AthleteListObjectProps {
   lift_set: LiftObjectProps[];
+  best_sinclair: { [key: string]: LiftObjectProps };
+  best_lifts: {
+    snatch: { [key: string]: { [key: string]: LiftObjectProps } };
+    cnj: { [key: string]: { [key: string]: LiftObjectProps } };
+    total: { [key: string]: { [key: string]: LiftObjectProps } };
+  };
 }
 
 type liftStatus = "LIFT" | "NOLIFT" | "DNA";

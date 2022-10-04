@@ -2,15 +2,17 @@
 
 import { useTheme } from "@mui/material/styles";
 import React from "react";
-import { SxProps, TableCell } from "@mui/material";
+import { SxProps } from "@mui/material";
 import { green, red } from "@mui/material/colors";
 import { LiftCellProps } from "./interfaces";
+import TableCellLink from "../TableCellLink";
 
 const LiftCell: React.FC<LiftCellProps> = ({
   isBest,
   liftStatus,
   weight,
   isEnd,
+  to,
 }) => {
   const veryDarkGreen = "#011202";
   const veryDarkRed = "#1c0303";
@@ -38,11 +40,23 @@ const LiftCell: React.FC<LiftCellProps> = ({
 
   switch (liftStatus) {
     case "DNA":
-      return <TableCell sx={noLiftSx}>-</TableCell>;
+      return (
+        <TableCellLink to={to} tableCellProps={{ sx: noLiftSx }}>
+          -
+        </TableCellLink>
+      );
     case "NOLIFT":
-      return <TableCell sx={noLiftSx}>{weight}</TableCell>;
+      return (
+        <TableCellLink to={to} tableCellProps={{ sx: noLiftSx }}>
+          {weight}
+        </TableCellLink>
+      );
     case "LIFT":
-      return <TableCell sx={goodLiftSx}>{weight}</TableCell>;
+      return (
+        <TableCellLink to={to} tableCellProps={{ sx: goodLiftSx }}>
+          {weight}
+        </TableCellLink>
+      );
   }
 };
 

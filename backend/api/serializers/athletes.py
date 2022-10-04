@@ -94,6 +94,12 @@ class AthleteDetailSerializer(AthleteSerializer):
     """Detail Serializer for Athlete."""
 
     lift_set = serializers.SerializerMethodField(read_only=True)
+    age_categories_competed = serializers.SerializerMethodField(read_only=True)
+    weight_categories_competed = serializers.SerializerMethodField(
+        read_only=True
+    )
+    best_lifts = serializers.SerializerMethodField(read_only=True)
+    best_sinclair = serializers.SerializerMethodField(read_only=True)
 
     def get_lift_set(self, athlete):
         """Obtain all lifts by this athlete."""
@@ -104,9 +110,105 @@ class AthleteDetailSerializer(AthleteSerializer):
             query, many=True, read_only=True, context=self.context
         ).data
 
+    def get_age_categories_competed(self, athlete) -> dict[str, bool]:
+        """Provide all age categories.
+
+        This will be age categories athlete has been in for their entire \
+                career. Will create dictionary with age_categories being True \
+                is participated.
+                """
+        all_age_categories = {
+            "is_youth": False,
+            "is_junior": False,
+            "is_senior": False,
+            "is_master": False,
+            "is_master_35_39": False,
+            "is_master_40_44": False,
+            "is_master_45_49": False,
+            "is_master_50_54": False,
+            "is_master_55_59": False,
+            "is_master_60_64": False,
+            "is_master_65_69": False,
+            "is_master_70": False,
+        }
+        for lift in Lift.objects.filter(athlete=athlete):
+            age_categories = lift.age_categories
+            for k, v in age_categories.items():
+                if v:
+                    all_age_categories[k] = v  # type: ignore
+        return all_age_categories
+
+    def get_weight_categories_competed(self, athlete) -> list[str]:
+        """Provide weight categories for an athlete."""
+        unique_weight_categories = []
+        for lift in Lift.objects.filter(athlete=athlete):
+            weight_category = lift.weight_category
+            if weight_category not in unique_weight_categories:
+                unique_weight_categories.append(weight_category)
+        return unique_weight_categories
+
+    def _best_lift(self, lifts, sort_key):
+        if lifts.count() == 0:
+            return None
+        best_lift = LiftSerializer(
+            sorted(lifts, key=sort_key)[-1],
+            read_only=True,
+            context=self.context,
+        ).data
+        return best_lift
+
+    def get_best_lifts(self, athlete) -> dict:
+        """Provide the best snatch for the an athlete for a given weight \
+                categories."""
+
+        age_categories = self.get_age_categories_competed(athlete=athlete)
+        weight_categories = self.get_weight_categories_competed(
+            athlete=athlete
+        )
+        order_bys = [
+            ("snatch", lambda lift: lift.best_snatch_weight[1]),
+            ("cnj", lambda lift: lift.best_cnj_weight[1]),
+            ("total", lambda lift: lift.total_lifted),
+        ]
+        lift_by_age_weight_category: dict = {}
+        for order_by, sort_key in order_bys:
+            lift_by_age_weight_category[order_by] = {}
+            for age_category, is_true in age_categories.items():
+                if is_true:
+                    for weight_category in weight_categories:
+                        lifts = Lift.objects.filter(athlete=athlete).filter(
+                            weight_category=weight_category
+                        )
+                        lift_by_age_weight_category[order_by].update(
+                            {
+                                age_category: {
+                                    weight_category: self._best_lift(
+                                        lifts, sort_key
+                                    )
+                                }
+                            }
+                        )
+        return lift_by_age_weight_category
+
+    def get_best_sinclair(self, athlete):
+        """Provide the best total for the an athlete for weight categories."""
+        age_categories = self.get_age_categories_competed(athlete=athlete)
+        sinclair_by_age_categories = {}
+        lifts = Lift.objects.filter(athlete=athlete)
+        for age_category, is_true in age_categories.items():
+            if is_true:
+                sinclair_by_age_categories[age_category] = self._best_lift(
+                    lifts, lambda lift: lift.sinclair
+                )
+        return sinclair_by_age_categories
+
     class Meta(AthleteSerializer.Meta):
         """Serializer settings."""
 
         fields = AthleteSerializer.Meta.fields + [
             "lift_set",
+            "age_categories_competed",
+            "weight_categories_competed",
+            "best_lifts",
+            "best_sinclair",
         ]

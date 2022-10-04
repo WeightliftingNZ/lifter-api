@@ -35,7 +35,7 @@ const LiftTable: React.FC<LiftTableProps> = ({ liftSet }) => {
 
   return (
     <TableContainer sx={{ maxWidth: "95vw" }}>
-      <Table>
+      <Table size="small">
         <TableBody>
           <>
             {Object.keys(groupByCompetitionYear)

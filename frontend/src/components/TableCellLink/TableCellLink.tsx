@@ -1,0 +1,31 @@
+/** @format */
+
+import { Link, TableCell } from "@mui/material";
+import React from "react";
+import { Link as RouterLink } from "react-router-dom";
+import { TableCellLinkProps } from "./interfaces";
+
+const TableCellLink: React.FC<React.PropsWithChildren<TableCellLinkProps>> = (
+  props
+) => {
+  return (
+    <TableCell {...props.tableCellProps}>
+      <Link
+        sx={{
+          display: "block",
+          width: "100%",
+          height: "100%",
+          p: 1,
+          textDecoration: "none",
+          color: "inherit",
+        }}
+        component={RouterLink}
+        to={props.to || ""}
+      >
+        {props.children}
+      </Link>
+    </TableCell>
+  );
+};
+
+export default TableCellLink;

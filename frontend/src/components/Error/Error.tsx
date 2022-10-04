@@ -9,7 +9,7 @@ const Error: React.FC = () => {
     <Box sx={{ maxWidth: "fit-content" }}>
       <Alert
         icon={
-          <>
+          <Box sx={{ display: "flex", flexDirection: "column" }}>
             <FluorescentIcon fontSize="inherit" />
             <FluorescentIcon fontSize="inherit" />
             <FluorescentIcon
@@ -18,12 +18,12 @@ const Error: React.FC = () => {
               }}
               fontSize="inherit"
             />
-          </>
+          </Box>
         }
         severity="error"
       >
-        <AlertTitle> Three Red Lights! </AlertTitle>
-        Something went wrong. Please try again later
+        <AlertTitle> Three Red Lights </AlertTitle>
+        Something went wrong. Please try again later.
       </Alert>
     </Box>
   );

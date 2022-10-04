@@ -7,4 +7,5 @@ export interface LiftCellProps extends TableCellProps {
   isBest: boolean;
   liftStatus: "LIFT" | "NOLIFT" | "DNA";
   weight: number;
+  to?: string | { pathname: string; hash: string };
 }
