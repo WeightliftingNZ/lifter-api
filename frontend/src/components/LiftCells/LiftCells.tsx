@@ -4,7 +4,12 @@ import React from "react";
 import { LiftObjectProps } from "../../interfaces";
 import LiftCell from "./LiftCell";
 
-const LiftCells: React.FC<LiftObjectProps> = ({
+interface LiftCellProps extends LiftObjectProps {
+  to?: string | { pathname: string; hash: string };
+}
+
+const LiftCells: React.FC<LiftCellProps> = ({
+  to,
   best_snatch_weight,
   best_cnj_weight,
   snatch_first,
@@ -29,32 +34,38 @@ const LiftCells: React.FC<LiftObjectProps> = ({
         isBest={best_snatch === "1st"}
         liftStatus={snatch_first}
         weight={snatch_first_weight}
+        to={to}
       />
       <LiftCell
         isBest={best_snatch === "2nd"}
         liftStatus={snatch_second}
         weight={snatch_second_weight}
+        to={to}
       />
       <LiftCell
         isEnd
         isBest={best_snatch === "3rd"}
         liftStatus={snatch_third}
         weight={snatch_third_weight}
+        to={to}
       />
       <LiftCell
         isBest={best_cnj === "1st"}
         liftStatus={cnj_first}
         weight={cnj_first_weight}
+        to={to}
       />
       <LiftCell
         isBest={best_cnj === "2nd"}
         liftStatus={cnj_second}
         weight={cnj_second_weight}
+        to={to}
       />
       <LiftCell
         isBest={best_cnj === "3rd"}
         liftStatus={cnj_third}
         weight={cnj_third_weight}
+        to={to}
       />
     </>
   );

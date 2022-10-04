@@ -25,8 +25,8 @@ import {
   YAxis,
   Label,
 } from "recharts";
-import Heading from "../../../components/Heading";
-import { LiftObjectProps } from "../../../interfaces";
+import Heading from "../../../../components/Heading";
+import { LiftObjectProps } from "../../../../interfaces";
 
 /* TODO: types? */
 const CustomTooltip = ({ active, payload }: any) => {
@@ -107,13 +107,10 @@ const SinclairChart: React.FC<SinclairChartProps> = ({ liftSet }) => {
         display: "flex",
         flexDirection: "column",
         gap: 1,
-        overflowX: "scroll",
-        whiteSpace: "nowrap",
-        position: "relative",
-        overflowY: "hidden",
+        overflowX: "auto",
       }}
     >
-      <Heading>Sinclair</Heading>
+      <Heading>Sinclair Progression</Heading>
       <ResponsiveContainer width="100%" height="100%" minHeight={400}>
         <ScatterChart data={chartData}>
           <CartesianGrid strokeDasharray="3 3" />
@@ -127,10 +124,16 @@ const SinclairChart: React.FC<SinclairChartProps> = ({ liftSet }) => {
             type="number"
           >
             <Label
-              value="Competition Date"
+              fill={
+                theme.palette.mode === "dark"
+                  ? theme.palette.primary.contrastText
+                  : ""
+              }
               offset={-2}
               position="insideBottom"
-            />
+            >
+              Competition Date
+            </Label>
           </XAxis>
           <YAxis name="Sinclair" type="number"></YAxis>
           <Scatter

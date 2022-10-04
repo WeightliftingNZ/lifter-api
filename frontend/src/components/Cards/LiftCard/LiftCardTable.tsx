@@ -14,7 +14,7 @@ import LiftCells from "../../LiftCells";
 
 const LiftCardTable: React.FC<LiftObjectProps> = (lift) => {
   return (
-    <TableContainer sx={{ overflowX: "scroll", maxWidth: "95vw" }}>
+    <TableContainer sx={{ overflowX: "auto", maxWidth: "95vw" }}>
       <Table>
         <TableHead>
           <TableRow>

@@ -10,11 +10,11 @@ import Box from "@mui/material/Box";
 import Title from "../../components/Title";
 import AgeCategoryBadges from "../../components/AgeCategoryBadges";
 import { Tabs, Tab } from "@mui/material";
-import SinclairChart from "./SinclairChart";
 import GradeBadges from "../../components/GradeBadges";
 import LiftTable from "./LiftTable";
 import NoResults from "../../components/NoResults";
 import LastUpdated from "../../components/LastUpdated";
+import StatsTab from "./StatsTab";
 
 const AthleteDetailPage: React.FC = () => {
   const params = useParams();
@@ -84,7 +84,7 @@ const AthleteDetailPage: React.FC = () => {
               )}
               {value === 1 && (
                 <Box>
-                  <SinclairChart liftSet={data?.lift_set} />
+                  <StatsTab athlete={data} />
                 </Box>
               )}
             </>
