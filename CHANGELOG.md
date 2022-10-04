@@ -1,3 +1,9 @@
+## 0.11.6 (2022-10-04)
+
+### Fix
+
+- adding 404 page and stats to athletedetail
+
 ## 0.11.5 (2022-10-04)
 
 ### Fix
