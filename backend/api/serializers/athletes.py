@@ -147,11 +147,14 @@ class AthleteDetailSerializer(AthleteSerializer):
                 unique_weight_categories.append(weight_category)
         return unique_weight_categories
 
-    def _best_lift(self, lifts, sort_key):
+    def _best_lift(self, lifts, sort_key, age_category):
         if lifts.count() == 0:
             return None
         best_lift = LiftSerializer(
-            sorted(lifts, key=sort_key)[-1],
+            sorted(
+                [lift for lift in lifts if lift.age_categories[age_category]],
+                key=sort_key,
+            )[-1],
             read_only=True,
             context=self.context,
         ).data
@@ -175,17 +178,20 @@ class AthleteDetailSerializer(AthleteSerializer):
             lift_by_age_weight_category[order_by] = {}
             for age_category, is_true in age_categories.items():
                 if is_true:
+                    lift_by_age_weight_category[order_by].update(
+                        {age_category: {}}
+                    )
                     for weight_category in weight_categories:
                         lifts = Lift.objects.filter(athlete=athlete).filter(
                             weight_category=weight_category
                         )
-                        lift_by_age_weight_category[order_by].update(
+                        lift_by_age_weight_category[order_by][
+                            age_category
+                        ].update(
                             {
-                                age_category: {
-                                    weight_category: self._best_lift(
-                                        lifts, sort_key
-                                    )
-                                }
+                                weight_category: self._best_lift(
+                                    lifts, sort_key, age_category
+                                )
                             }
                         )
         return lift_by_age_weight_category
@@ -198,7 +204,7 @@ class AthleteDetailSerializer(AthleteSerializer):
         for age_category, is_true in age_categories.items():
             if is_true:
                 sinclair_by_age_categories[age_category] = self._best_lift(
-                    lifts, lambda lift: lift.sinclair
+                    lifts, lambda lift: lift.sinclair, age_category
                 )
         return sinclair_by_age_categories
 
