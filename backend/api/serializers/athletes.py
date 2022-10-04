@@ -179,9 +179,7 @@ class AthleteDetailSerializer(AthleteSerializer):
         for order_by, sort_key in order_bys:
             for age_category, is_true in age_categories.items():
                 if is_true:
-                    lift_by_age_weight_category[order_by].update(
-                        {age_category: {}}
-                    )
+                    lift_by_age_weight_category[order_by] = defaultdict(dict)
                     for weight_category in weight_categories:
                         clean_lifts = [
                             lift
@@ -205,12 +203,17 @@ class AthleteDetailSerializer(AthleteSerializer):
     def get_best_sinclair(self, athlete):
         """Provide the best total for the an athlete for weight categories."""
         age_categories = self.get_age_categories_competed(athlete=athlete)
-        sinclair_by_age_categories = {}
+        sinclair_by_age_categories: dict = defaultdict(dict)
         lifts = Lift.objects.filter(athlete=athlete)
         for age_category, is_true in age_categories.items():
             if is_true:
+                clean_lifts = [
+                    lift for lift in lifts if lift.age_categories[age_category]  # type: ignore
+                ]
+                if len(clean_lifts) == 0:
+                    break
                 sinclair_by_age_categories[age_category] = self._best_lift(
-                    lifts, lambda lift: lift.sinclair
+                    clean_lifts, lambda lift: lift.sinclair
                 )
         return sinclair_by_age_categories
 
