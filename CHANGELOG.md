@@ -1,3 +1,13 @@
+## 0.11.0 (2022-10-04)
+
+### Feat
+
+- adding athlete statistics
+
+### Refactor
+
+- improving athlete chart from total to sinclair and ignoring no total comps
+
 ## 0.10.1 (2022-10-02)
 
 ### Fix
