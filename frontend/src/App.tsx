@@ -22,6 +22,7 @@ import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
+import NotFound from "./views/NotFound";
 
 export const ColorModeContext = createContext({ toggleColorMode: () => {} });
 
@@ -86,10 +87,11 @@ const App: React.FC = () => {
                 element={<CompetitionDetailPage />}
               />
               <Route
-                path="/athletes/:athleteReferenceId"
+                path="/athletes/:athleteReferenceId/*"
                 element={<AthleteDetailPage />}
               />
               <Route path="/search" element={<SearchPage />} />
+              <Route path="/*" element={<NotFound />} />
             </Routes>
           </Navbar>
         </LocalizationProvider>
