@@ -175,18 +175,17 @@ class AthleteDetailSerializer(AthleteSerializer):
             lift_by_age_weight_category[order_by] = {}
             for age_category, is_true in age_categories.items():
                 if is_true:
+                    lift_by_age_weight_category[order_by].update(
+                        {age_category: {}}
+                    )
                     for weight_category in weight_categories:
                         lifts = Lift.objects.filter(athlete=athlete).filter(
                             weight_category=weight_category
                         )
-                        lift_by_age_weight_category[order_by].update(
-                            {
-                                age_category: {
-                                    weight_category: self._best_lift(
-                                        lifts, sort_key
-                                    )
-                                }
-                            }
+                        lift_by_age_weight_category[order_by][
+                            age_category
+                        ].update(
+                            {weight_category: self._best_lift(lifts, sort_key)}
                         )
         return lift_by_age_weight_category
 

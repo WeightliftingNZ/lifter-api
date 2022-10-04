@@ -97,7 +97,7 @@ const StatsTab: React.FC<StatsTabProps> = ({ athlete }) => {
                                       },
                                     }}
                                     to={{
-                                      pathname: `/competition/${liftSet.competition}`,
+                                      pathname: `/competitions/${liftSet.competition}`,
                                       hash: `${liftSet.weight_category}`,
                                     }}
                                   >
