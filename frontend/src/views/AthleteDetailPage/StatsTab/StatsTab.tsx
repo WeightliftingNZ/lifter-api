@@ -47,7 +47,7 @@ const StatsTab: React.FC<StatsTabProps> = ({ athlete }) => {
           {Object.entries(athlete?.best_lifts).map(
             ([liftType, liftByAgeCategory]) => {
               return (
-                <>
+                <React.Fragment key={liftType}>
                   <Heading>
                     Best {liftType === "snatch" && "Snatch"}
                     {liftType === "cnj" && "Clean and Jerk"}
@@ -56,71 +56,80 @@ const StatsTab: React.FC<StatsTabProps> = ({ athlete }) => {
                   {Object.entries(liftByAgeCategory)
                     .filter(([ageCategory]) => ageCategory !== "is_master")
                     .map(([ageCategory, liftByWeightCategory]) => (
-                      <TableContainer sx={{ maxWidth: "fit-content" }}>
+                      <TableContainer
+                        key={ageCategory}
+                        sx={{ maxWidth: "fit-content" }}
+                      >
                         <Table padding="none">
-                          <TableRow>
-                            <TableCell sx={{ p: 1 }} variant="head" colSpan={4}>
-                              {ageCategoryTitle(ageCategory)}
-                            </TableCell>
-                          </TableRow>
-                          {Object.entries(liftByWeightCategory).map(
-                            ([weightCategory, liftSet]) => {
-                              const to = {
-                                pathname: `/competitions/${liftSet.competition}`,
-                                hash: liftSet.weight_category,
-                              };
-                              return (
-                                <TableRow selected>
-                                  <TableCellLink
-                                    tableCellProps={{ variant: "head" }}
-                                    to={to}
-                                  >
-                                    {weightCategory}
-                                  </TableCellLink>
-                                  <TableCellLink
-                                    tableCellProps={{ variant: "head" }}
-                                    to={to}
-                                  >
-                                    {liftType === "snatch" &&
-                                      liftSet.best_snatch_weight[1]}
-                                    {liftType === "cnj" &&
-                                      liftSet.best_cnj_weight[1]}
-                                    {liftType === "total" &&
-                                      liftSet.total_lifted}
-                                  </TableCellLink>
-                                  <TableCellLink
-                                    tableCellProps={{
-                                      sx: {
-                                        maxWidth: "300px",
-                                        overflow: "hidden",
-                                        textOverflow: "ellipsis",
-                                      },
-                                    }}
-                                    to={{
-                                      pathname: `/competitions/${liftSet.competition}`,
-                                      hash: `${liftSet.weight_category}`,
-                                    }}
-                                  >
-                                    {liftSet.competition_name}
-                                  </TableCellLink>
-                                  <TableCellLink to={to}>
-                                    {moment(
-                                      liftSet.competition_date_start
-                                    ).format("MMM Do, YYYY")}{" "}
-                                    (
-                                    {moment(
-                                      liftSet.competition_date_start
-                                    ).fromNow()}
-                                    )
-                                  </TableCellLink>
-                                </TableRow>
-                              );
-                            }
-                          )}
+                          <TableBody>
+                            <TableRow>
+                              <TableCell
+                                sx={{ p: 1 }}
+                                variant="head"
+                                colSpan={4}
+                              >
+                                {ageCategoryTitle(ageCategory)}
+                              </TableCell>
+                            </TableRow>
+                            {Object.entries(liftByWeightCategory).map(
+                              ([weightCategory, liftSet]) => {
+                                const to = {
+                                  pathname: `/competitions/${liftSet.competition}`,
+                                  hash: liftSet.weight_category,
+                                };
+                                return (
+                                  <TableRow key={weightCategory} selected>
+                                    <TableCellLink
+                                      tableCellProps={{ variant: "head" }}
+                                      to={to}
+                                    >
+                                      {weightCategory}
+                                    </TableCellLink>
+                                    <TableCellLink
+                                      tableCellProps={{ variant: "head" }}
+                                      to={to}
+                                    >
+                                      {liftType === "snatch" &&
+                                        liftSet.best_snatch_weight[1]}
+                                      {liftType === "cnj" &&
+                                        liftSet.best_cnj_weight[1]}
+                                      {liftType === "total" &&
+                                        liftSet.total_lifted}
+                                    </TableCellLink>
+                                    <TableCellLink
+                                      tableCellProps={{
+                                        sx: {
+                                          maxWidth: "300px",
+                                          overflow: "hidden",
+                                          textOverflow: "ellipsis",
+                                        },
+                                      }}
+                                      to={{
+                                        pathname: `/competition/${liftSet.competition}`,
+                                        hash: `${liftSet.weight_category}`,
+                                      }}
+                                    >
+                                      {liftSet.competition_name}
+                                    </TableCellLink>
+                                    <TableCellLink to={to}>
+                                      {moment(
+                                        liftSet.competition_date_start
+                                      ).format("MMM Do, YYYY")}{" "}
+                                      (
+                                      {moment(
+                                        liftSet.competition_date_start
+                                      ).fromNow()}
+                                      )
+                                    </TableCellLink>
+                                  </TableRow>
+                                );
+                              }
+                            )}
+                          </TableBody>
                         </Table>
                       </TableContainer>
                     ))}
-                </>
+                </React.Fragment>
               );
             }
           )}
@@ -138,7 +147,7 @@ const StatsTab: React.FC<StatsTabProps> = ({ athlete }) => {
                       hash: liftSet.weight_category,
                     };
                     return (
-                      <TableRow selected>
+                      <TableRow selected key={ageCategory}>
                         <TableCellLink
                           to={to}
                           tableCellProps={{ variant: "head" }}

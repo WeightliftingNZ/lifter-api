@@ -19,10 +19,10 @@ import StatsTab from "./StatsTab";
 const AthleteDetailPage: React.FC = () => {
   const params = useParams();
   const AthleteId = params.athleteReferenceId;
-  const [value, setValue] = useState(0);
+  const [tabValue, setTabValue] = useState(params["*"] === "stats" ? 1 : 0);
 
   const handleOnChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
+    setTabValue(newValue);
   };
 
   const fetchAthlete = async () => {
@@ -65,7 +65,7 @@ const AthleteDetailPage: React.FC = () => {
           </Box>
           <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
             <Tabs
-              value={value}
+              value={tabValue}
               onChange={handleOnChange}
               aria-label="athlete selection tabs"
             >
@@ -77,12 +77,12 @@ const AthleteDetailPage: React.FC = () => {
             <NoResults />
           ) : (
             <>
-              {value === 0 && (
+              {tabValue === 0 && (
                 <Box>
                   <LiftTable liftSet={data?.lift_set} />
                 </Box>
               )}
-              {value === 1 && (
+              {tabValue === 1 && (
                 <Box>
                   <StatsTab athlete={data} />
                 </Box>
