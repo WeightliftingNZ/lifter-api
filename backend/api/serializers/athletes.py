@@ -177,9 +177,9 @@ class AthleteDetailSerializer(AthleteSerializer):
 
         lift_by_age_weight_category: dict = defaultdict(dict)
         for order_by, sort_key in order_bys:
+            lift_by_age_weight_category[order_by] = defaultdict(dict)
             for age_category, is_true in age_categories.items():
                 if is_true:
-                    lift_by_age_weight_category[order_by] = defaultdict(dict)
                     for weight_category in weight_categories:
                         clean_lifts = [
                             lift
