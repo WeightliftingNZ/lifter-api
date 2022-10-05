@@ -74,7 +74,7 @@ const CompetitionYearTable: React.FC<CompetitionYearTableProps> = ({
                   sx: {
                     overflow: "hidden",
                     textOverflow: "ellipsis",
-                    Width: 100,
+                    width: 100,
                   },
                 }}
               >
@@ -93,7 +93,7 @@ const CompetitionYearTable: React.FC<CompetitionYearTableProps> = ({
               <TableCellLink to={to} tableCellProps={{ align: "center" }}>
                 {lift.placing}
               </TableCellLink>
-              <TableCellLink to={to} sx={{ maxWidth: 100 }}>
+              <TableCellLink to={to} tableCellProps={{ sx: { width: 100 } }}>
                 <AgeCategoryBadges
                   isColumn
                   ageCategories={lift.age_categories}
