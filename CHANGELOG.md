@@ -1,3 +1,9 @@
+## 0.11.8 (2022-10-05)
+
+### Fix
+
+- improved competition table
+
 ## 0.11.7 (2022-10-04)
 
 ### Fix
