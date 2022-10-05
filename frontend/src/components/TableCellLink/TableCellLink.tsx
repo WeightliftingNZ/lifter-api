@@ -13,11 +13,14 @@ const TableCellLink: React.FC<React.PropsWithChildren<TableCellLinkProps>> = (
       <Link
         sx={{
           display: "block",
-          width: "100%",
-          height: "100%",
           p: 1,
           textDecoration: "none",
+          width: "100%",
+          height: "100%",
           color: "inherit",
+          overflow: "inherit",
+          textOverflow: "inherit",
+          maxWidth: "inherit",
         }}
         component={RouterLink}
         to={props.to || ""}
