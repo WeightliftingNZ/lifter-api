@@ -1,221 +1,238 @@
+"""Testing athlete endpoints."""
+
 from datetime import datetime
 
 import pytest
+from pytest_lazyfixture import lazy_fixture
 from rest_framework import status
 
-from api.models.athletes import MINIMUM_YEAR_FROM_BIRTH
+from api.models.athletes import Athlete
+from config.settings import MINIMUM_YEAR_FROM_BIRTH
 
 pytestmark = pytest.mark.django_db
 
 
-class TestAthleteCase:
-    """Athlete testing."""
+class _BaseTestAthlete:
+    """Athlete Testing Base class."""
 
     url = "/v1/athletes"
 
-    def test_get_athletes(self, client, mock_athlete):
-        """Retrieve athletes."""
+
+class TestAthleteCommon(_BaseTestAthlete):
+    """Test functionality that requires no authentication (a.k.a. "common").
+
+    This includes:
+        - listing many athletes
+        - retrieving an athlete
+        - searching/filtering on athletes
+    """
+
+    def test_list(self, client, mock_athlete):
+        """List athletes.
+
+        `mock_athlete` fixture batch creates athletes one more than the \
+                `PAGE_SIZE`. Since the batch size is greater than the \
+                pagination, the results should paginate.
+
+        Test will check if all the generated athletes are present but the last \
+                one, since this paginated to the next page.
+        """
         response = client.get(self.url)
         assert response.status_code == status.HTTP_200_OK
         result = response.json()
-        assert result["count"] >= 1
+        assert result["count"] == len(mock_athlete)
         mock_athlete_ids = [
             str(athlete.reference_id) for athlete in mock_athlete
         ]
-        result_athlete_ids = [
+        mock_athlete_ids_but_last = mock_athlete_ids[:-1]
+        page_one_result_athlete_ids = [
             athlete["reference_id"] for athlete in result["results"]
         ]
-        assert set(mock_athlete_ids) == set(result_athlete_ids)
+        assert set(mock_athlete_ids_but_last) == set(
+            page_one_result_athlete_ids
+        )
+        assert mock_athlete_ids[-1] not in page_one_result_athlete_ids
 
-    def test_get_athlete(self, client, athlete_factory):
-        """Retrieve a particular athlete by id using the url."""
-        athlete = athlete_factory()
+    def test_retrieve(self, client, athlete):
+        """Retrieve athlete."""
         response = client.get(f"{self.url}/{athlete.reference_id}")
         assert response.status_code == status.HTTP_200_OK
         result = response.json()
         assert result["first_name"] == athlete.first_name
         assert result["last_name"] == athlete.last_name
         assert result["yearborn"] == athlete.yearborn
+        # properties
         assert result["age_categories"] == athlete.age_categories
+        assert result["full_name"] == athlete.full_name
 
-    def test_find_athlete(self, client, athlete):
-        """Find a athlete using the url search terms."""
-        response = client.get(
-            f"{self.url}?search={athlete.first_name} {athlete.last_name}"
-        )
+    def test_filter_no_query(self, client, athlete):
+        """Blank search query gives no results."""
+        response = client.get(f"{self.url}?search=''")
+        assert response.status_code == status.HTTP_200_OK
+        result = response.json()
+        assert result["count"] == 0
+        # check athlete exists
+        assert isinstance(athlete, Athlete)
+
+    @pytest.mark.parametrize("athlete__first_name", ["John"])
+    @pytest.mark.parametrize("athlete__last_name", ["Doe"])
+    @pytest.mark.parametrize(
+        "test_input",
+        [
+            pytest.param("John", id="athlete-filter-first-name"),
+            pytest.param("Doe", id="athlete-filter-last-name"),
+            pytest.param("John Doe", id="athlete-filter-full-name"),
+        ],
+    )
+    def test_filter_with_inputs(self, client, athlete, test_input):
+        """List and retrieve athlete by filter."""
+        response = client.get(f"{self.url}?search={test_input}")
         assert response.status_code == status.HTTP_200_OK
         result = response.json()
         assert result["count"] > 0
         assert result["results"][0]["first_name"] == athlete.first_name
 
+
+class TestAthleteRescricted(_BaseTestAthlete):
+    """Test functionality that requires higher level privileges.
+
+    This includes:
+        - creating an athlete
+        - editing an athlete
+        - deleting an athlete
+    which can only be invoked by admin accounts (at the moment). In the \
+            this might be enacted by a specific user group.
+    """
+
     @pytest.mark.parametrize(
-        "test_input,expected",
+        "test_client,expected",
         [
-            (
-                {
-                    "first_name": "Athlete",
-                    "last_name": "Correct",
-                    "yearborn": 1900,
-                },
-                status.HTTP_201_CREATED,
+            pytest.param(
+                lazy_fixture("client"),
+                status.HTTP_401_UNAUTHORIZED,
+                id="athlete-create-anon",
             ),
-            (
-                {
-                    # missing `first_name`
-                    "last_name": "InCorrect",
-                    "yearborn": 1900,
-                },
-                status.HTTP_400_BAD_REQUEST,
+            pytest.param(
+                lazy_fixture("admin_client"),
+                status.HTTP_201_CREATED,
+                id="athlete-create-admin",
             ),
         ],
     )
-    def test_admin_create_athlete(self, admin_client, test_input, expected):
-        """Admin user can create athletes."""
-        response = admin_client.post(
-            self.url, data=test_input, content_type="application/json"
+    def test_create(self, test_client, expected, athlete_factory):
+        """Athlete can only be created by an admin user and not anon user."""
+        athlete = athlete_factory.stub()
+        response = test_client.post(
+            self.url,
+            data=athlete.__dict__,
+            content_type="application/json",
         )
         assert response.status_code == expected
 
-    @pytest.mark.parametrize(
-        "test_input,expected",
-        [
-            pytest.param(
-                {
-                    "first_name": "Athlete",
-                    "last_name": "Correct",
-                    "yearborn": 1900,
-                },
-                status.HTTP_201_CREATED,
-                id="Normal input.",
-            ),
-            pytest.param(
-                {
-                    "first_name": "Athlete",
-                    "last_name": "OldEnough",
-                    "yearborn": datetime.now().year - MINIMUM_YEAR_FROM_BIRTH,
-                },
-                status.HTTP_201_CREATED,
-            ),
-            pytest.param(
-                {
-                    "first_name": "Athlete",
-                    "last_name": "TooYoung",
-                    "yearborn": datetime.now().year
-                    - (MINIMUM_YEAR_FROM_BIRTH - 1),
-                },
-                status.HTTP_400_BAD_REQUEST,
-                id="`yearborn` after acceptable year.",
-            ),
-        ],
-    )
-    def test_create_athlete_custom_validation(
-        self, admin_client, test_input, expected
-    ):
-        """Test custom validation for competition creation."""
-        response = admin_client.post(
-            self.url, data=test_input, content_type="application/json"
-        )
-        assert response.status_code == expected
-
-    def test_anon_create_athlete(self, client):
-        """Anon users cannot create athletes."""
-        response = client.post(
-            self.url, data={}, content_type="application/json"
-        )
-        assert response.status_code == status.HTTP_401_UNAUTHORIZED
+        # check creation
+        count = Athlete.objects.filter(
+            reference_id=response.json().get("reference_id")
+        ).count()
+        if response.status_code == status.HTTP_201_CREATED:
+            assert count == 1
+        else:
+            assert count == 0
 
     @pytest.mark.parametrize(
-        "test_input,expected",
+        "test_client,expected",
         [
-            (
-                {
-                    "last_name": "Edited",
-                },
+            pytest.param(
+                lazy_fixture("client"),
+                status.HTTP_401_UNAUTHORIZED,
+                id="athlete-edit-anon",
+            ),
+            pytest.param(
+                lazy_fixture("admin_client"),
                 status.HTTP_200_OK,
-            ),
-            (
-                {
-                    # yearborn only accepts integers
-                    "yearborn": "ThisIsNotANumber",
-                },
-                status.HTTP_400_BAD_REQUEST,
+                id="athlete-edit-admin",
             ),
         ],
     )
-    def test_admin_edit_athlete(
-        self, test_input, expected, admin_client, mock_athlete
-    ):
+    def test_edit(self, test_client, expected, athlete, athlete_factory):
         """Admin users can edit athletes."""
-        response = admin_client.patch(
-            f"{self.url}/{mock_athlete[0].reference_id}",
-            data=test_input,
+        edited_athlete = athlete_factory.stub()
+        response = test_client.patch(
+            f"{self.url}/{athlete.reference_id}",
+            data=edited_athlete.__dict__,
             content_type="application/json",
         )
         assert response.status_code == expected
-
-    def test_anon_edit_athlete(self, client, mock_athlete):
-        """Anon users cannot edit athletes."""
-        anon_response = client.patch(
-            f"{self.url}/{mock_athlete[0].reference_id}",
-            data={},
-            content_type="application/json",
+        extract_athlete = Athlete.objects.get(
+            reference_id=athlete.reference_id
         )
-        assert anon_response.status_code == status.HTTP_401_UNAUTHORIZED
 
-    def test_admin_delete_athlete(self, admin_client, mock_athlete):
+        # check editing
+        if response.status_code == status.HTTP_200_OK:
+            assert extract_athlete.first_name == edited_athlete.first_name
+            assert extract_athlete.last_name == edited_athlete.last_name
+            assert extract_athlete.yearborn == edited_athlete.yearborn
+        else:
+            assert extract_athlete.first_name != edited_athlete.first_name
+            assert extract_athlete.last_name != edited_athlete.last_name
+            assert extract_athlete.yearborn != edited_athlete.yearborn
+
+    @pytest.mark.parametrize(
+        "test_client,expected",
+        [
+            pytest.param(
+                lazy_fixture("client"),
+                status.HTTP_401_UNAUTHORIZED,
+                id="athlete-edit-anon",
+            ),
+            pytest.param(
+                lazy_fixture("admin_client"),
+                status.HTTP_204_NO_CONTENT,
+                id="athlete-edit-admin",
+            ),
+        ],
+    )
+    def test_admin_delete(self, test_client, expected, athlete):
         """Admin users can delete athletes."""
-        response = admin_client.delete(
-            f"{self.url}/{mock_athlete[0].reference_id}"
-        )
-        assert response.status_code == status.HTTP_204_NO_CONTENT
+        response = test_client.delete(f"{self.url}/{athlete.reference_id}")
+        assert response.status_code == expected
 
-    def test_anon_delete_athlete(self, client, mock_athlete):
-        """Anonymous users cannot delete athletes."""
-        response = client.delete(f"{self.url}/{mock_athlete[0].reference_id}")
-        assert response.status_code == status.HTTP_401_UNAUTHORIZED
+        # check deletion.
 
     @pytest.mark.parametrize(
         "test_input,expected",
         [
             pytest.param(
-                {
-                    "first_name": "First",
-                    "last_name": "Last",
-                    "yearborn": datetime.now().year - 21,
-                },
-                {
-                    "full_name": "First Last",
-                    "current_grade": None,
-                    "age_categories": {
-                        "is_youth": False,
-                        "is_junior": False,
-                        "is_senior": True,
-                        "is_master": False,
-                        "is_master_35_39": False,
-                        "is_master_40_44": False,
-                        "is_master_45_49": False,
-                        "is_master_50_54": False,
-                        "is_master_55_59": False,
-                        "is_master_60_64": False,
-                        "is_master_65_69": False,
-                        "is_master_70": False,
-                    },
-                    "recent_lift": [],
-                },
-                id="Normal",
-            )
+                datetime.now().year - MINIMUM_YEAR_FROM_BIRTH,
+                status.HTTP_201_CREATED,
+                id="create-age-validation-old-enough",
+            ),
+            pytest.param(
+                datetime.now().year - (MINIMUM_YEAR_FROM_BIRTH - 1),
+                status.HTTP_400_BAD_REQUEST,
+                id="create-age-validation-too-young",
+            ),
         ],
     )
-    def test_athlete_payload_custom_properties(
-        self, admin_client, test_input, expected
+    def test_admin_create_yearborn_validation(
+        self,
+        admin_client,
+        athlete_factory,
+        test_input,
+        expected,
     ):
-        """Test athlete payload for custom properties."""
+        """Testing Athlete custom validation.
+
+        Athlete must be over the minimum year from birth.
+        """
+        athlete = athlete_factory.stub(yearborn=test_input)
         response = admin_client.post(
-            self.url, data=test_input, content_type="application/json"
+            self.url,
+            data=athlete.__dict__,
+            content_type="application/json",
         )
-        assert response.status_code == status.HTTP_201_CREATED
-        result = response.json()
-        assert result["full_name"] == expected["full_name"]
-        assert result["age_categories"] == expected["age_categories"]
-        assert result["current_grade"] == expected["current_grade"]
-        assert result["recent_lift"] == expected["recent_lift"]
+        assert response.status_code == expected
+        # TODO test the response json
+
+
+class TestAthleteSpecial(_BaseTestAthlete):
+    pass

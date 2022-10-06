@@ -25,14 +25,13 @@ makemigrations:
 	cd ./backend && \
 	pipenv run python manage.py makemigrations
 
-ARGPATH=.
-
+ARG=.
 .PHONY: test
 test:
 	clear
 	docker-compose up --build db -d && \
 	cd ./backend && \
-	pipenv run pytest -k $(ARGPATH)
+	pipenv run pytest -k $(ARG)
 
 .PHONY: test-frontend
 test-frontend:
@@ -48,7 +47,7 @@ mypy:
 
 .PHONY: oops
 oops:
-	rm -rf Pipfile Pipfile.lock ./venv
+	rm -rf Pipfile Pipfile.lock ./.venv
 
 $PACKAGE = .
 

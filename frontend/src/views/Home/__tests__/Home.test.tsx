@@ -3,10 +3,10 @@
 import React from "react";
 import { test, expect } from "@jest/globals";
 import renderer from "react-test-renderer";
-import NotFound from "../NotFound";
+import Home from "../Home";
 
-test("Not Found renders correctly", () => {
-  const tree = renderer.create(<NotFound />).toJSON();
+test.skip("render correctly", () => {
+  const tree = renderer.create(<Home />).toJSON();
 
   expect(tree).toMatchSnapshot();
 });

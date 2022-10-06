@@ -49,6 +49,7 @@ coverage = {extras = ["toml"], version = "*"}
 mkdocstrings = {extras = ["python"], version = "*"}
 factory-boy = "*"
 pdbr = "*"
+pytest-lazy-fixture = "*"
 
 [requires]
 python_version = "3.10"

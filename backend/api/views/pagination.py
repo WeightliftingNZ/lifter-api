@@ -3,9 +3,11 @@
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
+from config.settings import PAGE_SIZE
+
 
 class StandardSetPagination(PageNumberPagination):
-    page_size = 20
+    page_size = PAGE_SIZE
     page_size_query_param = "page_size"
     max_page_size = 10_000
 

@@ -12,6 +12,7 @@ from pytest_factoryboy import register
 from api.models.athletes import Athlete
 from api.models.competitions import Competition
 from api.models.lifts import Lift
+from config.settings import PAGE_SIZE
 
 from .factories import (
     AthleteFactory,
@@ -55,13 +56,8 @@ def django_db_setup(django_db_setup, django_db_blocker):
 
 @pytest.fixture
 def mock_athlete() -> list[Athlete]:
-    """Provide edited athlete data.
-
-    Returns:
-        list[Athlete]: list of mocked Athlete models.
-    """
-    ATHLETES = 4
-    return [AthleteFactory() for _ in range(ATHLETES)]
+    """Create athletes at random, the number one more than the page size."""
+    return AthleteFactory.create_batch(PAGE_SIZE + 1)
 
 
 @pytest.fixture

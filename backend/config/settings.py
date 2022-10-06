@@ -40,6 +40,15 @@ if not FAKER_SEED.isdigit():
 Faker.seed(int(FAKER_SEED))
 faker = Faker("en_NZ")
 
+# Pagination settings
+
+PAGE_SIZE = 20
+
+# Settings specific to weightlifing
+
+# The youngest an athlete can be
+MINIMUM_YEAR_FROM_BIRTH = 5
+
 # Default primary key field type
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
