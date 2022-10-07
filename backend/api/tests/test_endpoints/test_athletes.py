@@ -12,6 +12,42 @@ from config.settings import MINIMUM_YEAR_FROM_BIRTH
 pytestmark = pytest.mark.django_db
 
 
+class TestAthleteModel:
+    """Athlete custom property tests."""
+
+    def test_age_categories(self, athlete):
+        """Testing age_categories property."""
+        assert (
+            Athlete.objects.get(
+                reference_id=athlete.reference_id
+            ).age_categories
+            == athlete.age_categories
+        )
+
+    def test_full_name(self, athlete):
+        """Testing full name combination from `first_name` and `last_name`."""
+        assert (
+            Athlete.objects.get(reference_id=athlete.reference_id).full_name
+            == f"{athlete.first_name.title()} {athlete.last_name.title()}"
+        )
+
+
+class TestAthleteManager:
+    """Athlete custom manager functionality tests."""
+
+    def test_search_query_full_name(self, athlete):
+        """Testing search query on the athlete's full name."""
+        search_result = Athlete.objects.search(query=athlete.full_name)
+        assert search_result.count() == 1
+        assert search_result.first().reference_id == athlete.reference_id
+
+    def test_search_query_none(self, athlete):
+        """Test for search manager function when `query=None`."""
+        search_result = Athlete.objects.search(query=None)
+        assert search_result.count() == 1
+        assert search_result.first().reference_id == athlete.reference_id
+
+
 class _BaseTestAthlete:
     """Athlete Testing Base class."""
 
@@ -59,11 +95,6 @@ class TestAthleteCommon(_BaseTestAthlete):
         assert response.status_code == status.HTTP_200_OK
         result = response.json()
         assert result["first_name"] == athlete.first_name
-        assert result["last_name"] == athlete.last_name
-        assert result["yearborn"] == athlete.yearborn
-        # properties
-        assert result["age_categories"] == athlete.age_categories
-        assert result["full_name"] == athlete.full_name
 
     def test_filter_no_query(self, client, athlete):
         """Blank search query gives no results."""
@@ -154,7 +185,7 @@ class TestAthleteRescricted(_BaseTestAthlete):
         ],
     )
     def test_edit(self, test_client, expected, athlete, athlete_factory):
-        """Admin users can edit athletes."""
+        """Admin users can edit athletes but not anon users."""
         edited_athlete = athlete_factory.stub()
         response = test_client.patch(
             f"{self.url}/{athlete.reference_id}",
@@ -162,11 +193,11 @@ class TestAthleteRescricted(_BaseTestAthlete):
             content_type="application/json",
         )
         assert response.status_code == expected
+
+        # check editing
         extract_athlete = Athlete.objects.get(
             reference_id=athlete.reference_id
         )
-
-        # check editing
         if response.status_code == status.HTTP_200_OK:
             assert extract_athlete.first_name == edited_athlete.first_name
             assert extract_athlete.last_name == edited_athlete.last_name
@@ -191,12 +222,23 @@ class TestAthleteRescricted(_BaseTestAthlete):
             ),
         ],
     )
-    def test_admin_delete(self, test_client, expected, athlete):
-        """Admin users can delete athletes."""
+    def test_delete(self, test_client, expected, athlete):
+        """Admin users can delete athletes, but not anon users."""
         response = test_client.delete(f"{self.url}/{athlete.reference_id}")
         assert response.status_code == expected
 
-        # check deletion.
+        # check deletion
+        count = Athlete.objects.filter(
+            reference_id=athlete.reference_id
+        ).count()
+        if response.status_code == status.HTTP_204_NO_CONTENT:
+            assert count == 0
+        else:
+            assert count == 1
+
+
+class TestAthleteValidation(_BaseTestAthlete):
+    """Custom validation tests for athlete model."""
 
     @pytest.mark.parametrize(
         "test_input,expected",
@@ -213,7 +255,7 @@ class TestAthleteRescricted(_BaseTestAthlete):
             ),
         ],
     )
-    def test_admin_create_yearborn_validation(
+    def test_yearborn_validation(
         self,
         admin_client,
         athlete_factory,
@@ -231,8 +273,3 @@ class TestAthleteRescricted(_BaseTestAthlete):
             content_type="application/json",
         )
         assert response.status_code == expected
-        # TODO test the response json
-
-
-class TestAthleteSpecial(_BaseTestAthlete):
-    pass

@@ -105,8 +105,10 @@ class AthleteDetailSerializer(AthleteSerializer):
 
     def get_lift_set(self, athlete):
         """Obtain all lifts by this athlete."""
-        query = Lift.objects.filter(athlete=athlete).order_by(
-            "-competition__date_start"
+        query = (
+            Lift.objects.filter(athlete=athlete)
+            .select_related("athlete")
+            .order_by("-competition__date_start")
         )
         return LiftSerializer(
             query, many=True, read_only=True, context=self.context

@@ -20,7 +20,8 @@ from .utils import age_category
 from .utils.types import AgeCategories
 
 
-def validate_yearborn(yearborn: int, validate=True):
+# TODO: change the name to `validate_yearborn`
+def check_yearborn(yearborn: int):
     """Validate `yearborn` field.
 
     Args:
@@ -32,15 +33,12 @@ def validate_yearborn(yearborn: int, validate=True):
         Raises ValidationError or returns the ValidationError.
     """
     years_from_birth = datetime.now().year - yearborn
-    validator = ValidationError(
-        _("Years after %(year)s not accepted"),
-        code="invalid year",
-        params={"year": datetime.now().year - MINIMUM_YEAR_FROM_BIRTH},
-    )
     if years_from_birth < MINIMUM_YEAR_FROM_BIRTH:
-        if validate:
-            raise validator
-        return validator
+        raise ValidationError(
+            _("Years after %(year)s not accepted"),
+            code="invalid year",
+            params={"year": datetime.now().year - MINIMUM_YEAR_FROM_BIRTH},
+        )
 
 
 class Athlete(models.Model):
@@ -56,7 +54,7 @@ class Athlete(models.Model):
     last_name = models.CharField(max_length=128)
     yearborn = models.IntegerField(
         default=1900,
-        validators=[validate_yearborn],
+        validators=[check_yearborn],
     )
 
     history = AuditlogHistoryField(pk_indexable=False)
@@ -94,13 +92,8 @@ class Athlete(models.Model):
 
     def clean(self, *args, **kwargs):
         """Customise validation."""
+        # USE below if when creating custom validation.
         # errors = []
-        # # Yearborn validation
-        # yearborn_validation = validate_yearborn(
-        #     yearborn=self.yearborn, validate=True
-        # )
-        # if yearborn_validation:
-        #     errors.append(yearborn_validation)
         #
         # if len(errors) > 0:
         #     raise ValidationError(errors)
@@ -108,7 +101,8 @@ class Athlete(models.Model):
         super().clean(*args, **kwargs)
 
     def save(self, *args, **kwargs):
-        """Necessary to enact custom validation in `clean()` method."""
+        """Necessary to enact custom validation in `clean()` method and field \
+                level validators."""
         self.full_clean()
         super().save(*args, **kwargs)
 
