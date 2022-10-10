@@ -1,0 +1,271 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Loading components tests renders 1`] = `
+[
+  <style
+    dangerouslySetInnerHTML={
+      {
+        "__html": ".css-8atqhb{width:100%;}",
+      }
+    }
+    data-emotion="css 8atqhb"
+  />,
+  <div
+    className="MuiBox-root css-8atqhb"
+  >
+    <style
+      dangerouslySetInnerHTML={
+        {
+          "__html": ".css-1gdfwye-MuiCard-root{overflow:hidden;}",
+        }
+      }
+      data-emotion="css 1gdfwye-MuiCard-root"
+    />
+    <style
+      dangerouslySetInnerHTML={
+        {
+          "__html": ".css-1v5z4dq-MuiPaper-root-MuiCard-root{background-color:#fff;color:rgba(0, 0, 0, 0.87);-webkit-transition:box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;transition:box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;border-radius:4px;border:1px solid rgba(0, 0, 0, 0.12);overflow:hidden;}",
+        }
+      }
+      data-emotion="css 1v5z4dq-MuiPaper-root-MuiCard-root"
+    />
+    <div
+      className="MuiPaper-root MuiPaper-outlined MuiPaper-rounded MuiCard-root css-1v5z4dq-MuiPaper-root-MuiCard-root"
+    >
+      <style
+        dangerouslySetInnerHTML={
+          {
+            "__html": ".css-46bh2p-MuiCardContent-root{padding:16px;}.css-46bh2p-MuiCardContent-root:last-child{padding-bottom:24px;}",
+          }
+        }
+        data-emotion="css 46bh2p-MuiCardContent-root"
+      />
+      <div
+        className="MuiCardContent-root css-46bh2p-MuiCardContent-root"
+      >
+        <div
+          className="MuiBox-root css-0"
+        >
+          <style
+            dangerouslySetInnerHTML={
+              {
+                "__html": ".css-8ug7bm-MuiTypography-root{margin:0;font-family:"Roboto","Helvetica","Arial",sans-serif;font-weight:400;font-size:2.125rem;line-height:1.235;letter-spacing:0.00735em;margin-bottom:0.35em;color:#7b1fa2;padding:8px;}",
+              }
+            }
+            data-emotion="css 8ug7bm-MuiTypography-root"
+          />
+          <h4
+            className="MuiTypography-root MuiTypography-h4 MuiTypography-gutterBottom css-8ug7bm-MuiTypography-root"
+          >
+            <style
+              dangerouslySetInnerHTML={
+                {
+                  "__html": ".css-e6f7s9-MuiSkeleton-root{display:block;background-color:rgba(0, 0, 0, 0.11);height:auto;margin-top:0;margin-bottom:0;transform-origin:0 55%;-webkit-transform:scale(1, 0.60);-moz-transform:scale(1, 0.60);-ms-transform:scale(1, 0.60);transform:scale(1, 0.60);border-radius:4px/6.7px;-webkit-animation:animation-c7515d 1.5s ease-in-out 0.5s infinite;animation:animation-c7515d 1.5s ease-in-out 0.5s infinite;width:40%;}.css-e6f7s9-MuiSkeleton-root:empty:before{content:"\\00a0";}@-webkit-keyframes animation-c7515d{0%{opacity:1;}50%{opacity:0.4;}100%{opacity:1;}}@keyframes animation-c7515d{0%{opacity:1;}50%{opacity:0.4;}100%{opacity:1;}}",
+                }
+              }
+              data-emotion="css e6f7s9-MuiSkeleton-root animation-c7515d"
+            />
+            <span
+              className="MuiSkeleton-root MuiSkeleton-text MuiSkeleton-pulse css-e6f7s9-MuiSkeleton-root"
+              style={
+                {
+                  "height": undefined,
+                  "width": undefined,
+                }
+              }
+            />
+          </h4>
+          <style
+            dangerouslySetInnerHTML={
+              {
+                "__html": ".css-w4z10b-MuiStack-root{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-flex-direction:row;-ms-flex-direction:row;flex-direction:row;}.css-w4z10b-MuiStack-root>:not(style)+:not(style){margin:0;margin-left:8px;}",
+              }
+            }
+            data-emotion="css w4z10b-MuiStack-root"
+          />
+          <div
+            className="css-w4z10b-MuiStack-root"
+          >
+            <style
+              dangerouslySetInnerHTML={
+                {
+                  "__html": ".css-11sypvm-MuiSkeleton-root{display:block;background-color:rgba(0, 0, 0, 0.11);height:auto;margin-top:0;margin-bottom:0;transform-origin:0 55%;-webkit-transform:scale(1, 0.60);-moz-transform:scale(1, 0.60);-ms-transform:scale(1, 0.60);transform:scale(1, 0.60);border-radius:4px/6.7px;-webkit-animation:animation-c7515d 1.5s ease-in-out 0.5s infinite;animation:animation-c7515d 1.5s ease-in-out 0.5s infinite;width:8%;}.css-11sypvm-MuiSkeleton-root:empty:before{content:"\\00a0";}@-webkit-keyframes animation-c7515d{0%{opacity:1;}50%{opacity:0.4;}100%{opacity:1;}}@keyframes animation-c7515d{0%{opacity:1;}50%{opacity:0.4;}100%{opacity:1;}}",
+                }
+              }
+              data-emotion="css 11sypvm-MuiSkeleton-root animation-c7515d"
+            />
+            <span
+              className="MuiSkeleton-root MuiSkeleton-text MuiSkeleton-pulse css-11sypvm-MuiSkeleton-root"
+              style={
+                {
+                  "height": undefined,
+                  "width": undefined,
+                }
+              }
+            />
+            <span
+              className="MuiSkeleton-root MuiSkeleton-text MuiSkeleton-pulse css-11sypvm-MuiSkeleton-root"
+              style={
+                {
+                  "height": undefined,
+                  "width": undefined,
+                }
+              }
+            />
+          </div>
+          <style
+            dangerouslySetInnerHTML={
+              {
+                "__html": ".css-rqglhn-MuiTable-root{display:table;width:100%;border-collapse:collapse;border-spacing:0;}.css-rqglhn-MuiTable-root caption{font-family:"Roboto","Helvetica","Arial",sans-serif;font-weight:400;font-size:0.875rem;line-height:1.43;letter-spacing:0.01071em;padding:16px;color:rgba(0, 0, 0, 0.6);text-align:left;caption-side:bottom;}",
+              }
+            }
+            data-emotion="css rqglhn-MuiTable-root"
+          />
+          <table
+            className="MuiTable-root css-rqglhn-MuiTable-root"
+            role={null}
+          >
+            <style
+              dangerouslySetInnerHTML={
+                {
+                  "__html": ".css-15wwp11-MuiTableHead-root{display:table-header-group;}",
+                }
+              }
+              data-emotion="css 15wwp11-MuiTableHead-root"
+            />
+            <thead
+              className="MuiTableHead-root css-15wwp11-MuiTableHead-root"
+              role={null}
+            >
+              <style
+                dangerouslySetInnerHTML={
+                  {
+                    "__html": ".css-1q1u3t4-MuiTableRow-root{color:inherit;display:table-row;vertical-align:middle;outline:0;}.css-1q1u3t4-MuiTableRow-root.MuiTableRow-hover:hover{background-color:rgba(0, 0, 0, 0.04);}.css-1q1u3t4-MuiTableRow-root.Mui-selected{background-color:rgba(25, 118, 210, 0.08);}.css-1q1u3t4-MuiTableRow-root.Mui-selected:hover{background-color:rgba(25, 118, 210, 0.12);}",
+                  }
+                }
+                data-emotion="css 1q1u3t4-MuiTableRow-root"
+              />
+              <tr
+                className="MuiTableRow-root MuiTableRow-head css-1q1u3t4-MuiTableRow-root"
+                role={null}
+              >
+                <style
+                  dangerouslySetInnerHTML={
+                    {
+                      "__html": ".css-1ygcj2i-MuiTableCell-root{font-family:"Roboto","Helvetica","Arial",sans-serif;font-weight:500;font-size:0.875rem;line-height:1.5rem;letter-spacing:0.01071em;display:table-cell;vertical-align:inherit;border-bottom:1px solid rgba(224, 224, 224, 1);text-align:left;padding:16px;color:rgba(0, 0, 0, 0.87);}",
+                    }
+                  }
+                  data-emotion="css 1ygcj2i-MuiTableCell-root"
+                />
+                <th
+                  aria-sort={null}
+                  className="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeMedium css-1ygcj2i-MuiTableCell-root"
+                  scope="col"
+                >
+                  <style
+                    dangerouslySetInnerHTML={
+                      {
+                        "__html": ".css-1n7gpw1-MuiSkeleton-root{display:block;background-color:rgba(0, 0, 0, 0.11);height:auto;margin-top:0;margin-bottom:0;transform-origin:0 55%;-webkit-transform:scale(1, 0.60);-moz-transform:scale(1, 0.60);-ms-transform:scale(1, 0.60);transform:scale(1, 0.60);border-radius:4px/6.7px;-webkit-animation:animation-c7515d 1.5s ease-in-out 0.5s infinite;animation:animation-c7515d 1.5s ease-in-out 0.5s infinite;}.css-1n7gpw1-MuiSkeleton-root:empty:before{content:"\\00a0";}@-webkit-keyframes animation-c7515d{0%{opacity:1;}50%{opacity:0.4;}100%{opacity:1;}}@keyframes animation-c7515d{0%{opacity:1;}50%{opacity:0.4;}100%{opacity:1;}}",
+                      }
+                    }
+                    data-emotion="css 1n7gpw1-MuiSkeleton-root animation-c7515d"
+                  />
+                  <span
+                    className="MuiSkeleton-root MuiSkeleton-text MuiSkeleton-pulse css-1n7gpw1-MuiSkeleton-root"
+                    style={
+                      {
+                        "height": undefined,
+                        "width": undefined,
+                      }
+                    }
+                  />
+                </th>
+                <th
+                  aria-sort={null}
+                  className="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeMedium css-1ygcj2i-MuiTableCell-root"
+                  scope="col"
+                >
+                  <span
+                    className="MuiSkeleton-root MuiSkeleton-text MuiSkeleton-pulse css-1n7gpw1-MuiSkeleton-root"
+                    style={
+                      {
+                        "height": undefined,
+                        "width": undefined,
+                      }
+                    }
+                  />
+                </th>
+                <th
+                  aria-sort={null}
+                  className="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeMedium css-1ygcj2i-MuiTableCell-root"
+                  scope="col"
+                >
+                  <span
+                    className="MuiSkeleton-root MuiSkeleton-text MuiSkeleton-pulse css-1n7gpw1-MuiSkeleton-root"
+                    style={
+                      {
+                        "height": undefined,
+                        "width": undefined,
+                      }
+                    }
+                  />
+                </th>
+              </tr>
+              <tr
+                className="MuiTableRow-root MuiTableRow-head css-1q1u3t4-MuiTableRow-root"
+                role={null}
+              >
+                <th
+                  aria-sort={null}
+                  className="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeMedium css-1ygcj2i-MuiTableCell-root"
+                  scope="col"
+                >
+                  <span
+                    className="MuiSkeleton-root MuiSkeleton-text MuiSkeleton-pulse css-1n7gpw1-MuiSkeleton-root"
+                    style={
+                      {
+                        "height": undefined,
+                        "width": undefined,
+                      }
+                    }
+                  />
+                </th>
+                <th
+                  aria-sort={null}
+                  className="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeMedium css-1ygcj2i-MuiTableCell-root"
+                  scope="col"
+                >
+                  <span
+                    className="MuiSkeleton-root MuiSkeleton-text MuiSkeleton-pulse css-1n7gpw1-MuiSkeleton-root"
+                    style={
+                      {
+                        "height": undefined,
+                        "width": undefined,
+                      }
+                    }
+                  />
+                </th>
+                <th
+                  aria-sort={null}
+                  className="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeMedium css-1ygcj2i-MuiTableCell-root"
+                  scope="col"
+                >
+                  <span
+                    className="MuiSkeleton-root MuiSkeleton-text MuiSkeleton-pulse css-1n7gpw1-MuiSkeleton-root"
+                    style={
+                      {
+                        "height": undefined,
+                        "width": undefined,
+                      }
+                    }
+                  />
+                </th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>,
+]
+`;

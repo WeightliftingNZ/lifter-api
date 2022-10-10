@@ -1,0 +1,62 @@
+[
+  {
+    "is_youth": true,
+    "is_junior": false,
+    "is_senior": false,
+    "is_master": false,
+    "is_master_35_39": false,
+    "is_master_35_39": false,
+    "is_master_40_44": false,
+    "is_master_45_49": false,
+    "is_master_50_54": false,
+    "is_master_55_59": false,
+    "is_master_60_64": false,
+    "is_master_65_69": false,
+    "is_master_70": false
+  },
+  {
+    "is_youth": false,
+    "is_junior": true,
+    "is_senior": true,
+    "is_master": false,
+    "is_master_35_39": false,
+    "is_master_35_39": false,
+    "is_master_40_44": false,
+    "is_master_45_49": false,
+    "is_master_50_54": false,
+    "is_master_55_59": false,
+    "is_master_60_64": false,
+    "is_master_65_69": false,
+    "is_master_70": false
+  },
+  {
+    "is_youth": false,
+    "is_junior": false,
+    "is_senior": true,
+    "is_master": false,
+    "is_master_35_39": false,
+    "is_master_35_39": false,
+    "is_master_40_44": false,
+    "is_master_45_49": false,
+    "is_master_50_54": false,
+    "is_master_55_59": false,
+    "is_master_60_64": false,
+    "is_master_65_69": false,
+    "is_master_70": false
+  },
+  {
+    "is_youth": false,
+    "is_junior": false,
+    "is_senior": true,
+    "is_master": true,
+    "is_master_35_39": false,
+    "is_master_35_39": false,
+    "is_master_40_44": false,
+    "is_master_45_49": false,
+    "is_master_50_54": false,
+    "is_master_55_59": false,
+    "is_master_60_64": false,
+    "is_master_65_69": false,
+    "is_master_70": false
+  }
+]

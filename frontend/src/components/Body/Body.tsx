@@ -1,9 +1,9 @@
 /** @format */
 
 import React from "react";
-import { Typography } from "@mui/material";
+import { Typography, TypographyProps } from "@mui/material";
 
-interface BodyProps {
+interface BodyProps extends TypographyProps {
   children?: React.ReactNode;
 }
 

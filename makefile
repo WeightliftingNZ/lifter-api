@@ -49,7 +49,7 @@ mypy:
 oops:
 	rm -rf Pipfile Pipfile.lock ./.venv
 
-$PACKAGE = .
+$PACKAGE=.
 
 .PHONY: install
 install:
@@ -80,4 +80,10 @@ generate-key:
 .PHONY: serve-docs
 serve-docs:
 	cd ./backend && \
-		pipenv run mkdocs serve --config-file ../mkdocs.yml
+	pipenv run mkdocs serve --config-file ../mkdocs.yml
+
+.PHONY: edit-backend
+edit-backend:
+	cd ./backend && \
+	pipenv shell && \
+	nvim

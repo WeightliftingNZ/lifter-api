@@ -1,13 +1,10 @@
 """Custom managers for Competitions model."""
 
-from django.contrib.postgres.search import (
-    SearchHeadline,
-    SearchQuery,
-    SearchRank,
-    SearchVector,
-)
+from django.contrib.postgres.search import SearchHeadline, TrigramSimilarity
 from django.db import models
-from django.db.models import Q
+from django.db.models import CharField, F
+from django.db.models import Value as V
+from django.db.models.functions import Concat
 
 
 class CompetitionManager(models.Manager):
@@ -17,28 +14,18 @@ class CompetitionManager(models.Manager):
         """Search along name and location."""
         qs = self.get_queryset()
         if query is not None:
-            refined_query = SearchQuery(query)
-            vector = SearchVector("name", "location")
-            rank = SearchRank(vector, refined_query)
-            name_headline = SearchHeadline(
-                "name",
-                refined_query,
-            )
-            location_headline = SearchHeadline("location", refined_query)
-
             qs = (
                 qs.annotate(
-                    search=vector,
-                    rank=rank,
-                    name_headline=name_headline,
-                    location_headline=location_headline,
+                    name_location=Concat(
+                        F("name"),
+                        V(" "),
+                        F("location"),
+                        output_filed=CharField(),
+                    ),
+                    similarity=TrigramSimilarity("name_location", query),
+                    headline=SearchHeadline("name_location", query),
                 )
-                .filter(
-                    Q(search=refined_query)
-                    | Q(name__trigram_similar=query)
-                    | Q(location__trigram_similar=query)
-                )
-                .distinct()
-                .order_by("-rank")
+                .filter(similarity__gte=0.3)
+                .order_by("-similarity")
             )
         return qs

@@ -1,12 +1,10 @@
 """Athete related test factories."""
 
 import factory
-from faker import Faker
 
 from api.models import Athlete
 
-Faker.seed(42)
-fake = Faker("en_NZ")
+from .fake import fake
 
 
 class AthleteFactory(factory.django.DjangoModelFactory):

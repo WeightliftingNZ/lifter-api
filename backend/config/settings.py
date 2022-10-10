@@ -46,7 +46,7 @@ PAGE_SIZE = 20
 
 # Settings specific to weightlifing
 
-# The youngest an athlete can be
+# Important settings
 MINIMUM_YEAR_FROM_BIRTH = 5
 
 # Default primary key field type

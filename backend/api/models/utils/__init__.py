@@ -7,6 +7,7 @@ from .choices import (
     OLD_1998_2018_FEMALE_WEIGHT_CATEGORIES,
     OLD_1998_2018_MALE_WEIGHT_CATEGORIES,
 )
+from .constants import GRADES
 from .grading import determine_grade
 from .helpers import (
     age_category,
@@ -17,6 +18,7 @@ from .helpers import (
 )
 
 __all__ = [
+    "GRADES",
     "CURRENT_MALE_WEIGHT_CATEGORIES",
     "CURRENT_FEMALE_WEIGHT_CATEGORIES",
     "DEFAULT_LIFT_STATUS",

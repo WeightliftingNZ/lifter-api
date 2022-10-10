@@ -4,15 +4,11 @@ import random
 from typing import Literal
 
 import factory
-from faker import Faker
 
 from api.models import Lift
 
 from .athletes import AthleteFactory
 from .competitions import CompetitionFactory
-
-Faker.seed(42)
-fake = Faker("en_NZ")
 
 LiftStatusT = Literal["LIFT", "NOLIFT", "DNA"]
 

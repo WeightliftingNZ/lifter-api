@@ -35,26 +35,13 @@ class SearchSerializer(serializers.Serializer):
         return headlines
 
     def get_query_result_headline_no_html(self, instance):
-        """Return a the search headline without html.
-
-        Joins a list of attributes of the instance object containing the word \
-                'headline'
-
-        BE CAREFUL not to use 'headline' as an attribute name.
-        """
+        """Return a the search headline without html."""
         TAG_RE = re.compile(r"<[^>]+>")
-
-        headlines = [
-            TAG_RE.sub("", headline)
-            for headline in self._get_headline_attributes(instance)
-        ]
-
-        return " ".join(headlines)
+        return TAG_RE.sub("", instance.headline)
 
     def get_query_result_headline(self, instance):
         """Return the search headline with <b></b> highligiting."""
-        headlines = self._get_headline_attributes(instance)
-        return " ".join(headlines)
+        return instance.headline
 
     def get_query_result(self, instance):
         """Utilises serializers for combined search queryset."""

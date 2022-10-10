@@ -1,0 +1,149 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Title component tests renders 1`] = `
+[
+  <style
+    dangerouslySetInnerHTML={
+      {
+        "__html": ".css-t2ehx-MuiStack-root{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-flex-direction:row;-ms-flex-direction:row;flex-direction:row;max-width:-webkit-fit-content;max-width:-moz-fit-content;max-width:fit-content;}.css-t2ehx-MuiStack-root>:not(style)+:not(style){margin:0;margin-left:8px;}",
+      }
+    }
+    data-emotion="css t2ehx-MuiStack-root"
+  />,
+  <div
+    className="css-t2ehx-MuiStack-root"
+  >
+    <style
+      dangerouslySetInnerHTML={
+        {
+          "__html": ".css-1r1ekxc-MuiChip-root{max-width:100%;font-family:"Roboto","Helvetica","Arial",sans-serif;font-size:0.8125rem;display:-webkit-inline-box;display:-webkit-inline-flex;display:-ms-inline-flexbox;display:inline-flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;-webkit-justify-content:center;justify-content:center;height:24px;color:rgba(0, 0, 0, 0.87);background-color:rgba(0, 0, 0, 0.08);border-radius:16px;white-space:nowrap;-webkit-transition:background-color 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;transition:background-color 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;cursor:default;outline:0;-webkit-text-decoration:none;text-decoration:none;border:0;padding:0;vertical-align:middle;box-sizing:border-box;}.css-1r1ekxc-MuiChip-root.Mui-disabled{opacity:0.38;pointer-events:none;}.css-1r1ekxc-MuiChip-root .MuiChip-avatar{margin-left:5px;margin-right:-6px;width:24px;height:24px;color:#616161;font-size:0.75rem;}.css-1r1ekxc-MuiChip-root .MuiChip-avatarColorPrimary{color:#fff;background-color:#1565c0;}.css-1r1ekxc-MuiChip-root .MuiChip-avatarColorSecondary{color:#fff;background-color:#7b1fa2;}.css-1r1ekxc-MuiChip-root .MuiChip-avatarSmall{margin-left:4px;margin-right:-4px;width:18px;height:18px;font-size:0.625rem;}.css-1r1ekxc-MuiChip-root .MuiChip-icon{color:#616161;margin-left:4px;margin-right:-4px;font-size:18px;}.css-1r1ekxc-MuiChip-root .MuiChip-deleteIcon{-webkit-tap-highlight-color:transparent;color:rgba(0, 0, 0, 0.26);font-size:16px;cursor:pointer;margin:0 5px 0 -6px;margin-right:4px;margin-left:-4px;}.css-1r1ekxc-MuiChip-root .MuiChip-deleteIcon:hover{color:rgba(0, 0, 0, 0.4);}",
+        }
+      }
+      data-emotion="css 1r1ekxc-MuiChip-root"
+    />
+    <div
+      className="MuiChip-root MuiChip-filled MuiChip-sizeSmall MuiChip-colorDefault MuiChip-filledDefault css-1r1ekxc-MuiChip-root"
+      onKeyDown={[Function]}
+      onKeyUp={[Function]}
+    >
+      <style
+        dangerouslySetInnerHTML={
+          {
+            "__html": ".css-wjsjww-MuiChip-label{overflow:hidden;text-overflow:ellipsis;padding-left:8px;padding-right:8px;white-space:nowrap;}",
+          }
+        }
+        data-emotion="css wjsjww-MuiChip-label"
+      />
+      <span
+        className="MuiChip-label MuiChip-labelSmall css-wjsjww-MuiChip-label"
+      >
+        Youth
+      </span>
+    </div>
+  </div>,
+]
+`;
+
+exports[`Title component tests renders 2`] = `
+[
+  <style
+    dangerouslySetInnerHTML={
+      {
+        "__html": ".css-t2ehx-MuiStack-root{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-flex-direction:row;-ms-flex-direction:row;flex-direction:row;max-width:-webkit-fit-content;max-width:-moz-fit-content;max-width:fit-content;}.css-t2ehx-MuiStack-root>:not(style)+:not(style){margin:0;margin-left:8px;}",
+      }
+    }
+    data-emotion="css t2ehx-MuiStack-root"
+  />,
+  <div
+    className="css-t2ehx-MuiStack-root"
+  >
+    <style
+      dangerouslySetInnerHTML={
+        {
+          "__html": ".css-1r1ekxc-MuiChip-root{max-width:100%;font-family:"Roboto","Helvetica","Arial",sans-serif;font-size:0.8125rem;display:-webkit-inline-box;display:-webkit-inline-flex;display:-ms-inline-flexbox;display:inline-flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;-webkit-justify-content:center;justify-content:center;height:24px;color:rgba(0, 0, 0, 0.87);background-color:rgba(0, 0, 0, 0.08);border-radius:16px;white-space:nowrap;-webkit-transition:background-color 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;transition:background-color 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;cursor:default;outline:0;-webkit-text-decoration:none;text-decoration:none;border:0;padding:0;vertical-align:middle;box-sizing:border-box;}.css-1r1ekxc-MuiChip-root.Mui-disabled{opacity:0.38;pointer-events:none;}.css-1r1ekxc-MuiChip-root .MuiChip-avatar{margin-left:5px;margin-right:-6px;width:24px;height:24px;color:#616161;font-size:0.75rem;}.css-1r1ekxc-MuiChip-root .MuiChip-avatarColorPrimary{color:#fff;background-color:#1565c0;}.css-1r1ekxc-MuiChip-root .MuiChip-avatarColorSecondary{color:#fff;background-color:#7b1fa2;}.css-1r1ekxc-MuiChip-root .MuiChip-avatarSmall{margin-left:4px;margin-right:-4px;width:18px;height:18px;font-size:0.625rem;}.css-1r1ekxc-MuiChip-root .MuiChip-icon{color:#616161;margin-left:4px;margin-right:-4px;font-size:18px;}.css-1r1ekxc-MuiChip-root .MuiChip-deleteIcon{-webkit-tap-highlight-color:transparent;color:rgba(0, 0, 0, 0.26);font-size:16px;cursor:pointer;margin:0 5px 0 -6px;margin-right:4px;margin-left:-4px;}.css-1r1ekxc-MuiChip-root .MuiChip-deleteIcon:hover{color:rgba(0, 0, 0, 0.4);}",
+        }
+      }
+      data-emotion="css 1r1ekxc-MuiChip-root"
+    />
+    <div
+      className="MuiChip-root MuiChip-filled MuiChip-sizeSmall MuiChip-colorDefault MuiChip-filledDefault css-1r1ekxc-MuiChip-root"
+      onKeyDown={[Function]}
+      onKeyUp={[Function]}
+    >
+      <style
+        dangerouslySetInnerHTML={
+          {
+            "__html": ".css-wjsjww-MuiChip-label{overflow:hidden;text-overflow:ellipsis;padding-left:8px;padding-right:8px;white-space:nowrap;}",
+          }
+        }
+        data-emotion="css wjsjww-MuiChip-label"
+      />
+      <span
+        className="MuiChip-label MuiChip-labelSmall css-wjsjww-MuiChip-label"
+      >
+        Junior
+      </span>
+    </div>
+  </div>,
+]
+`;
+
+exports[`Title component tests renders 3`] = `
+[
+  <style
+    dangerouslySetInnerHTML={
+      {
+        "__html": ".css-t2ehx-MuiStack-root{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-flex-direction:row;-ms-flex-direction:row;flex-direction:row;max-width:-webkit-fit-content;max-width:-moz-fit-content;max-width:fit-content;}.css-t2ehx-MuiStack-root>:not(style)+:not(style){margin:0;margin-left:8px;}",
+      }
+    }
+    data-emotion="css t2ehx-MuiStack-root"
+  />,
+  <div
+    className="css-t2ehx-MuiStack-root"
+  />,
+]
+`;
+
+exports[`Title component tests renders 4`] = `
+[
+  <style
+    dangerouslySetInnerHTML={
+      {
+        "__html": ".css-t2ehx-MuiStack-root{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-flex-direction:row;-ms-flex-direction:row;flex-direction:row;max-width:-webkit-fit-content;max-width:-moz-fit-content;max-width:fit-content;}.css-t2ehx-MuiStack-root>:not(style)+:not(style){margin:0;margin-left:8px;}",
+      }
+    }
+    data-emotion="css t2ehx-MuiStack-root"
+  />,
+  <div
+    className="css-t2ehx-MuiStack-root"
+  >
+    <style
+      dangerouslySetInnerHTML={
+        {
+          "__html": ".css-1r1ekxc-MuiChip-root{max-width:100%;font-family:"Roboto","Helvetica","Arial",sans-serif;font-size:0.8125rem;display:-webkit-inline-box;display:-webkit-inline-flex;display:-ms-inline-flexbox;display:inline-flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;-webkit-justify-content:center;justify-content:center;height:24px;color:rgba(0, 0, 0, 0.87);background-color:rgba(0, 0, 0, 0.08);border-radius:16px;white-space:nowrap;-webkit-transition:background-color 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;transition:background-color 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;cursor:default;outline:0;-webkit-text-decoration:none;text-decoration:none;border:0;padding:0;vertical-align:middle;box-sizing:border-box;}.css-1r1ekxc-MuiChip-root.Mui-disabled{opacity:0.38;pointer-events:none;}.css-1r1ekxc-MuiChip-root .MuiChip-avatar{margin-left:5px;margin-right:-6px;width:24px;height:24px;color:#616161;font-size:0.75rem;}.css-1r1ekxc-MuiChip-root .MuiChip-avatarColorPrimary{color:#fff;background-color:#1565c0;}.css-1r1ekxc-MuiChip-root .MuiChip-avatarColorSecondary{color:#fff;background-color:#7b1fa2;}.css-1r1ekxc-MuiChip-root .MuiChip-avatarSmall{margin-left:4px;margin-right:-4px;width:18px;height:18px;font-size:0.625rem;}.css-1r1ekxc-MuiChip-root .MuiChip-icon{color:#616161;margin-left:4px;margin-right:-4px;font-size:18px;}.css-1r1ekxc-MuiChip-root .MuiChip-deleteIcon{-webkit-tap-highlight-color:transparent;color:rgba(0, 0, 0, 0.26);font-size:16px;cursor:pointer;margin:0 5px 0 -6px;margin-right:4px;margin-left:-4px;}.css-1r1ekxc-MuiChip-root .MuiChip-deleteIcon:hover{color:rgba(0, 0, 0, 0.4);}",
+        }
+      }
+      data-emotion="css 1r1ekxc-MuiChip-root"
+    />
+    <div
+      className="MuiChip-root MuiChip-filled MuiChip-sizeSmall MuiChip-colorDefault MuiChip-filledDefault css-1r1ekxc-MuiChip-root"
+      onKeyDown={[Function]}
+      onKeyUp={[Function]}
+    >
+      <style
+        dangerouslySetInnerHTML={
+          {
+            "__html": ".css-wjsjww-MuiChip-label{overflow:hidden;text-overflow:ellipsis;padding-left:8px;padding-right:8px;white-space:nowrap;}",
+          }
+        }
+        data-emotion="css wjsjww-MuiChip-label"
+      />
+      <span
+        className="MuiChip-label MuiChip-labelSmall css-wjsjww-MuiChip-label"
+      >
+        Masters
+      </span>
+    </div>
+  </div>,
+]
+`;

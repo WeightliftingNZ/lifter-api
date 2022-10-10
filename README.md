@@ -2,6 +2,7 @@
 
 [![Build](https://github.com/WeightliftingNZ/lifter-api/actions/workflows/main.yml/badge.svg)](https://github.com/WeightliftingNZ/lifter-api/actions/workflows/main.yml)
 [![Docs](https://github.com/WeightliftingNZ/lifter-api/actions/workflows/docs.yml/badge.svg)](https://github.com/WeightliftingNZ/lifter-api/actions/workflows/docs.yml)
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/WeightliftingNZ/lifter-api/main.svg)](https://results.pre-commit.ci/latest/github/WeightliftingNZ/lifter-api/main)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 

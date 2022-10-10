@@ -2,6 +2,7 @@
 
 import logging
 import random
+from datetime import datetime
 
 import factory.random
 import faker.config
@@ -17,9 +18,12 @@ from config.settings import PAGE_SIZE
 from .factories import (
     AthleteFactory,
     CompetitionFactory,
+    CurrentYearCompetitionFactory,
     JuniorAthleteFactory,
     LiftFactory,
     MastersAthleteFactory,
+    Post1992Pre2017CompetitionFactory,
+    Post2017Pre2018CompetitionFactory,
     Post2019Pre2022CompetitionFactory,
     SeniorAthleteFactory,
     YouthAthleteFactory,
@@ -31,7 +35,10 @@ register(JuniorAthleteFactory)
 register(SeniorAthleteFactory)
 register(MastersAthleteFactory)
 register(CompetitionFactory)
+register(CurrentYearCompetitionFactory)
 register(Post2019Pre2022CompetitionFactory)
+register(Post1992Pre2017CompetitionFactory)
+register(Post2017Pre2018CompetitionFactory)
 register(LiftFactory)
 
 
@@ -55,9 +62,27 @@ def django_db_setup(django_db_setup, django_db_blocker):
 
 
 @pytest.fixture
-def mock_athlete() -> list[Athlete]:
+def batch_athlete() -> list[Athlete]:
     """Create athletes at random, the number one more than the page size."""
     return AthleteFactory.create_batch(PAGE_SIZE + 1)
+
+
+@pytest.fixture
+def athlete_with_lifts():
+    """Create an athlete."""
+    athlete = AthleteFactory(yearborn=datetime.now().year - 45)
+    competitions = (
+        CurrentYearCompetitionFactory.create_batch(4)
+        + Post2019Pre2022CompetitionFactory.create_batch(4)
+        + Post2017Pre2018CompetitionFactory.create_batch(4)
+        + Post1992Pre2017CompetitionFactory.create_batch(8)
+    )
+    for competition in competitions:
+        LiftFactory(
+            athlete=athlete,
+            competition=competition,
+        )
+    return athlete
 
 
 @pytest.fixture

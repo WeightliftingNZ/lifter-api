@@ -1,0 +1,53 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Title component tests renders with text 1`] = `
+[
+  <style
+    dangerouslySetInnerHTML={
+      {
+        "__html": ".css-kyj2s4-MuiTypography-root{margin:0;font-family:"Roboto","Helvetica","Arial",sans-serif;font-weight:300;font-size:3.75rem;line-height:1.2;letter-spacing:-0.00833em;margin-bottom:0.35em;color:#1976d2;}",
+      }
+    }
+    data-emotion="css kyj2s4-MuiTypography-root"
+  />,
+  <h2
+    className="MuiTypography-root MuiTypography-h2 MuiTypography-gutterBottom css-kyj2s4-MuiTypography-root"
+  >
+    Test Text
+  </h2>,
+]
+`;
+
+exports[`Title component tests renders with text and props 1`] = `
+[
+  <style
+    dangerouslySetInnerHTML={
+      {
+        "__html": ".css-2n0jr6-MuiTypography-root{margin:0;font-family:"Roboto","Helvetica","Arial",sans-serif;font-weight:300;font-size:3.75rem;line-height:1.2;letter-spacing:-0.00833em;margin-bottom:0.35em;color:#1976d2;text-align:left;}",
+      }
+    }
+    data-emotion="css 2n0jr6-MuiTypography-root"
+  />,
+  <h2
+    className="MuiTypography-root MuiTypography-h2 MuiTypography-gutterBottom css-2n0jr6-MuiTypography-root"
+  >
+    Test Text
+  </h2>,
+]
+`;
+
+exports[`Title component tests renders without text 1`] = `
+[
+  <style
+    dangerouslySetInnerHTML={
+      {
+        "__html": ".css-kyj2s4-MuiTypography-root{margin:0;font-family:"Roboto","Helvetica","Arial",sans-serif;font-weight:300;font-size:3.75rem;line-height:1.2;letter-spacing:-0.00833em;margin-bottom:0.35em;color:#1976d2;}",
+      }
+    }
+    data-emotion="css kyj2s4-MuiTypography-root"
+  />,
+  <h2
+    className="MuiTypography-root MuiTypography-h2 MuiTypography-gutterBottom css-kyj2s4-MuiTypography-root"
+  />,
+]
+`;

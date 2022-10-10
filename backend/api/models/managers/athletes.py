@@ -1,13 +1,10 @@
 """Custom manager for Athlete model."""
 
-from django.contrib.postgres.search import (
-    SearchHeadline,
-    SearchQuery,
-    SearchRank,
-    SearchVector,
-)
+from django.contrib.postgres.search import SearchHeadline, TrigramSimilarity
 from django.db import models
-from django.db.models import Q
+from django.db.models import CharField, F
+from django.db.models import Value as V
+from django.db.models.functions import Concat
 
 
 class AthleteManager(models.Manager):
@@ -17,31 +14,18 @@ class AthleteManager(models.Manager):
         """Search along name and location."""
         qs = self.get_queryset()
         if query is not None:
-            refined_query = SearchQuery(query)
-            vector = SearchVector("first_name", "last_name")
-            rank = SearchRank(vector, refined_query)
-            first_name_headline = SearchHeadline(
-                "first_name",
-                refined_query,
-            )
-            last_name_headline = SearchHeadline(
-                "last_name",
-                refined_query,
-            )
-
             qs = (
                 qs.annotate(
-                    search=vector,
-                    rank=rank,
-                    first_name_headline=first_name_headline,
-                    last_name_headline=last_name_headline,
+                    name=Concat(
+                        F("first_name"),
+                        V(" "),
+                        F("last_name"),
+                        output_field=CharField(),
+                    ),
+                    similarity=TrigramSimilarity("name", query),
+                    headline=SearchHeadline("name", query),
                 )
-                .filter(
-                    Q(search=refined_query)
-                    | Q(first_name__trigram_similar=query)
-                    | Q(last_name__trigram_similar=query)
-                )
-                .distinct()
-                .order_by("-rank")
+                .filter(similarity__gte=0.3)
+                .order_by("-similarity")
             )
         return qs

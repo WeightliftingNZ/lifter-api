@@ -29,7 +29,7 @@ class SearchAPIView(ListAPIView):
 
             qs = sorted(
                 qs_chain,
-                key=lambda instance: instance.rank,
+                key=lambda instance: instance.similarity,
                 reverse=True,
             )
             self.count = len(qs)

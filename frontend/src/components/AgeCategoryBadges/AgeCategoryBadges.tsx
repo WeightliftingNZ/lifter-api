@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Chip, Stack } from "@mui/material";
-import { AgeCategoriesProps } from "../../interfaces";
+import { AgeCategoryBadgesProps } from "./interfaces";
 
 const YouthBadge: React.FC = () => {
   return <Chip label="Youth" size="small" />;
@@ -15,11 +15,6 @@ const JuniorBadge: React.FC = () => {
 const MasterBadge: React.FC = () => {
   return <Chip label="Masters" size="small" />;
 };
-
-interface AgeCategoryBadgesProps {
-  ageCategories: AgeCategoriesProps;
-  isColumn?: boolean;
-}
 
 const AgeCategoryBadges: React.FC<AgeCategoryBadgesProps> = ({
   ageCategories,
