@@ -1,6 +1,7 @@
 # Lifter API
 
-[![Build](https://github.com/WeightliftingNZ/lifter-api/actions/workflows/main.yml/badge.svg)](https://github.com/WeightliftingNZ/lifter-api/actions/workflows/main.yml)
+[![Build Backend](https://github.com/WeightliftingNZ/lifter-api/actions/workflows/backend.yml/badge.svg)](https://github.com/WeightliftingNZ/lifter-api/actions/workflows/backend.yml)
+[![Build Frontend](https://github.com/WeightliftingNZ/lifter-api/actions/workflows/frontend.yml/badge.svg)](https://github.com/WeightliftingNZ/lifter-api/actions/workflows/frontend.yml)
 [![Docs](https://github.com/WeightliftingNZ/lifter-api/actions/workflows/docs.yml/badge.svg)](https://github.com/WeightliftingNZ/lifter-api/actions/workflows/docs.yml)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/WeightliftingNZ/lifter-api/main.svg)](https://results.pre-commit.ci/latest/github/WeightliftingNZ/lifter-api/main)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
