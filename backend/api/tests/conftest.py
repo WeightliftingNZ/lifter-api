@@ -86,6 +86,21 @@ def athlete_with_lifts():
 
 
 @pytest.fixture
+def athlete_with_no_total():
+    """Create an athlete with one lift and no total."""
+    lift = LiftFactory(
+        snatch_first="DNA", snatch_second="DNA", snatch_third="DNA"
+    )
+    return lift.athlete
+
+
+@pytest.fixture
+def batch_competition() -> list[Competition]:
+    """Create competitions at random, the number one more than the page size."""
+    return CompetitionFactory.create_batch(PAGE_SIZE + 1)
+
+
+@pytest.fixture
 def mock_competition() -> list[Competition]:
     """Mock competition data.
 

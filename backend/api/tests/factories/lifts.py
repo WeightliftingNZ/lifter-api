@@ -1,14 +1,17 @@
 """Lift factories."""
 
 import random
+from datetime import datetime
 from typing import Literal
 
 import factory
 
 from api.models import Lift
+from config.settings import MINIMUM_YEAR_FROM_BIRTH
 
 from .athletes import AthleteFactory
 from .competitions import CompetitionFactory
+from .fake import fake
 
 LiftStatusT = Literal["LIFT", "NOLIFT", "DNA"]
 
@@ -43,7 +46,20 @@ class LiftFactory(factory.django.DjangoModelFactory):
         model = Lift
 
     athlete = factory.SubFactory(AthleteFactory)
-    competition = factory.SubFactory(CompetitionFactory)
+    competition = factory.SubFactory(
+        CompetitionFactory,
+        date_start=factory.LazyAttribute(
+            lambda competition: fake.date_between_dates(
+                date_start=datetime(
+                    competition.factory_parent.athlete.yearborn
+                    + MINIMUM_YEAR_FROM_BIRTH,
+                    1,
+                    1,
+                ),
+                date_end=datetime(2022, 1, 1),
+            )
+        ),
+    )
 
     @factory.lazy_attribute
     def snatch_first(self):

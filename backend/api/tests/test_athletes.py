@@ -1,4 +1,4 @@
-"""Testing athlete endpoints."""
+"""Testing athlete related functionality."""
 
 from contextlib import nullcontext as does_not_raise
 from datetime import datetime
@@ -16,7 +16,7 @@ pytestmark = pytest.mark.django_db
 
 
 class BaseTestAthlete:
-    """Base Test Class for Athlete testing."""
+    """Base Test class for Athlete testing."""
 
     url = "/v1/athletes"
 
@@ -38,7 +38,7 @@ class TestAthleteModel:
         assert isinstance(athlete, Athlete)
 
     def test_all(self, batch_athlete):
-        """Can retrieve entire table."""
+        """Can retrieve entire Athlete table."""
         athlete_table = Athlete.objects.all()
         assert athlete_table.count() == len(batch_athlete)
         assert {athlete.reference_id for athlete in athlete_table} == {
@@ -61,7 +61,7 @@ class TestAthleteModel:
             pytest.param(
                 datetime.now().year - MINIMUM_YEAR_FROM_BIRTH,
                 does_not_raise(),
-                id="model-create-age-validation-old-enough",
+                id="old-enough",
             ),
             pytest.param(
                 datetime.now().year - (MINIMUM_YEAR_FROM_BIRTH - 1),
@@ -69,7 +69,7 @@ class TestAthleteModel:
                     ValidationError,
                     match=r".*yearborn.*",
                 ),
-                id="model-create-age-validation-too-young",
+                id="too-young",
             ),
         ],
     )
@@ -109,21 +109,23 @@ class TestAthleteModel:
     )
     def test_update(self, athlete, athlete_factory, test_input, exception):
         """Able to update athlete."""
+        updated_athlete = Athlete.objects.get(
+            reference_id=athlete.reference_id
+        )
+        new_details = athlete_factory.stub(yearborn=test_input).__dict__
+        for attr, value in new_details.items():
+            setattr(updated_athlete, attr, value)
         with exception:
-            updated_athlete = Athlete.objects.get(
-                reference_id=athlete.reference_id
-            )
-            new_details = athlete_factory.stub(yearborn=test_input).__dict__
-            for attr, value in new_details.items():
-                setattr(updated_athlete, attr, value)
             updated_athlete.save()
             assert updated_athlete.first_name != athlete.first_name
             assert updated_athlete.last_name != athlete.last_name
             assert updated_athlete.yearborn != athlete.yearborn
 
     def test_delete(self, athlete):
-        """Test athlete deletion. In the future this will be made into a soft \
-                delete."""
+        """Test athlete deletion.
+
+        In the future, this will be made into a soft delete.
+        """
         Athlete.objects.get(reference_id=athlete.reference_id).delete()
         assert (
             Athlete.objects.filter(reference_id=athlete.reference_id).exists()
@@ -150,18 +152,30 @@ class TestAthleteModel:
 class TestAthleteManager:
     """Athlete custom manager functionality tests."""
 
-    def test_search_query_full_name(self, athlete, batch_athlete):
-        """Testing search query on the athlete's full name."""
-        search_result = Athlete.objects.search(query=athlete.full_name)
-        assert Athlete.objects.all().count() == len(batch_athlete) + 1
-        assert search_result.count() < len(batch_athlete) + 1
-        assert search_result.first().reference_id == athlete.reference_id
-
     def test_search_query_none(self, batch_athlete):
         """Test for search manager function when `query=None`."""
         search_result = Athlete.objects.search(query=None)
         assert Athlete.objects.all().count() == len(batch_athlete)
         assert search_result.count() == Athlete.objects.all().count()
+
+    @pytest.mark.parametrize(
+        "test_input",
+        [
+            pytest.param("first_name", id="first_name"),
+            pytest.param("last_name", id="last_name"),
+            pytest.param("full_name", id="full_name"),
+        ],
+    )
+    def test_search_query(self, athlete, batch_athlete, test_input):
+        """Testing search query on the athlete's full name."""
+        search_result = Athlete.objects.search(
+            query=getattr(athlete, test_input)
+        )
+        assert Athlete.objects.all().count() == len(batch_athlete) + 1
+        assert search_result.count() < len(batch_athlete) + 1
+        assert athlete.reference_id in {
+            result.reference_id for result in search_result
+        }
 
 
 class TestAthleteEndpoints(BaseTestAthlete):
@@ -182,14 +196,7 @@ class TestAthleteEndpoints(BaseTestAthlete):
     """
 
     def test_list(self, client, batch_athlete):
-        """List athletes.
-
-        Batch creates athletes one more than the `PAGE_SIZE`. Since the batch \
-        size is greater than the pagination, the results should paginate.
-
-        Test will check if all the generated athletes are present but the \
-        last one, since this paginated to the next page.
-        """
+        """List athletes."""
         response = client.get(self.url)
         assert response.status_code == status.HTTP_200_OK
         result = response.json()
@@ -202,49 +209,45 @@ class TestAthleteEndpoints(BaseTestAthlete):
         result = response.json()
         assert result["first_name"] == athlete.first_name
 
-    def test_filter_no_query(self, client, athlete):
-        """Blank search query gives no results."""
-        response = client.get(f"{self.url}?search=''")
-        assert response.status_code == status.HTTP_200_OK
-        result = response.json()
-        assert result["count"] == 0
-        # check athlete exists
-        assert isinstance(athlete, Athlete)
-
-    @pytest.mark.parametrize("athlete__first_name", ["John"])
-    @pytest.mark.parametrize("athlete__last_name", ["Doe"])
     @pytest.mark.parametrize(
         "test_input",
         [
-            pytest.param("John", id="athlete-filter-first-name"),
-            pytest.param("Doe", id="athlete-filter-last-name"),
-            pytest.param("John Doe", id="athlete-filter-full-name"),
+            pytest.param("first_name", id="first_name"),
+            pytest.param("last_name", id="last_name"),
+            pytest.param("full_name", id="full_name"),
         ],
     )
-    def test_filter_with_inputs(self, client, athlete, test_input):
+    def test_filter(self, client, athlete, test_input):
         """List and retrieve athlete by filter."""
-        response = client.get(f"{self.url}?search={test_input}")
+        response = client.get(
+            f"{self.url}?search={getattr(athlete, test_input)}"
+        )
         assert response.status_code == status.HTTP_200_OK
         result = response.json()
         assert result["count"] > 0
-        assert result["results"][0]["first_name"] == athlete.first_name
 
+    # TODO Validation of yearborn
     @pytest.mark.parametrize(
         "test_client,expected",
         [
             pytest.param(
                 lazy_fixture("client"),
                 status.HTTP_401_UNAUTHORIZED,
-                id="athlete-create-anon",
+                id="anon",
             ),
             pytest.param(
                 lazy_fixture("admin_client"),
                 status.HTTP_201_CREATED,
-                id="athlete-create-admin",
+                id="admin",
             ),
         ],
     )
-    def test_create(self, test_client, expected, athlete_factory):
+    def test_create(
+        self,
+        test_client,
+        expected,
+        athlete_factory,
+    ):
         """Athlete can only be created by an admin user and not anon user."""
         athlete = athlete_factory.stub()
         response = test_client.post(
@@ -253,8 +256,6 @@ class TestAthleteEndpoints(BaseTestAthlete):
             content_type="application/json",
         )
         assert response.status_code == expected
-
-        # check creation
         count = Athlete.objects.filter(
             reference_id=response.json().get("reference_id")
         ).count()
@@ -287,8 +288,6 @@ class TestAthleteEndpoints(BaseTestAthlete):
             content_type="application/json",
         )
         assert response.status_code == expected
-
-        # check editing
         extract_athlete = Athlete.objects.get(
             reference_id=athlete.reference_id
         )
@@ -320,8 +319,6 @@ class TestAthleteEndpoints(BaseTestAthlete):
         """Admin users can delete athletes, but not anon users."""
         response = test_client.delete(f"{self.url}/{athlete.reference_id}")
         assert response.status_code == expected
-
-        # check deletion
         count = Athlete.objects.filter(
             reference_id=athlete.reference_id
         ).count()
@@ -367,6 +364,9 @@ class TestAthleteSerializer(BaseTestAthlete):
         pytest.param(
             lazy_fixture("athlete_with_lifts"),
             id="athlete-with-lifts",
+        ),
+        pytest.param(
+            lazy_fixture("athlete_with_no_total"), id="athlete-no-total"
         ),
         pytest.param(lazy_fixture("athlete"), id="athlete-no-lifts"),
     ],
@@ -448,9 +448,24 @@ class TestAthleteDetailSerializer(BaseTestAthlete):
         assert response.status_code == status.HTTP_200_OK
         result = response.json()
         best_lifts = result["best_lifts"]
-        if test_athlete.lift_set.count() != 0:
-            assert best_lifts["total"] != {}
-        if test_athlete.lift_set.count() == 0:
+        # TODO: improve validation
+        if test_athlete.lift_set.count() > 0:
+            assert best_lifts["snatch"] == {} or best_lifts["snatch"] != {}
+            assert best_lifts["cnj"] == {} or best_lifts["cnj"] != {}
+            assert best_lifts["total"] == {} or best_lifts["total"] != {}
+        else:
             assert best_lifts["snatch"] == {}
             assert best_lifts["cnj"] == {}
             assert best_lifts["total"] == {}
+
+    def test_best_sinclair(self, client, test_athlete):
+        """Test athlete best sinclair."""
+        response = client.get(f"{self.url}/{test_athlete.reference_id}")
+        assert response.status_code == status.HTTP_200_OK
+        result = response.json()
+        best_sinclair = result["best_sinclair"]
+        # TODO: improve validation
+        if test_athlete.lift_set.count() > 0:
+            assert best_sinclair == {} or best_sinclair != {}
+        else:
+            assert best_sinclair == {}

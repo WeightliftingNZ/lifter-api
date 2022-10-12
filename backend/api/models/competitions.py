@@ -15,7 +15,7 @@ from .managers import CompetitionManager
 class Competition(models.Model):
     """Competition model.
 
-    This is where all the competiton data is  encapsulated
+    This is where all the competiton data is encapsulated.
     """
 
     reference_id = HashidAutoField(
@@ -61,7 +61,9 @@ class Competition(models.Model):
         # 1. error if start date before end date
         if self.date_start > self.date_end:
             raise ValidationError(
-                "%(date_start)s is invalid. Start date must be before the end date, %(date_end)s.",
+                {
+                    "date_start": "%(date_start)s is invalid. Start date must be before the end date, %(date_end)s."
+                },
                 code="date error",
                 params={
                     "date_start": self.date_start,
