@@ -28,9 +28,10 @@ class CompetitionFactory(factory.django.DjangoModelFactory):
         date_start = self.date_start
         if isinstance(date_start, str):
             date_start = datetime.strptime(self.date_start, "%Y-%m-%d")
-        return date_start + timedelta(
-            days=random.choice([0] * 8 + [1] * 1 + [2] * 1)
-        )
+        return str(
+            date_start
+            + timedelta(days=random.choice([0] * 8 + [1] * 1 + [2] * 1))
+        )[:10]
 
 
 class CurrentYearCompetitionFactory(CompetitionFactory):

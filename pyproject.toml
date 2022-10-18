@@ -49,16 +49,6 @@ known_third_party = [
 line-length = 79
 include = '\.pyi?%'
 
-[tool.pyright]
-include = ["backend"]
-exclude = ["backend/.venv"]
-venvPath = "backend"
-venv = ".venv"
-stubPath = ""
-extraPaths = ["backend/api", "backend/users", "backend/tests", "backend/config"]
-pythonVersion = "3.10"
-executionEnvironments = [{ root = "backend" }]
-
 [tool.mypy]
 mypy_path = "./backend"
 plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main"]
@@ -80,7 +70,7 @@ addopts = [
   "--no-migrations",
   "--pdbcls=pdbr:RichPdb",
 ]
-testpaths = ["tests"]
+testpaths = ["./backend/tests"]
 DJANGO_SETTINGS_MODULE = "config.settings"
 python_files = ["tests.py", "test_*.py", "*_tests.py"]
 log_level = "ERROR"

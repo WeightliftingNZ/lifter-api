@@ -53,6 +53,7 @@ MINIMUM_YEAR_FROM_BIRTH = 5
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -225,6 +226,9 @@ else:
             "PORT": 5432,
         }
     }
+
+CONN_MAX_AGE = None
+CONN_HEALTH_CHECK = True
 
 # Password validation
 

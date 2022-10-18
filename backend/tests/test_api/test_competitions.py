@@ -11,9 +11,9 @@ from django.core.exceptions import ValidationError
 from pytest_lazyfixture import lazy_fixture
 from rest_framework import status
 
-from api.models import Competition
+from api.models import Competition, Lift
 
-from .factories import fake
+from ..factories import fake
 
 pytestmark = pytest.mark.django_db
 
@@ -60,12 +60,12 @@ class TestCompetitionModel:
     @pytest.mark.parametrize(
         "test_input,exception",
         [
-            pytest.param(1, does_not_raise(), id="model-create-correct-dates"),
-            pytest.param(0, does_not_raise(), id="model-create-same-day"),
+            pytest.param(1, does_not_raise(), id="correct-dates"),
+            pytest.param(0, does_not_raise(), id="same-day"),
             pytest.param(
                 -1,
                 pytest.raises(ValidationError, match=r".*date_start.*"),
-                id="model-create-incorrect-dates",
+                id="incorrect-dates",
             ),
         ],
     )
@@ -155,14 +155,14 @@ class TestCompetitionManager:
     @pytest.mark.parametrize(
         "test_inputs",
         [
-            pytest.param(("location",), id="search-location"),
-            pytest.param(("name",), id="search-name"),
+            pytest.param(("location",), id="location"),
+            pytest.param(("name",), id="name"),
             pytest.param(
                 (
                     "name",
                     "location",
                 ),
-                id="search-name-location",
+                id="name-location",
             ),
         ],
     )
@@ -217,14 +217,14 @@ class TestCompetitionEndpoints(BaseTestCompetition):
     @pytest.mark.parametrize(
         "test_inputs",
         [
-            pytest.param(("location",), id="search-location"),
-            pytest.param(("name",), id="search-name"),
+            pytest.param(("location",), id="location"),
+            pytest.param(("name",), id="name"),
             pytest.param(
                 (
                     "name",
                     "location",
                 ),
-                id="search-name-location",
+                id="name-location",
             ),
         ],
     )
@@ -259,12 +259,12 @@ class TestCompetitionEndpoints(BaseTestCompetition):
             pytest.param(
                 lazy_fixture("client"),
                 status.HTTP_401_UNAUTHORIZED,
-                id="athlete-create-anon",
+                id="anon",
             ),
             pytest.param(
                 lazy_fixture("admin_client"),
                 status.HTTP_201_CREATED,
-                id="athlete-create-admin",
+                id="admin",
             ),
         ],
     )
@@ -286,112 +286,169 @@ class TestCompetitionEndpoints(BaseTestCompetition):
             assert count == 0
 
     @pytest.mark.parametrize(
-        "test_input,expected",
+        "test_client,expected",
         [
             pytest.param(
-                {
-                    "date_start": "2022-01-01",
-                    "date_end": "2022-01-02",
-                    "location": "Mock",
-                    "name": "Competition",
-                },
-                does_not_raise(),
-                id="Normal input.",
+                lazy_fixture("client"),
+                status.HTTP_401_UNAUTHORIZED,
+                id="anon",
             ),
             pytest.param(
-                {
-                    "date_start": "2022-01-03",
-                    "date_end": "2022-01-02",
-                    "location": "Mock",
-                    "name": "Competition",
-                },
-                pytest.raises(
-                    ValidationError,
-                    match="Start date must be before the end date.",
-                ),
-                id="`date_start` after `date_end`.",
-            ),
-        ],
-    )
-    def test_create_competition_custom_validation(
-        self, admin_client, test_input, expected
-    ):
-        """Test custom validation for competition creation."""
-        with expected:
-            response = admin_client.post(
-                self.url, data=test_input, content_type="application/json"
-            )
-            assert response is not None
-
-    def test_anon_create_competition(self, client):
-        """Anonymous users cannot create competitions."""
-        response = client.post(
-            self.url, data={}, content_type="application/json"
-        )
-        assert response.status_code == status.HTTP_401_UNAUTHORIZED
-
-    @pytest.mark.parametrize(
-        "test_input,expected",
-        [
-            (
-                {
-                    "name": "Edited Name",
-                },
+                lazy_fixture("admin_client"),
                 status.HTTP_200_OK,
-            ),
-            (
-                {
-                    "date_end": "ThisIsNotDate",
-                },
-                status.HTTP_400_BAD_REQUEST,
+                id="admin",
             ),
         ],
     )
-    def test_admin_edit_competition(
-        self, admin_client, test_input, expected, mock_competition
+    def test_edit(
+        self, test_client, expected, competition, competition_factory
     ):
-        """Admin user can edit a competition."""
-        response = admin_client.patch(
-            f"{self.url}/{mock_competition[0].reference_id}",
-            data=test_input,
+        """Admin users can edit competitions but not anon users."""
+        edited_competition = competition_factory.stub()
+        response = test_client.patch(
+            f"{self.url}/{competition.reference_id}",
+            data=edited_competition.__dict__,
             content_type="application/json",
         )
         assert response.status_code == expected
-
-    def test_anon_edit_competition(self, client, mock_competition):
-        """Anon user cannot edit a competition."""
-        anon_response = client.patch(
-            f"{self.url}/{mock_competition[0].reference_id}",
-            data={},
-            content_type="application/json",
+        extract_competition = Competition.objects.get(
+            reference_id=competition.reference_id
         )
-        assert anon_response.status_code == status.HTTP_401_UNAUTHORIZED
+        if response.status_code == status.HTTP_200_OK:
+            assert extract_competition.name == edited_competition.name
+            assert extract_competition.location == edited_competition.location
+            assert (
+                str(extract_competition.date_start)
+                == edited_competition.date_start
+            )
+            assert (
+                str(extract_competition.date_end)
+                == edited_competition.date_end
+            )
+        else:
+            assert extract_competition.name != edited_competition.name
+            assert extract_competition.location != edited_competition.location
+            assert (
+                str(extract_competition.date_start)
+                != edited_competition.date_start
+            )
+            assert (
+                str(extract_competition.date_end)
+                != edited_competition.date_end
+            )
 
-    def test_admin_delete_competition(self, admin_client, mock_competition):
-        """Admin user can delete competitions."""
-        response = admin_client.delete(
-            f"{self.url}/{mock_competition[0].reference_id}"
-        )
-        assert response.status_code == status.HTTP_204_NO_CONTENT
+    @pytest.mark.parametrize(
+        "test_client,expected",
+        [
+            pytest.param(
+                lazy_fixture("client"),
+                status.HTTP_401_UNAUTHORIZED,
+                id="anon",
+            ),
+            pytest.param(
+                lazy_fixture("admin_client"),
+                status.HTTP_204_NO_CONTENT,
+                id="admin",
+            ),
+        ],
+    )
+    def test_delete(self, test_client, expected, competition):
+        """Admin user can delete competitions, but not anon users."""
+        response = test_client.delete(f"{self.url}/{competition.reference_id}")
+        assert response.status_code == expected
+        count = Competition.objects.filter(
+            reference_id=competition.reference_id
+        ).count()
+        if response.status_code == status.HTTP_204_NO_CONTENT:
+            assert count == 0
+        else:
+            assert count == 1
 
-    def test_anon_delete_competition(self, client, mock_competition):
-        """Anonymous users cannot delete competitions."""
-        response = client.delete(
-            f"{self.url}/{mock_competition[0].reference_id}"
-        )
-        assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
-    def test_competition_custom_payload(self, client, mock_lift):
-        """Test competition custom payload."""
-        IDX = 0
-        competition_id = mock_lift[IDX].competition.reference_id
-        response = client.get(f"{self.url}/{str(competition_id)}")
+@pytest.mark.parametrize(
+    "test_competition",
+    [
+        pytest.param(lazy_fixture("competition"), id="competition-no-lifts"),
+        pytest.param(
+            lazy_fixture("competition_with_lifts"), id="competition-with-lifts"
+        ),
+    ],
+)
+class TestCompetitionSerializer(BaseTestCompetition):
+    """Tests for CompetitionSerializer."""
+
+    def test_lifts_count(self, client, test_competition):
+        """Test lift counts."""
+        response = client.get(f"{self.url}/{test_competition.reference_id}")
         assert response.status_code == status.HTTP_200_OK
         result = response.json()
-        assert result["lifts_count"] == len(
-            [
-                lift
-                for lift in mock_lift
-                if lift.competition.reference_id == competition_id
-            ]
+        assert (
+            result["lifts_count"]
+            == Lift.objects.filter(competition=test_competition).count()
         )
+
+    def test_best_lifts(self, client, test_competition):
+        """Test best lifts for both men's and women's."""
+        response = client.get(f"{self.url}/{test_competition.reference_id}")
+        assert response.status_code == status.HTTP_200_OK
+        result = response.json()
+        # Provide better validation.
+        assert result["best_lifts"] != {}
+
+
+@pytest.mark.parametrize(
+    "test_competition",
+    [
+        pytest.param(
+            lazy_fixture("competition_with_lifts"),
+            id="competition-with-lifts",
+        ),
+        pytest.param(lazy_fixture("competition"), id="competition-no-lifts"),
+    ],
+)
+class TestCompetitionDetailSerializer(BaseTestCompetition):
+    """Test for CompetitionDetailSerializer."""
+
+    def test_competition_last_edited(self, client, test_competition):
+        """Provide the last edit for a competition."""
+        response = client.get(f"{self.url}/{test_competition.reference_id}")
+        assert response.status_code == status.HTTP_200_OK
+        result = response.json()
+        assert result[
+            "competition_last_edited"
+        ] == test_competition.history_record.latest().history_date.isoformat().replace(
+            "+00:00", "Z"
+        )
+
+    def test_competition_last_edited_missing(self, client, test_competition):
+        """Handle missing history data for competition."""
+        test_competition.history_record.all().delete()
+        response = client.get(f"{self.url}/{test_competition.reference_id}")
+        assert response.status_code == status.HTTP_200_OK
+        result = response.json()
+        assert result["competition_last_edited"] is None
+
+    def test_lift_last_edited(self, client, test_competition):
+        """Provide the last edit for a competition lift."""
+        response = client.get(f"{self.url}/{test_competition.reference_id}")
+        assert response.status_code == status.HTTP_200_OK
+        result = response.json()
+        lift_histories = [
+            lift.history_record.latest().history_date
+            for lift in test_competition.lift_set.all()
+        ]
+        if len(lift_histories) != 0:
+            assert result["lift_last_edited"] == sorted(lift_histories)[
+                -1
+            ].isoformat().replace("+00:00", "Z")
+        else:
+            assert result["lift_last_edited"] is None
+
+    def test_lift_set(self, client, test_competition):
+        """Test the lift set for an athlete."""
+        response = client.get(f"{self.url}/{test_competition.reference_id}")
+        assert response.status_code == status.HTTP_200_OK
+        result = response.json()
+        assert {lift["reference_id"] for lift in result["lift_set"]} == {
+            lift["reference_id"] for lift in test_competition.lift_set.values()
+        }

@@ -56,7 +56,7 @@ class LiftFactory(factory.django.DjangoModelFactory):
                     1,
                     1,
                 ),
-                date_end=datetime(2022, 1, 1),
+                date_end=datetime.now(),
             )
         ),
     )

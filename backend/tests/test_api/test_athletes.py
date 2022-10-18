@@ -95,7 +95,7 @@ class TestAthleteModel:
             pytest.param(
                 datetime.now().year - MINIMUM_YEAR_FROM_BIRTH,
                 does_not_raise(),
-                id="model-update-age-validation-old-enough",
+                id="old-enough",
             ),
             pytest.param(
                 datetime.now().year - (MINIMUM_YEAR_FROM_BIRTH - 1),
@@ -103,7 +103,7 @@ class TestAthleteModel:
                     ValidationError,
                     match=r".*yearborn.*",
                 ),
-                id="model-update-age-validation-too-young",
+                id="too-young",
             ),
         ],
     )
@@ -270,12 +270,12 @@ class TestAthleteEndpoints(BaseTestAthlete):
             pytest.param(
                 lazy_fixture("client"),
                 status.HTTP_401_UNAUTHORIZED,
-                id="athlete-edit-anon",
+                id="anon",
             ),
             pytest.param(
                 lazy_fixture("admin_client"),
                 status.HTTP_200_OK,
-                id="athlete-edit-admin",
+                id="admin",
             ),
         ],
     )
@@ -306,12 +306,12 @@ class TestAthleteEndpoints(BaseTestAthlete):
             pytest.param(
                 lazy_fixture("client"),
                 status.HTTP_401_UNAUTHORIZED,
-                id="athlete-edit-anon",
+                id="anon",
             ),
             pytest.param(
                 lazy_fixture("admin_client"),
                 status.HTTP_204_NO_CONTENT,
-                id="athlete-edit-admin",
+                id="admin",
             ),
         ],
     )
@@ -331,7 +331,7 @@ class TestAthleteEndpoints(BaseTestAthlete):
 class TestAthleteSerializer(BaseTestAthlete):
     """Testing the Athlete Serializer custom fields."""
 
-    def test_lift_counts(self, client, athlete_with_lifts):
+    def test_lift_count(self, client, athlete_with_lifts):
         """Test lift counts."""
         response = client.get(f"{self.url}/{athlete_with_lifts.reference_id}")
         assert response.status_code == status.HTTP_200_OK

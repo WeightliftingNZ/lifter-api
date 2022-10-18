@@ -40,7 +40,7 @@ const CompetitionCard: React.FC<CompetitionListObjectProps> = (competition) => {
         </Box>
       }
       contents={
-        competition.random_lifts.length > 0 ? (
+        competition.best_lifts.length > 0 ? (
           <CompetitionCardTable {...competition} />
         ) : (
           <NoResults />

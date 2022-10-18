@@ -8,12 +8,13 @@ import factory.random
 import faker.config
 import pytest
 from django.db import connection
+from faker import Faker
 from pytest_factoryboy import register
 
 from api.models.athletes import Athlete
 from api.models.competitions import Competition
 from api.models.lifts import Lift
-from config.settings import PAGE_SIZE
+from config.settings import MINIMUM_YEAR_FROM_BIRTH, PAGE_SIZE
 
 from .factories import (
     AthleteFactory,
@@ -68,7 +69,7 @@ def batch_athlete() -> list[Athlete]:
 
 
 @pytest.fixture
-def athlete_with_lifts():
+def athlete_with_lifts() -> Athlete:
     """Create an athlete."""
     athlete = AthleteFactory(yearborn=datetime.now().year - 45)
     competitions = (
@@ -86,7 +87,7 @@ def athlete_with_lifts():
 
 
 @pytest.fixture
-def athlete_with_no_total():
+def athlete_with_no_total() -> Athlete:
     """Create an athlete with one lift and no total."""
     lift = LiftFactory(
         snatch_first="DNA", snatch_second="DNA", snatch_third="DNA"
@@ -101,21 +102,27 @@ def batch_competition() -> list[Competition]:
 
 
 @pytest.fixture
-def mock_competition() -> list[Competition]:
-    """Mock competition data.
+def competition_with_lifts() -> Competition:
+    """Create a competition with lifts."""
+    # Faker is defined here because it is thread unsafe
+    Faker.seed(42)
+    fake = Faker("en_NZ")
+    competition = CompetitionFactory()
+    for _ in range(20):
+        # ensure athlete is old enough to compete
+        athlete = AthleteFactory(
+            yearborn=fake.date_between(
+                end_date=datetime(
+                    competition.date_start.year - MINIMUM_YEAR_FROM_BIRTH + 1,
+                    1,
+                    1,
+                ),
+            ).year
+        )
+        LiftFactory(athlete=athlete, competition=competition)
+    return competition
 
-    Returns:
-        list[Competition]: list of mock competitions
-    """
-    # COMPETITIONS = 2
-    MOCK_COMPETIION_ONE = Post2019Pre2022CompetitionFactory()
-    MOCK_COMPETIION_TWO = Post2019Pre2022CompetitionFactory(
-        location=MOCK_COMPETIION_ONE.location
-    )
-    return [MOCK_COMPETIION_ONE, MOCK_COMPETIION_TWO]
 
-
-@pytest.fixture
 def mock_lift(mock_competition, mock_athlete) -> list[Lift]:
     """Mock lift data.
 

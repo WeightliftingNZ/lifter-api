@@ -34,7 +34,7 @@ const CompetitionCardTable: React.FC<CompetitionListObjectProps> = (
           </TableRow>
         </TableHead>
         <TableBody>
-          {competition.random_lifts.map((lift: LiftObjectProps) => {
+          {competition.best_lifts.map((lift: LiftObjectProps) => {
             return (
               <TableRow hover key={lift.reference_id}>
                 <TableCell>{lift.placing}</TableCell>
