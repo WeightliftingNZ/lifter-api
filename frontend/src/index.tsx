@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import "./index.css";
 import App from "./App";
+import ReactGA from "react-ga4";
 
 const queryClient = new QueryClient();
 
@@ -24,3 +25,6 @@ root.render(
     <ReactQueryDevtools initialIsOpen={false} />
   </QueryClientProvider>
 );
+
+ReactGA.initialize(process.env.GOOGLE_ANALYTICS_G_ID ?? "");
+ReactGA.send("pageview");
