@@ -1,3 +1,9 @@
+## 0.12.1 (2022-10-19)
+
+### Fix
+
+- fixing environment variables
+
 ## 0.12.0 (2022-10-18)
 
 ### Feat
