@@ -26,5 +26,6 @@ root.render(
   </QueryClientProvider>
 );
 
-ReactGA.initialize(process.env.GOOGLE_ANALYTICS_G_ID ?? "");
+const googleAnalyticsGId = process.env.REACT_APP_G_ID ?? "Nill";
+ReactGA.initialize(googleAnalyticsGId);
 ReactGA.send("pageview");
