@@ -159,7 +159,7 @@ def age_category(yearborn: int, competition_year: int = None) -> AgeCategories:
         "is_master_50_54": years_from_birth >= 50 and years_from_birth <= 54,
         "is_master_55_59": years_from_birth >= 55 and years_from_birth <= 59,
         "is_master_60_64": years_from_birth >= 60 and years_from_birth <= 64,
-        "is_master_65_69": years_from_birth >= 65 and years_from_birth <= 39,
+        "is_master_65_69": years_from_birth >= 65 and years_from_birth <= 69,
         "is_master_70": years_from_birth >= 70,
     }
 

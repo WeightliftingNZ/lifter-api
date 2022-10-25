@@ -449,6 +449,7 @@ class TestAthleteDetailSerializer(BaseTestAthlete):
             lift["reference_id"] for lift in test_athlete.lift_set.values()
         }
 
+    # TODO: fix if no total, but competed, still has True.
     def test_age_categories_competed(self, client, test_athlete):
         """Test athlete age categories competed in."""
         response = client.get(f"{self.url}/{test_athlete.reference_id}")
