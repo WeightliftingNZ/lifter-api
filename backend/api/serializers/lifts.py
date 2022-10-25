@@ -9,6 +9,7 @@ from api.models import Athlete, Competition, Lift
 
 
 class LiftSerializer(serializers.ModelSerializer):
+    """Lift Serializer."""
 
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
@@ -18,11 +19,13 @@ class LiftSerializer(serializers.ModelSerializer):
         },
         view_name="competition-lifts-detail",
     )
-    reference_id = serializers.PrimaryKeyRelatedField(  # type: ignore
-        pk_field=HashidSerializerCharField(
-            source_field="api.Lift.reference_id",
-        ),
-        read_only=True,
+    reference_id: serializers.PrimaryKeyRelatedField = (
+        serializers.PrimaryKeyRelatedField(
+            pk_field=HashidSerializerCharField(
+                source_field="api.Lift.reference_id",
+            ),
+            read_only=True,
+        )
     )
 
     athlete = serializers.PrimaryKeyRelatedField(
@@ -57,6 +60,8 @@ class LiftSerializer(serializers.ModelSerializer):
     )
 
     class Meta:
+        """Setting for LiftSerializer."""
+
         model = Lift
         fields = (
             "url",

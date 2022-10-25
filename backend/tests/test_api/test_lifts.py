@@ -338,3 +338,67 @@ class TestLiftEndpoints(BaseTestLift):
             assert lift_exists is False
         else:
             assert lift_exists is True
+
+
+class TestLiftSerializer(BaseTestLift):
+    """Test for `LiftSerializer` custom fields."""
+
+    def test_athlete_name(self, client, lift):
+        """Test athlete name field."""
+        response = client.get(
+            f"{self.url}/{lift.competition.reference_id}/lifts/{lift.reference_id}"
+        )
+        assert response.status_code == status.HTTP_200_OK
+        result = response.json()
+        assert (
+            result["athlete_name"]
+            == Lift.objects.get(
+                reference_id=lift.reference_id
+            ).athlete.full_name
+        )
+
+    def test_athlete_yearborn(self, client, lift):
+        """Test athlete yearborn field."""
+        response = client.get(
+            f"{self.url}/{lift.competition.reference_id}/lifts/{lift.reference_id}"
+        )
+        assert response.status_code == status.HTTP_200_OK
+        result = response.json()
+        assert (
+            result["athlete_yearborn"]
+            == Lift.objects.get(
+                reference_id=lift.reference_id
+            ).athlete.yearborn
+        )
+
+    def test_competition_name(self, client, lift):
+        """Test athlete name field."""
+        response = client.get(
+            f"{self.url}/{lift.competition.reference_id}/lifts/{lift.reference_id}"
+        )
+        assert response.status_code == status.HTTP_200_OK
+        result = response.json()
+        assert (
+            result["competition_name"]
+            == Lift.objects.get(
+                reference_id=lift.reference_id
+            ).competition.name
+        )
+
+    # serializer this and consider putting these into a single test?
+    def test_competition_date_start(self, client, lift):
+        """Test athlete name field."""
+        response = client.get(
+            f"{self.url}/{lift.competition.reference_id}/lifts/{lift.reference_id}"
+        )
+        assert response.status_code == status.HTTP_200_OK
+        result = response.json()
+        competition = Lift.objects.get(
+            reference_id=lift.reference_id
+        ).competition
+        assert (
+            result["competition_date_start"]
+            == json.loads(serializers.serialize("json", [competition]))[0][
+                "fields"
+            ]["date_start"]
+        )
