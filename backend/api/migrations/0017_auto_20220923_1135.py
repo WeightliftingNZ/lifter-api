@@ -4,9 +4,9 @@
 from datetime import datetime
 
 from django.db import migrations
+from tests.test_api.test_models.test_support.conftest import AgeCategoryMock
 
 from api.models import AgeCategory, AgeCategoryEra
-from api.tests.test_models.test_support.conftest import AgeCategoryMock
 
 
 def create_age_categories(apps, schema_editor):

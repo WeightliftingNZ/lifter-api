@@ -70,20 +70,19 @@ const ListItemLink: React.FC<ListItemLinkProps> = ({
 }) => {
   const renderLink = useMemo(
     () =>
-      forwardRef<HTMLAnchorElement, Omit<RouterLinkProps, "to">>(function Link(
-        itemProps,
-        ref
-      ) {
-        return (
-          <RouterLink
-            to={to}
-            ref={ref}
-            {...itemProps}
-            role={undefined}
-            style={{ textDecoration: "none" }}
-          />
-        );
-      }),
+      forwardRef<HTMLAnchorElement, Omit<RouterLinkProps, "to">>(
+        function Link(itemProps, ref) {
+          return (
+            <RouterLink
+              to={to}
+              ref={ref}
+              {...itemProps}
+              role={undefined}
+              style={{ textDecoration: "none" }}
+            />
+          );
+        }
+      ),
     [to]
   );
 

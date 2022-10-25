@@ -1,9 +1,11 @@
 """Testing athlete related functionality."""
 
+import json
 from contextlib import nullcontext as does_not_raise
 from datetime import datetime
 
 import pytest
+from django.core import serializers
 from django.core.exceptions import ValidationError
 from pytest_lazyfixture import lazy_fixture
 from rest_framework import status
@@ -117,9 +119,15 @@ class TestAthleteModel:
             setattr(updated_athlete, attr, value)
         with exception:
             updated_athlete.save()
-            assert updated_athlete.first_name != athlete.first_name
-            assert updated_athlete.last_name != athlete.last_name
-            assert updated_athlete.yearborn != athlete.yearborn
+            assert json.loads(
+                serializers.serialize("json", [updated_athlete])
+            )[0].get("fields") != json.loads(
+                serializers.serialize("json", [athlete])
+            )[
+                0
+            ].get(
+                "fields"
+            )
 
     def test_delete(self, athlete):
         """Test athlete deletion.
@@ -132,17 +140,19 @@ class TestAthleteModel:
             is False
         )
 
-    def test_age_categories(self, athlete):
-        """Testing age_categories property."""
-        assert (
-            Athlete.objects.get(
-                reference_id=athlete.reference_id
-            ).age_categories
-            == athlete.age_categories
+    def test_custom_properties(self, athlete):
+        """Testing custom properties for the `Athlete` model."""
+        custom_properties = ["age_categories", "full_name"]
+        assert all(
+            [
+                getattr(athlete, custom_property)
+                for custom_property in custom_properties
+            ]
         )
 
     def test_full_name(self, athlete):
         """Testing full name combination from `first_name` and `last_name`."""
+        assert athlete.full_name is not None
         assert (
             Athlete.objects.get(reference_id=athlete.reference_id).full_name
             == f"{athlete.first_name.title()} {athlete.last_name.title()}"
@@ -152,7 +162,7 @@ class TestAthleteModel:
 class TestAthleteManager:
     """Athlete custom manager functionality tests."""
 
-    def test_search_query_none(self, batch_athlete):
+    def test_search_empty_query(self, batch_athlete):
         """Test for search manager function when `query=None`."""
         search_result = Athlete.objects.search(query=None)
         assert Athlete.objects.all().count() == len(batch_athlete)
@@ -161,12 +171,12 @@ class TestAthleteManager:
     @pytest.mark.parametrize(
         "test_input",
         [
-            pytest.param("first_name", id="first_name"),
-            pytest.param("last_name", id="last_name"),
-            pytest.param("full_name", id="full_name"),
+            pytest.param("first_name", id="first-name"),
+            pytest.param("last_name", id="last-name"),
+            pytest.param("full_name", id="full-name"),
         ],
     )
-    def test_search_query(self, athlete, batch_athlete, test_input):
+    def test_search(self, athlete, batch_athlete, test_input):
         """Testing search query on the athlete's full name."""
         search_result = Athlete.objects.search(
             query=getattr(athlete, test_input)
@@ -207,7 +217,14 @@ class TestAthleteEndpoints(BaseTestAthlete):
         response = client.get(f"{self.url}/{athlete.reference_id}")
         assert response.status_code == status.HTTP_200_OK
         result = response.json()
-        assert result["first_name"] == athlete.first_name
+        serialized_athlete = json.loads(
+            serializers.serialize("json", [athlete])
+        )[0].get("fields")
+        common_keys = set(result.keys() & serialized_athlete.keys())
+        assert (
+            all([result[k] == serialized_athlete[k] for k in common_keys])
+            is True
+        )
 
     @pytest.mark.parametrize(
         "test_input",
@@ -249,20 +266,20 @@ class TestAthleteEndpoints(BaseTestAthlete):
         athlete_factory,
     ):
         """Athlete can only be created by an admin user and not anon user."""
-        athlete = athlete_factory.stub()
+        athlete = athlete_factory.stub().__dict__
         response = test_client.post(
             self.url,
-            data=athlete.__dict__,
+            data=athlete,
             content_type="application/json",
         )
         assert response.status_code == expected
-        count = Athlete.objects.filter(
+        athlete_exists = Athlete.objects.filter(
             reference_id=response.json().get("reference_id")
-        ).count()
+        ).exists()
         if response.status_code == status.HTTP_201_CREATED:
-            assert count == 1
+            assert athlete_exists is True
         else:
-            assert count == 0
+            assert athlete_exists is False
 
     @pytest.mark.parametrize(
         "test_client,expected",
@@ -281,24 +298,40 @@ class TestAthleteEndpoints(BaseTestAthlete):
     )
     def test_edit(self, test_client, expected, athlete, athlete_factory):
         """Admin users can edit athletes but not anon users."""
-        edited_athlete = athlete_factory.stub()
+        edited_athlete = athlete_factory.stub().__dict__
         response = test_client.patch(
             f"{self.url}/{athlete.reference_id}",
-            data=edited_athlete.__dict__,
+            data=edited_athlete,
             content_type="application/json",
         )
         assert response.status_code == expected
-        extract_athlete = Athlete.objects.get(
-            reference_id=athlete.reference_id
-        )
+        result = response.json()
+        current_athlete = json.loads(
+            serializers.serialize(
+                "json",
+                [Athlete.objects.get(reference_id=athlete.reference_id)],
+            )
+        )[0].get("fields")
+        previous_athlete = json.loads(
+            serializers.serialize("json", [athlete])
+        )[0].get("fields")
         if response.status_code == status.HTTP_200_OK:
-            assert extract_athlete.first_name == edited_athlete.first_name
-            assert extract_athlete.last_name == edited_athlete.last_name
-            assert extract_athlete.yearborn == edited_athlete.yearborn
+            assert current_athlete != previous_athlete
+            common_keys = set(
+                result.keys()
+                & current_athlete.keys()
+                & previous_athlete.keys()
+            )
+            assert (
+                all([result[k] == previous_athlete[k] for k in common_keys])
+                is False
+            )
+            assert (
+                all([result[k] == current_athlete[k] for k in common_keys])
+                is True
+            )
         else:
-            assert extract_athlete.first_name != edited_athlete.first_name
-            assert extract_athlete.last_name != edited_athlete.last_name
-            assert extract_athlete.yearborn != edited_athlete.yearborn
+            assert current_athlete == previous_athlete
 
     @pytest.mark.parametrize(
         "test_client,expected",
@@ -319,13 +352,13 @@ class TestAthleteEndpoints(BaseTestAthlete):
         """Admin users can delete athletes, but not anon users."""
         response = test_client.delete(f"{self.url}/{athlete.reference_id}")
         assert response.status_code == expected
-        count = Athlete.objects.filter(
+        athlete_exists = Athlete.objects.filter(
             reference_id=athlete.reference_id
-        ).count()
+        ).exists()
         if response.status_code == status.HTTP_204_NO_CONTENT:
-            assert count == 0
+            assert athlete_exists is False
         else:
-            assert count == 1
+            assert athlete_exists is True
 
 
 class TestAthleteSerializer(BaseTestAthlete):
@@ -363,12 +396,10 @@ class TestAthleteSerializer(BaseTestAthlete):
     [
         pytest.param(
             lazy_fixture("athlete_with_lifts"),
-            id="athlete-with-lifts",
+            id="with-lifts",
         ),
-        pytest.param(
-            lazy_fixture("athlete_with_no_total"), id="athlete-no-total"
-        ),
-        pytest.param(lazy_fixture("athlete"), id="athlete-no-lifts"),
+        pytest.param(lazy_fixture("athlete_with_no_total"), id="no-total"),
+        pytest.param(lazy_fixture("athlete"), id="no-lifts"),
     ],
 )
 class TestAthleteDetailSerializer(BaseTestAthlete):

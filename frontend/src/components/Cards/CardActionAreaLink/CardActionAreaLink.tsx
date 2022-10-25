@@ -18,20 +18,19 @@ const CardActionAreaLink: React.FC<
   const { to } = props;
   const renderLink = useMemo(
     () =>
-      forwardRef<HTMLAnchorElement, Omit<RouterLinkProps, "to">>(function Link(
-        itemProps,
-        ref
-      ) {
-        return (
-          <RouterLink
-            to={to}
-            ref={ref}
-            {...itemProps}
-            role={undefined}
-            style={{ textDecoration: "none" }}
-          />
-        );
-      }),
+      forwardRef<HTMLAnchorElement, Omit<RouterLinkProps, "to">>(
+        function Link(itemProps, ref) {
+          return (
+            <RouterLink
+              to={to}
+              ref={ref}
+              {...itemProps}
+              role={undefined}
+              style={{ textDecoration: "none" }}
+            />
+          );
+        }
+      ),
     [to]
   );
   return (

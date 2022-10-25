@@ -1,12 +1,14 @@
-"""Test competition  endpoints.
+"""Test competition endpoints.
 
 Competitions to retrieve, create, edit and delete.
 """
+import json
 import random
 from contextlib import nullcontext as does_not_raise
 from datetime import timedelta
 
 import pytest
+from django.core import serializers
 from django.core.exceptions import ValidationError
 from pytest_lazyfixture import lazy_fixture
 from rest_framework import status
@@ -29,8 +31,6 @@ class TestCompetitionModel:
 
     Includes:
         - Normal CRUD operations.
-        - Custom properties:
-            -
         - Validation:
             - `date_start` must be before `date_end`
     """
@@ -45,7 +45,7 @@ class TestCompetitionModel:
         assert competition_table.count() == len(batch_competition)
         assert {
             competition.reference_id for competition in batch_competition
-        } == {competition.reference_id for competition in batch_competition}
+        } == {competition.reference_id for competition in competition_table}
 
     def test_get(self, competition, batch_competition):
         """Can retrieve a single competition."""
@@ -124,10 +124,15 @@ class TestCompetitionModel:
             setattr(updated_competition, attr, value)
         with exception:
             updated_competition.save()
-            assert updated_competition.name != competition.name
-            assert updated_competition.location != competition.location
-            assert updated_competition.date_start != competition.date_start
-            assert updated_competition.date_end != competition.date_end
+            assert json.loads(
+                serializers.serialize("json", [updated_competition])
+            )[0].get("fields") != json.loads(
+                serializers.serialize("json", [competition])
+            )[
+                0
+            ].get(
+                "fields"
+            )
 
     def test_delete(self, competition):
         """Test competition deletion.
@@ -146,7 +151,7 @@ class TestCompetitionModel:
 class TestCompetitionManager:
     """Competition custom manager functionality tests."""
 
-    def test_search_query_none(self, batch_competition):
+    def test_search_empty_query(self, batch_competition):
         """Test search manager function with `query=None`."""
         search_result = Competition.objects.search(query=None)
         assert Competition.objects.all().count() == len(batch_competition)
@@ -166,7 +171,7 @@ class TestCompetitionManager:
             ),
         ],
     )
-    def test_search_query(self, competition, batch_competition, test_inputs):
+    def test_search(self, competition, batch_competition, test_inputs):
         """Testing search query."""
         search_result = Competition.objects.search(
             query=" ".join(
@@ -184,17 +189,17 @@ class TestCompetitionManager:
 
 
 class TestCompetitionEndpoints(BaseTestCompetition):
-    """Test functionality of endpoints.
+    """Test functionality of competition endpoints.
 
     This includes commonly accessed (not authenticated required):
-        - listing many athletes
-        - retrieving an athlete
-        - searching/filtering on athletes
+        - listing many competitions
+        - retrieving a competition
+        - searching/filtering on competitions
 
     as well as  higher privileges:
-        - creating an athlete
-        - editing an athlete
-        - deleting an athlete
+        - creating a competition
+        - editing a competition
+        - deleting a competition
 
     Higher privileged actions require administration level, but in the future \
             this will be moved to a group.
@@ -212,7 +217,14 @@ class TestCompetitionEndpoints(BaseTestCompetition):
         response = client.get(f"{self.url}/{competition.reference_id}")
         assert response.status_code == status.HTTP_200_OK
         result = response.json()
-        assert result["name"] == competition.name
+        serialized_competition = json.loads(
+            serializers.serialize("json", [competition])
+        )[0].get("fields")
+        common_keys = set(result.keys() & serialized_competition.keys())
+        assert (
+            all([result[k] == serialized_competition[k] for k in common_keys])
+            is True
+        )
 
     @pytest.mark.parametrize(
         "test_inputs",
@@ -270,20 +282,20 @@ class TestCompetitionEndpoints(BaseTestCompetition):
     )
     def test_create(self, test_client, expected, competition_factory):
         """Competitions can be created by an admin user and not anon user."""
-        competition = competition_factory.stub()
+        competition = competition_factory.stub().__dict__
         response = test_client.post(
             self.url,
-            data=competition.__dict__,
+            data=competition,
             content_type="application/json",
         )
         assert response.status_code == expected
-        count = Competition.objects.filter(
+        competition_exists = Competition.objects.filter(
             reference_id=response.json().get("reference_id")
-        ).count()
+        ).exists()
         if response.status_code == status.HTTP_201_CREATED:
-            assert count == 1
+            assert competition_exists is True
         else:
-            assert count == 0
+            assert competition_exists is False
 
     @pytest.mark.parametrize(
         "test_client,expected",
@@ -311,31 +323,40 @@ class TestCompetitionEndpoints(BaseTestCompetition):
             content_type="application/json",
         )
         assert response.status_code == expected
-        extract_competition = Competition.objects.get(
-            reference_id=competition.reference_id
-        )
+        result = response.json()
+        current_competition = json.loads(
+            serializers.serialize(
+                "json",
+                [
+                    Competition.objects.get(
+                        reference_id=competition.reference_id
+                    )
+                ],
+            )
+        )[0].get("fields")
+        previous_competition = json.loads(
+            serializers.serialize("json", [competition])
+        )[0].get("fields")
+
         if response.status_code == status.HTTP_200_OK:
-            assert extract_competition.name == edited_competition.name
-            assert extract_competition.location == edited_competition.location
-            assert (
-                str(extract_competition.date_start)
-                == edited_competition.date_start
+            assert current_competition != previous_competition
+            common_keys = set(
+                result.keys()
+                & current_competition.keys()
+                & previous_competition.keys()
             )
             assert (
-                str(extract_competition.date_end)
-                == edited_competition.date_end
+                all(
+                    [result[k] == previous_competition[k] for k in common_keys]
+                )
+                is False
+            )
+            assert (
+                all([result[k] == current_competition[k] for k in common_keys])
+                is True
             )
         else:
-            assert extract_competition.name != edited_competition.name
-            assert extract_competition.location != edited_competition.location
-            assert (
-                str(extract_competition.date_start)
-                != edited_competition.date_start
-            )
-            assert (
-                str(extract_competition.date_end)
-                != edited_competition.date_end
-            )
+            assert current_competition == previous_competition
 
     @pytest.mark.parametrize(
         "test_client,expected",

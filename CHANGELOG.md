@@ -1,3 +1,21 @@
+## 0.12.2 (2022-10-19)
+
+### Fix
+
+- adding gtags
+
+## 0.12.1 (2022-10-19)
+
+### Fix
+
+- fixing environment variables
+
+## 0.12.0 (2022-10-18)
+
+### Feat
+
+- adding analytics
+
 ## 0.11.8 (2022-10-05)
 
 ### Fix

@@ -123,29 +123,23 @@ def competition_with_lifts() -> Competition:
     return competition
 
 
-def mock_lift(mock_competition, mock_athlete) -> list[Lift]:
-    """Mock lift data.
+@pytest.fixture
+def batch_lift() -> list[Lift]:
+    """Create a batch of lifts."""
+    return LiftFactory.create_batch(10)
 
-    Returns:
-        list[Lift]: list of mock lifts
-    """
-    return [
-        LiftFactory(
-            competition=mock_competition[0],
-            athlete=mock_athlete[0],
-            session_number=0,
-            lottery_number=1,
-        ),
-        LiftFactory(
-            competition=mock_competition[0],
-            athlete=mock_athlete[1],
-            session_number=0,
-            lottery_number=2,
-        ),
-        LiftFactory(
-            competition=mock_competition[1],
-            athlete=mock_athlete[0],
-            session_number=0,
-            lottery_number=1,
-        ),
+
+@pytest.fixture
+def competition_with_lifts_weight_categories() -> tuple[Competition, list]:
+    """Create lifts with given weight_categories."""
+    competition = Post2019Pre2022CompetitionFactory()
+    weight_categories_original = [
+        wc
+        for wc in ["W45", "W87", "W87+", "M55", "M109", "M109+"]
+        for _ in range(random.randint(1, 10))
     ]
+    weight_categories = weight_categories_original[:]
+    random.shuffle(weight_categories)
+    for weight_category in weight_categories:
+        LiftFactory(competition=competition, weight_category=weight_category)
+    return competition, weight_categories_original

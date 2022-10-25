@@ -47,7 +47,7 @@ weight_categories_2018 = WeightCategoryList(
         "M96",
         "M102",
         "M109",
-        "M102",
+        "M102+",
         "M109+",
     ],
 )
@@ -110,6 +110,7 @@ weight_category_lists = [
 
 
 def valid_weight_category(weight_category: str, date: datetime) -> bool:
+    """Validate weight category for a given date."""
     # order from earlier era to current
     weight_category_lists.sort(key=lambda x: x.era_start)
     for idx, weight_category_list in enumerate(weight_category_lists):

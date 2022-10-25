@@ -25,13 +25,12 @@ makemigrations:
 	cd ./backend && \
 	pipenv run python manage.py makemigrations
 
-ARG=.
 .PHONY: test
 test:
 	clear
 	docker-compose up --build db -d && \
 	cd ./backend && \
-	pipenv run pytest -k $(ARG)
+	pipenv run pytest $(ARG)
 
 .PHONY: test-frontend
 test-frontend:

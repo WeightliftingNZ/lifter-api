@@ -24,20 +24,19 @@ const TableRowLink: React.FC<TableRowLinkProps> = (
 
   const renderLink = useMemo(
     () =>
-      forwardRef<HTMLAnchorElement, Omit<RouterLinkProps, "to">>(function Link(
-        itemProps,
-        ref
-      ) {
-        return (
-          <RouterLink
-            to={`/${uriBase}/${reference_id}`}
-            ref={ref}
-            {...itemProps}
-            role={undefined}
-            style={{ textDecoration: "none" }}
-          />
-        );
-      }),
+      forwardRef<HTMLAnchorElement, Omit<RouterLinkProps, "to">>(
+        function Link(itemProps, ref) {
+          return (
+            <RouterLink
+              to={`/${uriBase}/${reference_id}`}
+              ref={ref}
+              {...itemProps}
+              role={undefined}
+              style={{ textDecoration: "none" }}
+            />
+          );
+        }
+      ),
     [uriBase, reference_id]
   );
 

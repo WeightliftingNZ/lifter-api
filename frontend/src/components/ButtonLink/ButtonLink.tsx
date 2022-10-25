@@ -14,20 +14,19 @@ const ButtonLink: React.FC<React.PropsWithChildren<ButtonLinkProps>> = (
   const { to, size, color } = props;
   const renderLink = useMemo(
     () =>
-      forwardRef<HTMLAnchorElement, Omit<RouterLinkProps, "to">>(function Link(
-        itemProps,
-        ref
-      ) {
-        return (
-          <RouterLink
-            to={to}
-            ref={ref}
-            {...itemProps}
-            role={undefined}
-            style={{ textDecoration: "none" }}
-          />
-        );
-      }),
+      forwardRef<HTMLAnchorElement, Omit<RouterLinkProps, "to">>(
+        function Link(itemProps, ref) {
+          return (
+            <RouterLink
+              to={to}
+              ref={ref}
+              {...itemProps}
+              role={undefined}
+              style={{ textDecoration: "none" }}
+            />
+          );
+        }
+      ),
     [to]
   );
   return (
