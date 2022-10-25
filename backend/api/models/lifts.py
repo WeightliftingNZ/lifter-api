@@ -150,6 +150,8 @@ class Lift(models.Model):
     objects = LiftManager()
 
     class Meta:
+        """Setting for `Lift` model."""
+
         ordering = ["weight_category", "lottery_number"]
         constraints = [
             models.UniqueConstraint(

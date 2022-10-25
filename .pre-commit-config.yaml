@@ -91,6 +91,37 @@ repos:
         id: pyupgrade
     repo: https://github.com/asottile/pyupgrade
     rev: v3.1.0
+  - repo: local
+    hooks:
+      - id: check-django-migrations
+        name: Check django migrations
+        entry: python ./backend/manage.py makemigrations --dry-run --check --no-input
+        language: python
+        types: [python]
+        pass_filenames: false
+        additional_dependencies:
+          - djangorestframework-stubs
+          - django-stubs
+          - django-cors-headers
+          - django-allauth
+          - dj_rest_auth
+          - drf_spectacular
+          - drf_spectacular_sidecar
+          - djangorestframework-simplejwt
+          - django-hashid-field
+          - psycopg2-binary
+          - django_extensions
+          - sentry-sdk
+          - django-filter
+          - django-crispy-forms
+          - whitenoise
+          - django-debug-toolbar
+          - django-auditlog
+          - faker
+          - factory-boy
+          - pytest-factoryboy
+          - django-simple-history
+          - drf-nested-routers
   - hooks:
       - id: django-upgrade
         args: [--target-version, "4.1"]

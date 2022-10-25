@@ -107,25 +107,25 @@ class TestLiftModel:
             is False
         )
 
-    def test_custom_properties(self, lift):
+    @pytest.mark.parametrize(
+        "test_input",
+        [
+            pytest.param("snatches"),
+            pytest.param("cnjs"),
+            pytest.param("best_snatch_weight"),
+            pytest.param("best_cnj_weight"),
+            pytest.param("total_lifted"),
+            pytest.param("age_categories"),
+            pytest.param("sinclair"),
+            pytest.param("placing"),
+            pytest.param("grade"),
+            # property does not exist
+            pytest.param("invalid_property", marks=pytest.mark.xfail),
+        ],
+    )
+    def test_custom_properties(self, test_input, lift):
         """Testing the custom model properties of the `Lift` model."""
-        custom_properties = [
-            "snatches",
-            "cnjs",
-            "best_cnj_weight",
-            "best_snatch_weight",
-            "total_lifted",
-            "age_categories",
-            "sinclair",
-            "placing",
-            "grade",
-        ]
-        assert all(
-            [
-                getattr(lift, custom_property)
-                for custom_property in custom_properties
-            ]
-        )
+        assert hasattr(lift, test_input) is True
 
 
 class TestLiftManager:
@@ -385,7 +385,6 @@ class TestLiftSerializer(BaseTestLift):
             ).competition.name
         )
 
-    # serializer this and consider putting these into a single test?
     def test_competition_date_start(self, client, lift):
         """Test athlete name field."""
         response = client.get(

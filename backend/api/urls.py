@@ -13,7 +13,6 @@ from api.views import (
 
 router = DefaultRouter(trailing_slash=False)
 # /lifts
-# TODO allow searchability among lifts
 
 # /athletes/<athlete pk>
 router.register(r"athletes", AthleteViewSet, "athletes")

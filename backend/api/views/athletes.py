@@ -191,10 +191,24 @@ from .filters import AthleteFilter
     ),
 )
 class AthleteViewSet(viewsets.ModelViewSet):
-    """`Athlete` view is paginated to `20`.
+    """The `Athlete` views.
 
-    Text search acts on `first_name` and `last_name`. Although there is a \
-            notion to move on to `full_name` only.
+    Main URL routing:
+
+    - `/athletes` - provides a paginated list view for athletes.
+    - `/athletes/:id` - provides a detail view for an athlete.
+
+    Extra parameters can be provided:
+
+    - `/athletes?ordering=` - ordering by a field. Current fields to order by \
+            are `first_name`, and `last_name` (e.g \
+            `/athletes?ordering=-last_name` will give descending order on \
+            `last_name`.
+    - `/athletes?search=` - search text on the `first_name` and `last_name` \
+            (there is a notion to move `first_name` and `last_name` to just \
+            `name`).
+    - `/athletes?page=` - to select a particular page.
+    - `/athletes?page=&search=&ordering=` - combining parameters together.
 
     No authorization required:
 

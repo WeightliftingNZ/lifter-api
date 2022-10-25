@@ -140,15 +140,17 @@ class TestAthleteModel:
             is False
         )
 
-    def test_custom_properties(self, athlete):
+    @pytest.mark.parametrize(
+        "test_input",
+        [
+            pytest.param("age_categories"),
+            pytest.param("full_name"),
+            pytest.param("invalid_property", marks=pytest.mark.xfail),
+        ],
+    )
+    def test_custom_properties(self, test_input, athlete):
         """Testing custom properties for the `Athlete` model."""
-        custom_properties = ["age_categories", "full_name"]
-        assert all(
-            [
-                getattr(athlete, custom_property)
-                for custom_property in custom_properties
-            ]
-        )
+        assert hasattr(athlete, test_input) is True
 
     def test_full_name(self, athlete):
         """Testing full name combination from `first_name` and `last_name`."""
