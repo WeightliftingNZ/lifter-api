@@ -5,7 +5,7 @@ Competitions to retrieve, create, edit and delete.
 import json
 import random
 from contextlib import nullcontext as does_not_raise
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 import pytest
 from django.core import serializers
@@ -264,6 +264,31 @@ class TestCompetitionEndpoints(BaseTestCompetition):
         assert competition.reference_id in {
             competition["reference_id"] for competition in result["results"]
         }
+
+    def test_find_by_year(self, client, competition_factory):
+        """Find competition all in the same year."""
+        number_competitions_year = 10
+        year = 2021
+        for _ in range(number_competitions_year):
+            competition_factory.create(
+                date_start=fake.date_between_dates(
+                    date_start=datetime(year, 1, 1),
+                    date_end=datetime(year, 12, 31),
+                ),
+            )
+            competition_factory.create(
+                date_start=fake.date_between_dates(
+                    date_start=datetime(year - 1, 1, 1),
+                    date_end=datetime(year - 1, 12, 31),
+                ),
+            )
+        response = client.get(f"{self.url}?year={year}")
+        assert response.status_code == status.HTTP_200_OK
+        result = response.json()
+        assert result["count"] == number_competitions_year
+        assert (
+            Competition.objects.all().count() == number_competitions_year * 2
+        )
 
     @pytest.mark.parametrize(
         "test_client,expected",

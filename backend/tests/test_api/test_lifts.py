@@ -72,7 +72,12 @@ class TestLiftModel:
 
     @pytest.mark.parametrize(
         "test_input,exception",
-        [pytest.param(0, does_not_raise(), id="normal")],
+        [pytest.param({}, does_not_raise(), id="normal")],
+        # pytest.param(
+        #     {"snatch_first_weight": 100, "snatch_second_weight": 99},
+        #     pytest.raises(ValidationError, match=r".*Weight"),
+        #     id="invalid-weights",
+        # ),
     )
     def test_update(
         self, lift, competition, athlete, lift_factory, test_input, exception

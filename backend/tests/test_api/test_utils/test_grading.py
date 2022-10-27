@@ -1,3 +1,5 @@
+"""Testing grading."""
+
 import pytest
 
 from api.models.utils import determine_grade

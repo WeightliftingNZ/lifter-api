@@ -1,5 +1,7 @@
 """Custom managers for Competitions model."""
 
+from datetime import datetime
+
 from django.contrib.postgres.search import SearchHeadline, TrigramSimilarity
 from django.db import models
 from django.db.models import CharField, F
@@ -27,5 +29,15 @@ class CompetitionManager(models.Manager):
                 )
                 .filter(similarity__gte=0.3)
                 .order_by("-similarity")
+            )
+        return qs
+
+    def year(self, query=None):
+        """Search competition year."""
+        qs = self.get_queryset()
+        if query is not None:
+            qs = qs.filter(
+                date_start__gte=datetime(query, 1, 1),
+                date_start__lte=datetime(query, 12, 31),
             )
         return qs
