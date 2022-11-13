@@ -15,38 +15,38 @@ django-filter = "*"
 dj-rest-auth = "*"
 django-cors-headers = "*"
 django-guardian = "*"
-django-allauth = {extras = ["with_social"], version = "*"}
+django-allauth = { extras = ["with_social"], version = "*" }
 pyyaml = "*"
 uritemplate = "*"
-drf-spectacular = {extras = ["sidecar"], version = "*"}
+drf-spectacular = { extras = ["sidecar"], version = "*" }
 djangorestframework-simplejwt = "*"
 drf-nested-routers = "*"
 django-extensions = "*"
 django-crispy-forms = "*"
 pytest-xdist = "*"
 faker = "*"
-whitenoise = {extras = ["brotli"], version = "*"}
+whitenoise = { extras = ["brotli"], version = "*" }
 django-debug-toolbar = "*"
 django-auditlog = "*"
 pytest-factory = "*"
 pytest-factoryboy = "*"
 django-simple-history = "*"
-pytest-instafail = "*"
 
 [dev-packages]
 pytest = "*"
 pytest-django = "*"
 pytest-cov = "*"
-djangorestframework-stubs = {extras = ["compatible-mypy"], version = "*"}
-django-stubs = {extras = ["compatible-mypy"], version = "*"}
+pytest-instafail = "*"
+djangorestframework-stubs = { extras = ["compatible-mypy"], version = "*" }
+django-stubs = { extras = ["compatible-mypy"], version = "*" }
 types-setuptools = "*"
 flake8 = "*"
 mypy = "*"
 mkdocs = "*"
 mkdocs-material = "*"
 faker = "*"
-coverage = {extras = ["toml"], version = "*"}
-mkdocstrings = {extras = ["python"], version = "*"}
+coverage = { extras = ["toml"], version = "*" }
+mkdocstrings = { extras = ["python"], version = "*" }
 factory-boy = "*"
 pdbr = "*"
 pytest-lazy-fixture = "*"
