@@ -1,4 +1,6 @@
-# Lifter API
+# ⚠️ ARCHIVED ⚠️ Lifter API
+
+**This project has been shelfed and all data deleted. This was so much fun to work on with Diogo, but there is no need for this project to continue and I finally got employment thanks to this project.**
 
 [![Build](https://github.com/WeightliftingNZ/lifter-api/actions/workflows/main.yml/badge.svg)](https://github.com/WeightliftingNZ/lifter-api/actions/workflows/main.yml)
 [![Docs](https://github.com/WeightliftingNZ/lifter-api/actions/workflows/docs.yml/badge.svg)](https://github.com/WeightliftingNZ/lifter-api/actions/workflows/docs.yml)
